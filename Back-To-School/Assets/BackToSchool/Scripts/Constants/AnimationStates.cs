@@ -1,8 +1,8 @@
 namespace Assets.BackToSchool.Scripts.Constants
 {
-    internal static class AnimationStates
+    internal class AnimationStates
     {
-        public static string IsMoving = "IsMoving";
-        public static string Reload = "Reload";
+        public const string IsMoving = "IsMoving";
+        public const string Reload = "Reload";
     }
 }

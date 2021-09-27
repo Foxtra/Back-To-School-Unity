@@ -785,7 +785,7 @@ MonoBehaviour:
   _maxXpos: 49
   _minZpos: -49
   _maxZpos: 49
-  _spawnInterval: 5
+  _spawnInterval: 3
   _maxRangeToPlayer: 10
   _maxEnemies: 20
 --- !u!4 &1320894319

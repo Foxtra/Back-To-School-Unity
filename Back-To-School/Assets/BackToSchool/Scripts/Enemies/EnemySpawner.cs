@@ -1,9 +1,8 @@
-﻿using System;
+﻿using Assets.BackToSchool.Scripts.Utils;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 
-namespace Assets.BackToSchool.Scripts
+namespace Assets.BackToSchool.Scripts.Enemies
 {
     public class EnemySpawner : MonoBehaviour
     {
@@ -36,11 +35,11 @@ namespace Assets.BackToSchool.Scripts
             if (_currentNumberOfEnemies < _maxEnemies)
             {
                 _currentNumberOfEnemies++;
-                Invoke(nameof(SpawnEnemies), _spawnInterval);
+                Invoke(nameof(SpawnEnemy), _spawnInterval);
             }
         }
 
-        private void SpawnEnemies()
+        private void SpawnEnemy()
         {
             do
             {
@@ -48,16 +47,9 @@ namespace Assets.BackToSchool.Scripts
                 _zPos = Random.Range(_minZpos, _maxZpos);
 
                 _enemyPos = new Vector3(_xPos, _yPos, _zPos);
-            } while (CheckIfSpawnCloseToPlayer(_enemyPos));
+            } while (SpaceOperations.CheckIfTwoObjectsClose(_enemyPos, _player.transform.position, _maxRangeToPlayer));
 
             Instantiate(_enemyPrefab, _enemyPos, Quaternion.identity);
-        }
-
-        private bool CheckIfSpawnCloseToPlayer(Vector3 enemyPos)
-        {
-            var heading = enemyPos - _player.transform.position;
-
-            return heading.sqrMagnitude < Math.Pow(_maxRangeToPlayer, 2);
         }
     }
 }

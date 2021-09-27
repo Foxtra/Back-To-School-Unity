@@ -1,7 +1,8 @@
+using Assets.BackToSchool.Scripts.Enemies;
 using UnityEngine;
 
 
-namespace Assets.BackToSchool.Scripts
+namespace Assets.BackToSchool.Scripts.Weapon
 {
     public class Bullet : MonoBehaviour
     {

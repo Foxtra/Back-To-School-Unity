@@ -4,5 +4,7 @@ namespace Assets.BackToSchool.Scripts.Constants
     {
         public const string IsMoving = "IsMoving";
         public const string Reload = "Reload";
+        public const string Die = "Die";
+        public const string GetDamage = "GetDamage";
     }
 }

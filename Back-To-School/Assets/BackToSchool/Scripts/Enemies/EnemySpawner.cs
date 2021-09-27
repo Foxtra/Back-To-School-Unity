@@ -23,6 +23,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
         private float _xPos;
         private float _yPos = 0f;
         private float _zPos;
+        private float _timer;
         private int _currentNumberOfEnemies;
 
         private void Start()
@@ -32,10 +33,15 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
         private void Update()
         {
+            _timer += Time.deltaTime;
             if (_currentNumberOfEnemies < _maxEnemies)
             {
-                _currentNumberOfEnemies++;
-                Invoke(nameof(SpawnEnemy), _spawnInterval);
+                if (_timer > _spawnInterval)
+                {
+                    _currentNumberOfEnemies++;
+                    SpawnEnemy();
+                    _timer = 0f;
+                }
             }
         }
 

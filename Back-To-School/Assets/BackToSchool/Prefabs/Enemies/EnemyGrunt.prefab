@@ -898,5 +898,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 2
-  _stopDistance: 5
+  _stopDistance: 4
   _maxHealth: 2

@@ -15,7 +15,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
         private Animator _animator;
 
         private float _damageTime = 1.2f;
-        private float _deathTime = 2f;
+        private float _deathTime = 1.5f;
         private int _currentHealth;
 
         private bool _isBusy;
@@ -25,13 +25,13 @@ namespace Assets.BackToSchool.Scripts.Enemies
         {
             _currentHealth--;
             _isBusy = true;
-            Debug.Log(gameObject.name + ": hp = " + _currentHealth);
-            if (_currentHealth <= 0)
+
+            if (_currentHealth == 0 && !_isDead)
             {
                 _animator.SetTrigger(AnimationStates.Die);
                 _isDead = true;
             }
-            else
+            else if (_currentHealth > 0)
             {
                 _animator.SetTrigger(AnimationStates.GetDamage);
             }

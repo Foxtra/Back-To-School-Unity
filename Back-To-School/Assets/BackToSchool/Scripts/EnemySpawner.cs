@@ -50,7 +50,6 @@ namespace Assets.BackToSchool.Scripts
                 _enemyPos = new Vector3(_xPos, _yPos, _zPos);
             } while (CheckIfSpawnCloseToPlayer(_enemyPos));
 
-
             Instantiate(_enemyPrefab, _enemyPos, Quaternion.identity);
         }
 

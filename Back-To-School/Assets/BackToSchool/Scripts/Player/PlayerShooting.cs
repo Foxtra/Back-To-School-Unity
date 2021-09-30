@@ -15,6 +15,7 @@ namespace Assets.BackToSchool.Scripts.Player
 
         private Bullet _bullet;
         private Animator _animator;
+        private PlayerInteracting _playerInteracting;
 
         private int _currentAmmo;
         private bool _isReloading;
@@ -23,6 +24,7 @@ namespace Assets.BackToSchool.Scripts.Player
         {
             _currentAmmo = _maxAmmo;
             _animator = GetComponentInChildren<Animator>();
+            _playerInteracting = GetComponent<PlayerInteracting>();
         }
 
         private void Update()
@@ -34,7 +36,7 @@ namespace Assets.BackToSchool.Scripts.Player
         {
             if (Input.GetButtonDown("Fire1"))
             {
-                if (!_isReloading && _currentAmmo != 0)
+                if (!_isReloading && _currentAmmo != 0 && !_playerInteracting.IsDead)
                 {
                     _bullet = Instantiate(_bulletPrefab);
                     _bullet.transform.position = _shootingPosition.transform.position;

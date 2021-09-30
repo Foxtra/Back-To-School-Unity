@@ -1,4 +1,5 @@
 using Assets.BackToSchool.Scripts.Constants;
+using Assets.BackToSchool.Scripts.Player;
 using Assets.BackToSchool.Scripts.Utils;
 using UnityEngine;
 
@@ -9,13 +10,16 @@ namespace Assets.BackToSchool.Scripts.Enemies
     {
         [SerializeField] private float _speed = 5f;
         [SerializeField] private float _stopDistance = 1f;
+        [SerializeField] private float _attackInterval = 2f;
         [SerializeField] private int _maxHealth = 2;
 
         private GameObject _player;
         private Animator _animator;
+        private PlayerInteracting _playerInteracting;
 
         private float _damageTime = 1.2f;
         private float _deathTime = 1.5f;
+        private float _timer;
         private int _currentHealth;
 
         private bool _isBusy;
@@ -48,11 +52,14 @@ namespace Assets.BackToSchool.Scripts.Enemies
         private void Start()
         {
             _player = GameObject.FindGameObjectWithTag("Player");
+            _playerInteracting = _player.GetComponent<PlayerInteracting>();
         }
 
         private void FixedUpdate()
         {
-            if (!SpaceOperations.CheckIfTwoObjectsClose(transform.position, _player.transform.position, _stopDistance) && !_isBusy)
+            _timer += Time.fixedDeltaTime;
+            if (!SpaceOperations.CheckIfTwoObjectsClose(transform.position, _player.transform.position, _stopDistance) && !_isBusy &&
+                !_playerInteracting.IsDead)
             {
                 _animator.SetBool(AnimationStates.IsMoving, true);
                 transform.LookAt(_player.transform.position);
@@ -61,7 +68,21 @@ namespace Assets.BackToSchool.Scripts.Enemies
             else
             {
                 _animator.SetBool(AnimationStates.IsMoving, false);
+
+                if (_timer > _attackInterval && !_playerInteracting.IsDead)
+                {
+                    _isBusy = true;
+                    Attack();
+                    _timer = 0f;
+                    Invoke(nameof(EnableEnemy), _attackInterval);
+                }
             }
+        }
+
+        private void Attack()
+        {
+            _animator.SetTrigger(AnimationStates.Attack);
+            _playerInteracting.GetDamage();
         }
 
         private void EnableEnemy()

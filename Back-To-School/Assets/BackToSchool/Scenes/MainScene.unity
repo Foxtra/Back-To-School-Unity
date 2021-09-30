@@ -145,6 +145,20 @@ MonoBehaviour:
   _reloadTime: 2
   _bulletForce: 20
   _maxAmmo: 10
+--- !u!114 &100233493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100233491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6dd75cc7cbec4e44f98ed493370f65fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxHealth: 5
+  _damageTime: 0.1
 --- !u!4 &182964256 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 449998, guid: 2150293d12bfb2448a976624bc72a6f2, type: 3}
@@ -787,7 +801,7 @@ MonoBehaviour:
   _maxZpos: 49
   _spawnInterval: 3
   _maxRangeToPlayer: 10
-  _maxEnemies: 20
+  _maxEnemies: 1
 --- !u!4 &1320894319
 Transform:
   m_ObjectHideFlags: 0

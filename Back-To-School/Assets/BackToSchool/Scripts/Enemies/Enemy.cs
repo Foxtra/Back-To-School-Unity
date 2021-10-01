@@ -8,6 +8,10 @@ namespace Assets.BackToSchool.Scripts.Enemies
 {
     public class Enemy : MonoBehaviour
     {
+        public delegate void EnemyHandler(Enemy sender);
+
+        public event EnemyHandler Notify;
+
         [SerializeField] private float _speed = 5f;
         [SerializeField] private float _stopDistance = 1f;
         [SerializeField] private float _attackInterval = 2f;
@@ -40,6 +44,11 @@ namespace Assets.BackToSchool.Scripts.Enemies
                 _animator.SetTrigger(AnimationStates.GetDamage);
             }
 
+            if (_currentHealth == 0 && _isDead)
+            {
+                EnemyDeath();
+            }
+
             Invoke(nameof(EnableEnemy), _damageTime);
         }
 
@@ -58,23 +67,25 @@ namespace Assets.BackToSchool.Scripts.Enemies
         private void FixedUpdate()
         {
             _timer += Time.fixedDeltaTime;
-            if (!SpaceOperations.CheckIfTwoObjectsClose(transform.position, _player.transform.position, _stopDistance) && !_isBusy &&
-                !_playerInteracting.IsDead)
+            if (!_isBusy && !_playerInteracting.IsDead)
             {
-                _animator.SetBool(AnimationStates.IsMoving, true);
-                transform.LookAt(_player.transform.position);
-                transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, _speed * Time.fixedDeltaTime);
-            }
-            else
-            {
-                _animator.SetBool(AnimationStates.IsMoving, false);
-
-                if (_timer > _attackInterval && !_playerInteracting.IsDead)
+                if (!SpaceOperations.CheckIfTwoObjectsClose(transform.position, _player.transform.position, _stopDistance))
                 {
-                    _isBusy = true;
-                    Attack();
-                    _timer = 0f;
-                    Invoke(nameof(EnableEnemy), _attackInterval);
+                    _animator.SetBool(AnimationStates.IsMoving, true);
+                    transform.LookAt(_player.transform.position);
+                    transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, _speed * Time.fixedDeltaTime);
+                }
+                else
+                {
+                    _animator.SetBool(AnimationStates.IsMoving, false);
+
+                    if (_timer > _attackInterval && !_playerInteracting.IsDead)
+                    {
+                        _isBusy = true;
+                        Attack();
+                        _timer = 0f;
+                        Invoke(nameof(EnableEnemy), _attackInterval);
+                    }
                 }
             }
         }
@@ -87,14 +98,13 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
         private void EnableEnemy()
         {
-            if (_isDead)
-            {
-                Destroy(gameObject, _deathTime);
-            }
-            else
-            {
-                _isBusy = false;
-            }
+            _isBusy = false;
+        }
+
+        private void EnemyDeath()
+        {
+            Destroy(gameObject, _deathTime);
+            Notify?.Invoke(this);
         }
     }
 }

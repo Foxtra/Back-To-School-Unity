@@ -13,6 +13,7 @@ namespace Assets.BackToSchool.Scripts.Player
 
         private Rigidbody _rigidBody;
         private Animator _animator;
+        private PlayerInteracting _playerInteracting;
 
         private Vector3 _direction = Vector3.zero;
         private Ray _ray;
@@ -21,6 +22,7 @@ namespace Assets.BackToSchool.Scripts.Player
         {
             _rigidBody = GetComponent<Rigidbody>();
             _animator = GetComponentInChildren<Animator>();
+            _playerInteracting = GetComponent<PlayerInteracting>();
         }
 
         private void Update()
@@ -38,12 +40,12 @@ namespace Assets.BackToSchool.Scripts.Player
 
         private void Move()
         {
-            if (Physics.Raycast(_ray, out var rayCastHit, _rayCastLenght, _layerMask))
+            if (Physics.Raycast(_ray, out var rayCastHit, _rayCastLenght, _layerMask) && !_playerInteracting.IsDead)
             {
                 transform.LookAt(rayCastHit.point);
             }
 
-            if (_direction != Vector3.zero)
+            if (_direction != Vector3.zero && !_playerInteracting.IsDead)
             {
                 _animator.SetBool(AnimationStates.IsMoving, true);
                 _rigidBody.MovePosition(transform.position + _direction * _moveSpeed * Time.fixedDeltaTime);

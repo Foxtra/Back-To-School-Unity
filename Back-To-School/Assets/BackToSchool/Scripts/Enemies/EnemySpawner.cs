@@ -1,4 +1,5 @@
-﻿using Assets.BackToSchool.Scripts.Utils;
+﻿using System.Collections.Generic;
+using Assets.BackToSchool.Scripts.Utils;
 using UnityEngine;
 
 
@@ -15,8 +16,9 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
         [SerializeField] private float _spawnInterval = 1f;
         [SerializeField] private float _maxRangeToPlayer = 10f;
-        [SerializeField] private int _maxEnemies = 20;
+        [SerializeField] private int _maxEnemies = 10;
 
+        private List<Enemy> _enemies = new List<Enemy>();
         private GameObject _player;
         private Vector3 _enemyPos = Vector3.zero;
 
@@ -25,6 +27,14 @@ namespace Assets.BackToSchool.Scripts.Enemies
         private float _zPos;
         private float _timer;
         private int _currentNumberOfEnemies;
+
+        private void ReduceEnemyCount(Enemy sender)
+        {
+            _currentNumberOfEnemies--;
+            var enemyIndex = _enemies.FindIndex(e => e.Equals(sender));
+            _enemies[enemyIndex].Notify -= ReduceEnemyCount;
+            _enemies.Remove(sender);
+        }
 
         private void Start()
         {
@@ -55,7 +65,10 @@ namespace Assets.BackToSchool.Scripts.Enemies
                 _enemyPos = new Vector3(_xPos, _yPos, _zPos);
             } while (SpaceOperations.CheckIfTwoObjectsClose(_enemyPos, _player.transform.position, _maxRangeToPlayer));
 
-            Instantiate(_enemyPrefab, _enemyPos, Quaternion.identity);
+
+            var enemy = Instantiate(_enemyPrefab, _enemyPos, Quaternion.identity);
+            enemy.GetComponent<Enemy>().Notify += ReduceEnemyCount;
+            _enemies.Add(enemy.GetComponent<Enemy>());
         }
     }
 }

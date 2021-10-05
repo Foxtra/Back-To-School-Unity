@@ -50,8 +50,10 @@ namespace Assets.BackToSchool.Scripts.Enemies
             {
                 EnemyDeath();
             }
-
-            Invoke(nameof(EnableEnemy), _damageTime);
+            else
+            {
+                Invoke(nameof(EnableEnemy), _damageTime);
+            }
         }
 
         private void Awake()
@@ -100,7 +102,10 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
         private void EnableEnemy()
         {
-            _isBusy = false;
+            if (!_isDead)
+            {
+                _isBusy = false;
+            }
         }
 
         private void EnemyDeath()

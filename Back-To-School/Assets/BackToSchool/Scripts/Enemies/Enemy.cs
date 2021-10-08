@@ -81,9 +81,9 @@ namespace Assets.BackToSchool.Scripts.Enemies
                 }
                 else
                 {
-                    _animator.SetBool(AnimationStates.IsMoving, false);
+                   
 
-                    if (_timer > _attackInterval && !_playerInteracting.IsDead)
+                    if (_timer > _attackInterval)
                     {
                         _isBusy = true;
                         Attack();
@@ -91,6 +91,10 @@ namespace Assets.BackToSchool.Scripts.Enemies
                         Invoke(nameof(EnableEnemy), _attackInterval);
                     }
                 }
+            }
+            else
+            {
+                _animator.SetBool(AnimationStates.IsMoving, false);
             }
         }
 

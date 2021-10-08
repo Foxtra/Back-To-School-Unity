@@ -24,7 +24,6 @@ namespace Assets.BackToSchool.Scripts.Player
         {
             _currentHealth--;
             if (OnHealthChanged != null) OnHealthChanged(this, new PlayerHealthArgs((float) _currentHealth / _maxHealth));
-            Debug.Log("My hp is " + _currentHealth);
 
             if (_currentHealth == 0 && !IsDead)
             {

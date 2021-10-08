@@ -1,3 +1,4 @@
+using System;
 using Assets.BackToSchool.Scripts.Constants;
 using Assets.BackToSchool.Scripts.Weapon;
 using UnityEngine;
@@ -7,6 +8,10 @@ namespace Assets.BackToSchool.Scripts.Player
 {
     public class PlayerShooting : MonoBehaviour
     {
+        public delegate void PlayerShootingHandler(PlayerShooting sender, PlayerAmmoArgs _args);
+
+        public event PlayerShootingHandler OnAmmoChanged;
+
         [SerializeField] private Bullet _bulletPrefab;
         [SerializeField] private GameObject _shootingPosition;
         [SerializeField] private float _reloadTime = 2.0f;
@@ -43,6 +48,7 @@ namespace Assets.BackToSchool.Scripts.Player
                     _bullet.transform.rotation = _shootingPosition.transform.rotation;
                     _bullet.Launch(_bulletForce);
                     _currentAmmo--;
+                    if (OnAmmoChanged != null) OnAmmoChanged(this, new PlayerAmmoArgs(_currentAmmo, _maxAmmo));
                 }
             }
 
@@ -58,6 +64,19 @@ namespace Assets.BackToSchool.Scripts.Player
         private void Reload()
         {
             _isReloading = false;
+            if (OnAmmoChanged != null) OnAmmoChanged(this, new PlayerAmmoArgs(_currentAmmo, _maxAmmo));
         }
+    }
+}
+
+public class PlayerAmmoArgs : EventArgs
+{
+    public int NewAmmoValue { get; }
+    public int MaxAmmoValue { get; }
+
+    public PlayerAmmoArgs(int newHealthValue, int maxAmmoValue)
+    {
+        NewAmmoValue = newHealthValue;
+        MaxAmmoValue = maxAmmoValue;
     }
 }

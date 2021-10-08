@@ -1,3 +1,4 @@
+using System;
 using Assets.BackToSchool.Scripts.Constants;
 using Assets.BackToSchool.Scripts.Player;
 using Assets.BackToSchool.Scripts.Utils;
@@ -8,9 +9,9 @@ namespace Assets.BackToSchool.Scripts.Enemies
 {
     public class Enemy : MonoBehaviour
     {
-        public delegate void EnemyHandler(Enemy sender);
+        public delegate void EnemyHandler(Enemy sender, EnemyArgs _args);
 
-        public event EnemyHandler Notify;
+        public event EnemyHandler OnHealthChanged;
 
         [SerializeField] private float _speed = 5f;
         [SerializeField] private float _stopDistance = 1f;
@@ -32,6 +33,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
         public void GetDamage()
         {
             _currentHealth--;
+            if (OnHealthChanged != null) OnHealthChanged(this, new EnemyArgs((float) _currentHealth / _maxHealth));
             _isBusy = true;
 
             if (_currentHealth == 0 && !_isDead)
@@ -48,8 +50,10 @@ namespace Assets.BackToSchool.Scripts.Enemies
             {
                 EnemyDeath();
             }
-
-            Invoke(nameof(EnableEnemy), _damageTime);
+            else
+            {
+                Invoke(nameof(EnableEnemy), _damageTime);
+            }
         }
 
         private void Awake()
@@ -77,9 +81,9 @@ namespace Assets.BackToSchool.Scripts.Enemies
                 }
                 else
                 {
-                    _animator.SetBool(AnimationStates.IsMoving, false);
+                   
 
-                    if (_timer > _attackInterval && !_playerInteracting.IsDead)
+                    if (_timer > _attackInterval)
                     {
                         _isBusy = true;
                         Attack();
@@ -87,6 +91,10 @@ namespace Assets.BackToSchool.Scripts.Enemies
                         Invoke(nameof(EnableEnemy), _attackInterval);
                     }
                 }
+            }
+            else
+            {
+                _animator.SetBool(AnimationStates.IsMoving, false);
             }
         }
 
@@ -98,13 +106,26 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
         private void EnableEnemy()
         {
-            _isBusy = false;
+            if (!_isDead)
+            {
+                _isBusy = false;
+            }
         }
 
         private void EnemyDeath()
         {
             Destroy(gameObject, _deathTime);
-            Notify?.Invoke(this);
+            OnHealthChanged?.Invoke(this, new EnemyArgs(0));
         }
+    }
+}
+
+public class EnemyArgs : EventArgs
+{
+    public float NewHealthValue { get; }
+
+    public EnemyArgs(float newHealthValue)
+    {
+        NewHealthValue = newHealthValue;
     }
 }

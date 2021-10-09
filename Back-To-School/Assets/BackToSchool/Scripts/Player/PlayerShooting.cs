@@ -32,36 +32,28 @@ namespace Assets.BackToSchool.Scripts.Player
             _playerInteracting = GetComponent<PlayerInteracting>();
         }
 
-        private void Update()
+        public void Fire()
         {
-            Fire();
-        }
-
-        private void Fire()
-        {
-            if (Input.GetButtonDown("Fire1"))
+            if (!_isReloading && _currentAmmo != 0)
             {
-                if (!_isReloading && _currentAmmo != 0 && !_playerInteracting.IsDead)
-                {
-                    _bullet = Instantiate(_bulletPrefab);
-                    _bullet.transform.position = _shootingPosition.transform.position;
-                    _bullet.transform.rotation = _shootingPosition.transform.rotation;
-                    _bullet.Launch(_bulletForce);
-                    _currentAmmo--;
-                    if (OnAmmoChanged != null) OnAmmoChanged(this, new PlayerAmmoArgs(_currentAmmo, _maxAmmo));
-                }
-            }
-
-            if (Input.GetButtonDown("Reload"))
-            {
-                _isReloading = true;
-                _currentAmmo = _maxAmmo;
-                _animator.SetTrigger(AnimationStates.Reload);
-                Invoke(nameof(Reload), _reloadTime);
+                _bullet = Instantiate(_bulletPrefab);
+                _bullet.transform.position = _shootingPosition.transform.position;
+                _bullet.transform.rotation = _shootingPosition.transform.rotation;
+                _bullet.Launch(_bulletForce);
+                _currentAmmo--;
+                if (OnAmmoChanged != null) OnAmmoChanged(this, new PlayerAmmoArgs(_currentAmmo, _maxAmmo));
             }
         }
 
-        private void Reload()
+        public void Reload()
+        {
+            _isReloading = true;
+            _currentAmmo = _maxAmmo;
+            _animator.SetTrigger(AnimationStates.Reload);
+            Invoke(nameof(ReloadComplete), _reloadTime);
+        }
+
+        private void ReloadComplete()
         {
             _isReloading = false;
             if (OnAmmoChanged != null) OnAmmoChanged(this, new PlayerAmmoArgs(_currentAmmo, _maxAmmo));

@@ -9,8 +9,8 @@ namespace Assets.BackToSchool.Scripts.Player
     {
         public delegate void PlayerInteractingHandler(PlayerInteracting sender, PlayerHealthArgs args);
 
-        public event PlayerInteractingHandler OnHealthChanged;
-        public event EventHandler OnDeath;
+        public event PlayerInteractingHandler HealthChanged;
+        public event Action Death;
 
         [SerializeField] private int _maxHealth = 5;
         [SerializeField] private float _damageTime = 0.1f;
@@ -24,13 +24,13 @@ namespace Assets.BackToSchool.Scripts.Player
         public void GetDamage()
         {
             _currentHealth--;
-            if (OnHealthChanged != null) OnHealthChanged(this, new PlayerHealthArgs((float) _currentHealth / _maxHealth));
+            if (HealthChanged != null) HealthChanged(this, new PlayerHealthArgs((float) _currentHealth / _maxHealth));
 
             if (_currentHealth == 0 && !IsDead)
             {
                 _animator.SetTrigger(AnimationStates.Die);
                 IsDead = true;
-                if (OnDeath != null) OnDeath(this, EventArgs.Empty);
+                Death?.Invoke();
             }
             else if (_currentHealth > 0)
             {

@@ -4,5 +4,11 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/BackToSchool/Scenes/MainMenu.unity
+    guid: bdb8aad9a8f34fd4ca8b71a65dabb387
+  - enabled: 1
+    path: Assets/BackToSchool/Scenes/MainScene.unity
+    guid: 395a60a8e01439d429ad96be194dcd99
   m_configObjects: {}

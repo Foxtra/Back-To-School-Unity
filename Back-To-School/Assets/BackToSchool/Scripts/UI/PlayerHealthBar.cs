@@ -24,9 +24,9 @@ namespace Assets.BackToSchool.Scripts.UI
             _playerInteracting.OnHealthChanged += PlayerHealthBar_OnHealthChanged;
         }
 
-        private void PlayerHealthBar_OnHealthChanged(object sender, PlayerHealthArgs _args)
+        private void PlayerHealthBar_OnHealthChanged(object sender, PlayerHealthArgs args)
         {
-            UpdateHealthBar(_args.NewHealthValue);
+            UpdateHealthBar(args.NewHealthValue);
         }
 
         private void UpdateHealthBar(float newValue)

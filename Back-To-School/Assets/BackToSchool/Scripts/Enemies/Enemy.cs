@@ -73,16 +73,15 @@ namespace Assets.BackToSchool.Scripts.Enemies
             _timer += Time.fixedDeltaTime;
             if (!_isBusy && !_playerInteracting.IsDead)
             {
+                transform.LookAt(_player.transform.position);
+
                 if (!SpaceOperations.CheckIfTwoObjectsClose(transform.position, _player.transform.position, _stopDistance))
                 {
                     _animator.SetBool(AnimationStates.IsMoving, true);
-                    transform.LookAt(_player.transform.position);
                     transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, _speed * Time.fixedDeltaTime);
                 }
                 else
                 {
-                   
-
                     if (_timer > _attackInterval)
                     {
                         _isBusy = true;

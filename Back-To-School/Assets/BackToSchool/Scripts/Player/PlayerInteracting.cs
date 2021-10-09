@@ -7,9 +7,10 @@ namespace Assets.BackToSchool.Scripts.Player
 {
     public class PlayerInteracting : MonoBehaviour
     {
-        public delegate void PlayerInteractingHandler(PlayerInteracting sender, PlayerHealthArgs _args);
+        public delegate void PlayerInteractingHandler(PlayerInteracting sender, PlayerHealthArgs args);
 
         public event PlayerInteractingHandler OnHealthChanged;
+        public event EventHandler OnDeath;
 
         [SerializeField] private int _maxHealth = 5;
         [SerializeField] private float _damageTime = 0.1f;
@@ -29,6 +30,7 @@ namespace Assets.BackToSchool.Scripts.Player
             {
                 _animator.SetTrigger(AnimationStates.Die);
                 IsDead = true;
+                if (OnDeath != null) OnDeath(this, EventArgs.Empty);
             }
             else if (_currentHealth > 0)
             {

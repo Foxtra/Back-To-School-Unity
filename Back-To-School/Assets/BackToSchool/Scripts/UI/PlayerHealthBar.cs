@@ -21,12 +21,12 @@ namespace Assets.BackToSchool.Scripts.UI
             _player = GameObject.FindGameObjectWithTag("Player");
             _playerInteracting = _player.GetComponent<PlayerInteracting>();
 
-            _playerInteracting.OnHealthChanged += PlayerHealthBar_OnHealthChanged;
+            _playerInteracting.HealthChanged += OnHealthChanged;
         }
 
-        private void PlayerHealthBar_OnHealthChanged(object sender, PlayerHealthArgs args)
+        private void OnHealthChanged(int currentHealth, int maxHealth, int damage)
         {
-            UpdateHealthBar(args.NewHealthValue);
+            UpdateHealthBar((float) currentHealth / maxHealth);
         }
 
         private void UpdateHealthBar(float newValue)

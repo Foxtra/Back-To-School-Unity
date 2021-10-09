@@ -7,9 +7,7 @@ namespace Assets.BackToSchool.Scripts.Player
 {
     public class PlayerInteracting : MonoBehaviour
     {
-        public delegate void PlayerInteractingHandler(PlayerInteracting sender, PlayerHealthArgs args);
-
-        public event PlayerInteractingHandler HealthChanged;
+        public event Action<int, int, int> HealthChanged;
         public event Action Death;
 
         [SerializeField] private int _maxHealth = 5;
@@ -19,17 +17,17 @@ namespace Assets.BackToSchool.Scripts.Player
         private Animator _animator;
 
         private int _currentHealth;
-        public bool IsDead { get; private set; }
+        private bool _isDead;
 
         public void GetDamage()
         {
             _currentHealth--;
-            if (HealthChanged != null) HealthChanged(this, new PlayerHealthArgs((float) _currentHealth / _maxHealth));
+            HealthChanged?.Invoke(_currentHealth, _maxHealth, 1);
 
-            if (_currentHealth == 0 && !IsDead)
+            if (_currentHealth == 0 && !_isDead)
             {
                 _animator.SetTrigger(AnimationStates.Die);
-                IsDead = true;
+                _isDead = true;
                 Death?.Invoke();
             }
             else if (_currentHealth > 0)
@@ -61,15 +59,5 @@ namespace Assets.BackToSchool.Scripts.Player
                 renderer.material.color = Color.white;
             }
         }
-    }
-}
-
-public class PlayerHealthArgs : EventArgs
-{
-    public float NewHealthValue { get; }
-
-    public PlayerHealthArgs(float newHealthValue)
-    {
-        NewHealthValue = newHealthValue;
     }
 }

@@ -18,12 +18,12 @@ namespace Assets.BackToSchool.Scripts.UI
         private void Start()
         {
             _enemy = GetComponentInParent<Enemy>();
-            _enemy.OnHealthChanged += EnemyHealthBar_OnHealthChanged;
+            _enemy.HealthChanged += OnHealthChanged;
         }
 
-        private void EnemyHealthBar_OnHealthChanged(Enemy sender, EnemyArgs _args)
+        private void OnHealthChanged(int currentHealth, int maxHealth, int damage)
         {
-            UpdateHealthBar(_args.NewHealthValue);
+            UpdateHealthBar((float) currentHealth / maxHealth);
         }
 
         private void UpdateHealthBar(float newValue)

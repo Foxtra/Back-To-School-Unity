@@ -28,15 +28,12 @@ namespace Assets.BackToSchool.Scripts.Enemies
         private float _timer;
         private int _currentNumberOfEnemies;
 
-        private void ReduceEnemyCount(Enemy sender, EnemyArgs _args)
+        private void ReduceEnemyCount(Enemy sender)
         {
-            if (_args.NewHealthValue == 0)
-            {
-                _currentNumberOfEnemies--;
-                var enemyIndex = _enemies.FindIndex(e => e.Equals(sender));
-                _enemies[enemyIndex].OnHealthChanged -= ReduceEnemyCount;
-                _enemies.Remove(sender);
-            }
+            _currentNumberOfEnemies--;
+            var enemyIndex = _enemies.FindIndex(e => e.Equals(sender));
+            _enemies[enemyIndex].Death -= ReduceEnemyCount;
+            _enemies.Remove(sender);
         }
 
         private void Start()
@@ -70,7 +67,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
 
             var enemy = Instantiate(_enemyPrefab, _enemyPos, Quaternion.identity);
-            enemy.GetComponent<Enemy>().OnHealthChanged += ReduceEnemyCount;
+            enemy.GetComponent<Enemy>().Death += ReduceEnemyCount;
             _enemies.Add(enemy.GetComponent<Enemy>());
         }
     }

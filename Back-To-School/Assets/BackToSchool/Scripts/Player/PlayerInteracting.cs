@@ -1,11 +1,12 @@
 ﻿using System;
 using Assets.BackToSchool.Scripts.Constants;
+using Assets.BackToSchool.Scripts.Interfaces;
 using UnityEngine;
 
 
 namespace Assets.BackToSchool.Scripts.Player
 {
-    public class PlayerInteracting : MonoBehaviour
+    public class PlayerInteracting : MonoBehaviour, IDamageable
     {
         public event Action<int, int, int> HealthChanged;
         public event Action Death;
@@ -19,10 +20,10 @@ namespace Assets.BackToSchool.Scripts.Player
         private int _currentHealth;
         private bool _isDead;
 
-        public void GetDamage()
+        public void TakeDamage(int damage)
         {
-            _currentHealth--;
-            HealthChanged?.Invoke(_currentHealth, _maxHealth, 1);
+            _currentHealth -= damage;
+            HealthChanged?.Invoke(_currentHealth, _maxHealth, damage);
 
             if (_currentHealth == 0 && !_isDead)
             {
@@ -32,10 +33,7 @@ namespace Assets.BackToSchool.Scripts.Player
             }
             else if (_currentHealth > 0)
             {
-                foreach (var renderer in _renderers)
-                {
-                    renderer.material.color = Color.red;
-                }
+                foreach (var renderer in _renderers) { renderer.material.color = Color.red; }
 
                 Invoke(nameof(ChangeColor), _damageTime);
             }
@@ -43,21 +41,15 @@ namespace Assets.BackToSchool.Scripts.Player
 
         private void Awake()
         {
-            _animator = GetComponentInChildren<Animator>();
+            _animator  = GetComponentInChildren<Animator>();
             _renderers = GetComponentsInChildren<SkinnedMeshRenderer>();
         }
 
-        private void Start()
-        {
-            _currentHealth = _maxHealth;
-        }
+        private void Start() { _currentHealth = _maxHealth; }
 
         private void ChangeColor()
         {
-            foreach (var renderer in _renderers)
-            {
-                renderer.material.color = Color.white;
-            }
+            foreach (var renderer in _renderers) { renderer.material.color = Color.white; }
         }
     }
 }

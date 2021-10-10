@@ -1,4 +1,5 @@
-﻿using Assets.BackToSchool.Scripts.Player;
+﻿using Assets.BackToSchool.Scripts.Enemies;
+using Assets.BackToSchool.Scripts.Player;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -16,7 +17,10 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         private Button _gameOverRestartButton;
         //UI Presenter
 
-        [SerializeField] private InputManager _inputManager;
+        [SerializeField] private GameObject _playerPrefab;
+        [SerializeField] private GameObject _inputManagerPrefab;
+        [SerializeField] private GameObject _enemySpawnerPrefab;
+        [SerializeField] private Camera _mainCamera;
 
         //Player class
         private GameObject _player;
@@ -25,6 +29,9 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         private PlayerShooting _playerShooting;
         //Player class
 
+        private EnemySpawner _enemySpawner;
+        private InputManager _inputManager;
+
         private float _gameOverDelay = 1f;
 
         private bool _isGamePaused;
@@ -32,6 +39,8 @@ namespace Assets.BackToSchool.Scripts.GameManagement
 
         private void Start()
         {
+            CreateGameInstances();
+
             //UI Presenter
             _gameOverRestartButton = _gameOverPanel.GetComponentInChildren<Button>();
             _gameOverRestartButton.onClick.AddListener(RestartGame);
@@ -41,24 +50,33 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             //UI Presenter
 
             //Player class
-            _player = GameObject.FindGameObjectWithTag("Player");
             _playerInteracting = _player.GetComponent<PlayerInteracting>();
-            _playerMovement = _player.GetComponent<PlayerMovement>();
-            _playerShooting = _player.GetComponent<PlayerShooting>();
+            _playerMovement    = _player.GetComponent<PlayerMovement>();
+            _playerShooting    = _player.GetComponent<PlayerShooting>();
 
             _playerInteracting.Death += OnPlayerDeath;
             //Player class
 
             //InputManager
-            _inputManager.Moved += OnPlayerMove;
+            _inputManager.Moved   += OnPlayerMove;
             _inputManager.Rotated += OnPlayerRotate;
             _inputManager.Stopped += OnPlayerStop;
 
-            _inputManager.Fired += OnPlayerFire;
+            _inputManager.Fired    += OnPlayerFire;
             _inputManager.Reloaded += OnPlayerReloaded;
 
             _inputManager.Canceled += OnGameStopped;
             //InputManager
+        }
+
+        private void CreateGameInstances()
+        {
+            _player = Instantiate(_playerPrefab, transform.position, Quaternion.identity);
+            _mainCamera.GetComponent<CameraFollow>().SetTarget(_player.transform);
+            _inputManager = Instantiate(_inputManagerPrefab, transform.position, Quaternion.identity).GetComponent<InputManager>();
+            _inputManager.SetCamera(_mainCamera);
+            _enemySpawner = Instantiate(_enemySpawnerPrefab, transform.position, Quaternion.identity).GetComponent<EnemySpawner>();
+            _enemySpawner.SetTarget(_player);
         }
 
         private void OnPlayerReloaded()
@@ -73,20 +91,11 @@ namespace Assets.BackToSchool.Scripts.GameManagement
 
         private void OnGameStopped()
         {
-            if (_isGamePaused)
-            {
-                ContinueGame();
-            }
-            else
-            {
-                StopGame();
-            }
+            if (_isGamePaused) { ContinueGame(); }
+            else { StopGame(); }
         }
 
-        private void OnPlayerStop()
-        {
-            _playerMovement.Stop();
-        }
+        private void OnPlayerStop() { _playerMovement.Stop(); }
 
         private void OnPlayerRotate(RaycastHit rayCastHit)
         {
@@ -115,20 +124,15 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         private void OnPlayerDeath()
         {
             _isPlayerDead = true;
+            _enemySpawner.SetTarget(null);
             Invoke(nameof(EndGame), _gameOverDelay);
         }
 
-        private void EndGame()
-        {
-            _gameOverPanel.SetActive(true);
-        }
+        private void EndGame() { _gameOverPanel.SetActive(true); }
 
         private void RestartGame()
         {
-            if (_isGamePaused)
-            {
-                ContinueGame();
-            }
+            if (_isGamePaused) ContinueGame();
 
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }

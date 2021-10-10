@@ -19,7 +19,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
         [SerializeField] private int _maxEnemies = 10;
 
         private List<Enemy> _enemies = new List<Enemy>();
-        private GameObject _player;
+        private GameObject _target;
         private Vector3 _enemyPos = Vector3.zero;
 
         private float _xPos;
@@ -27,6 +27,12 @@ namespace Assets.BackToSchool.Scripts.Enemies
         private float _zPos;
         private float _timer;
         private int _currentNumberOfEnemies;
+
+        public void SetTarget(GameObject target)
+        {
+            _target = target;
+            foreach (var enemy in _enemies) { enemy.GetComponent<Enemy>().SetTarget(_target); }
+        }
 
         private void ReduceEnemyCount(Enemy sender)
         {
@@ -36,17 +42,12 @@ namespace Assets.BackToSchool.Scripts.Enemies
             _enemies.Remove(sender);
         }
 
-        private void Start()
-        {
-            _player = GameObject.FindGameObjectWithTag("Player");
-        }
-
         private void Update()
         {
             _timer += Time.deltaTime;
             if (_currentNumberOfEnemies < _maxEnemies)
             {
-                if (_timer > _spawnInterval)
+                if (_timer > _spawnInterval && _target)
                 {
                     _currentNumberOfEnemies++;
                     SpawnEnemy();
@@ -63,11 +64,13 @@ namespace Assets.BackToSchool.Scripts.Enemies
                 _zPos = Random.Range(_minZpos, _maxZpos);
 
                 _enemyPos = new Vector3(_xPos, _yPos, _zPos);
-            } while (SpaceOperations.CheckIfTwoObjectsClose(_enemyPos, _player.transform.position, _maxRangeToPlayer));
+            } while (SpaceOperations.CheckIfTwoObjectsClose(_enemyPos, _target.transform.position, _maxRangeToPlayer));
 
 
             var enemy = Instantiate(_enemyPrefab, _enemyPos, Quaternion.identity);
             enemy.GetComponent<Enemy>().Death += ReduceEnemyCount;
+            enemy.GetComponent<Enemy>().SetTarget(_target);
+
             _enemies.Add(enemy.GetComponent<Enemy>());
         }
     }

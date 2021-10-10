@@ -1,15 +1,17 @@
 ﻿using UnityEngine;
 
 
-namespace Assets.BackToSchool.Scripts.Player
+namespace Assets.BackToSchool.Scripts.GameManagement
 {
     public class CameraFollow : MonoBehaviour
     {
-        [SerializeField] private Transform _target;
         [SerializeField] private Vector3 _offset;
         [SerializeField] private float _smoothSpeed = 0.125f;
 
+        private Transform _target;
         private Vector3 _velocity = Vector3.zero;
+
+        public void SetTarget(Transform target) => _target = target;
 
         private void FixedUpdate()
         {

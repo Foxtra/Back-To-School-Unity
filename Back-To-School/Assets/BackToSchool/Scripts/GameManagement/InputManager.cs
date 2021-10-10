@@ -6,6 +6,14 @@ namespace Assets.BackToSchool.Scripts.GameManagement
 {
     public class InputManager : MonoBehaviour
     {
+        [SerializeField] private LayerMask _layerMask;
+        [SerializeField] private float _rayCastLenght = 100f;
+
+        private Camera _camera;
+        private Vector3 _direction = Vector3.zero;
+        private RaycastHit _previousHit;
+        private RaycastHit _hit;
+        private Ray _ray;
         public event Action<Vector3> Moved;
         public event Action<RaycastHit> Rotated;
         public event Action Stopped;
@@ -13,14 +21,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         public event Action Reloaded;
         public event Action Canceled;
 
-        [SerializeField] private Camera _camera;
-        [SerializeField] private LayerMask _layerMask;
-        [SerializeField] private float _rayCastLenght = 100f;
-
-        private Vector3 _direction = Vector3.zero;
-        private RaycastHit _previousHit;
-        private RaycastHit _hit;
-        private Ray _ray;
+        public void SetCamera(Camera camera) => _camera = camera;
 
         private void Update()
         {
@@ -33,26 +34,17 @@ namespace Assets.BackToSchool.Scripts.GameManagement
 
         private void CheckCancel()
         {
-            if (Input.GetButtonDown("Cancel"))
-            {
-                Canceled?.Invoke();
-            }
+            if (Input.GetButtonDown("Cancel")) Canceled?.Invoke();
         }
 
         private void CheckReload()
         {
-            if (Input.GetButtonDown("Reload"))
-            {
-                Reloaded?.Invoke();
-            }
+            if (Input.GetButtonDown("Reload")) Reloaded?.Invoke();
         }
 
         private void CheckFire()
         {
-            if (Input.GetButtonDown("Fire1"))
-            {
-                Fired?.Invoke();
-            }
+            if (Input.GetButtonDown("Fire1")) Fired?.Invoke();
         }
 
         private void CheckRay()
@@ -71,14 +63,8 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             _direction.x = Input.GetAxisRaw("Horizontal");
             _direction.z = Input.GetAxisRaw("Vertical");
 
-            if (_direction != Vector3.zero)
-            {
-                Moved?.Invoke(_direction);
-            }
-            else
-            {
-                Stopped?.Invoke();
-            }
+            if (_direction != Vector3.zero) { Moved?.Invoke(_direction); }
+            else { Stopped?.Invoke(); }
         }
     }
 }

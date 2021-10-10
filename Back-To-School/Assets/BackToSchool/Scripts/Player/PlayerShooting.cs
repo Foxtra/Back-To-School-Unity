@@ -1,12 +1,13 @@
 using System;
 using Assets.BackToSchool.Scripts.Constants;
+using Assets.BackToSchool.Scripts.Interfaces;
 using Assets.BackToSchool.Scripts.Weapon;
 using UnityEngine;
 
 
 namespace Assets.BackToSchool.Scripts.Player
 {
-    public class PlayerShooting : MonoBehaviour
+    public class PlayerShooting : MonoBehaviour, IShotable
     {
         public event Action<int, int> AmmoChanged;
 

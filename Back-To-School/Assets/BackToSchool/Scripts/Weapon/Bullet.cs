@@ -1,4 +1,4 @@
-using Assets.BackToSchool.Scripts.Enemies;
+using Assets.BackToSchool.Scripts.Interfaces;
 using UnityEngine;
 
 
@@ -9,6 +9,10 @@ namespace Assets.BackToSchool.Scripts.Weapon
         [SerializeField] private float _lifeTime = 4f;
 
         private Rigidbody _rigidbody;
+
+        private int _bulletDamage;
+
+        public void SetDamage(int damage) { _bulletDamage = damage; }
 
         public void Launch(float force)
         {
@@ -21,10 +25,10 @@ namespace Assets.BackToSchool.Scripts.Weapon
 
         public void OnTriggerEnter(Collider collider)
         {
-            var enemy = collider.GetComponent<Enemy>();
+            var enemy = collider.GetComponent<IDamageable>();
             if (enemy != null)
             {
-                enemy.GetDamage();
+                enemy.TakeDamage(_bulletDamage);
                 Destroy(gameObject);
             }
         }

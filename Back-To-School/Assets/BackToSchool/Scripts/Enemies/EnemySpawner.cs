@@ -7,7 +7,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
 {
     public class EnemySpawner : MonoBehaviour
     {
-        [SerializeField] private GameObject _enemyPrefab;
+        [SerializeField] private Enemy _enemyPrefab;
 
         [SerializeField] private float _minXpos = -49f;
         [SerializeField] private float _maxXpos = 49f;
@@ -19,7 +19,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
         [SerializeField] private int _maxEnemies = 10;
 
         private List<Enemy> _enemies = new List<Enemy>();
-        private GameObject _player;
+        private GameObject _target;
         private Vector3 _enemyPos = Vector3.zero;
 
         private float _xPos;
@@ -28,20 +28,18 @@ namespace Assets.BackToSchool.Scripts.Enemies
         private float _timer;
         private int _currentNumberOfEnemies;
 
-        private void ReduceEnemyCount(Enemy sender, EnemyArgs _args)
+        public void SetTarget(GameObject target)
         {
-            if (_args.NewHealthValue == 0)
-            {
-                _currentNumberOfEnemies--;
-                var enemyIndex = _enemies.FindIndex(e => e.Equals(sender));
-                _enemies[enemyIndex].OnHealthChanged -= ReduceEnemyCount;
-                _enemies.Remove(sender);
-            }
+            _target = target;
+            foreach (var enemy in _enemies) { enemy.GetComponent<Enemy>().SetTarget(_target); }
         }
 
-        private void Start()
+        private void ReduceEnemyCount(Enemy sender)
         {
-            _player = GameObject.FindGameObjectWithTag("Player");
+            _currentNumberOfEnemies--;
+            var enemyIndex = _enemies.FindIndex(e => e.Equals(sender));
+            _enemies[enemyIndex].Died -= ReduceEnemyCount;
+            _enemies.Remove(sender);
         }
 
         private void Update()
@@ -49,7 +47,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
             _timer += Time.deltaTime;
             if (_currentNumberOfEnemies < _maxEnemies)
             {
-                if (_timer > _spawnInterval)
+                if (_timer > _spawnInterval && _target)
                 {
                     _currentNumberOfEnemies++;
                     SpawnEnemy();
@@ -66,11 +64,13 @@ namespace Assets.BackToSchool.Scripts.Enemies
                 _zPos = Random.Range(_minZpos, _maxZpos);
 
                 _enemyPos = new Vector3(_xPos, _yPos, _zPos);
-            } while (SpaceOperations.CheckIfTwoObjectsClose(_enemyPos, _player.transform.position, _maxRangeToPlayer));
+            } while (SpaceOperations.CheckIfTwoObjectsClose(_enemyPos, _target.transform.position, _maxRangeToPlayer));
 
 
             var enemy = Instantiate(_enemyPrefab, _enemyPos, Quaternion.identity);
-            enemy.GetComponent<Enemy>().OnHealthChanged += ReduceEnemyCount;
+            enemy.Died += ReduceEnemyCount;
+            enemy.SetTarget(_target);
+
             _enemies.Add(enemy.GetComponent<Enemy>());
         }
     }

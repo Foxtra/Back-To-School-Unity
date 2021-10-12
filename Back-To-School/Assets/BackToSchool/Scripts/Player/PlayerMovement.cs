@@ -20,11 +20,11 @@ namespace Assets.BackToSchool.Scripts.Player
 
         public void Stop() => _animator.SetBool(AnimationStates.IsMoving, false);
 
-        public void Rotate(RaycastHit rayCastHit)
+        public void Rotate(Vector3 pointToRotate)
         {
-            var targetPosition = new Vector3(rayCastHit.point.x,
+            var targetPosition = new Vector3(pointToRotate.x,
                 transform.position.y,
-                rayCastHit.point.z);
+                pointToRotate.z);
             transform.LookAt(targetPosition);
         }
 

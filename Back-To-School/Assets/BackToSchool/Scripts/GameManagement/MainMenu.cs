@@ -1,30 +1,23 @@
 ﻿using Assets.BackToSchool.Scripts.Constants;
+using Assets.BackToSchool.Scripts.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 
 namespace Assets.BackToSchool.Scripts.GameManagement
 {
     public class MainMenu : MonoBehaviour
     {
-        [SerializeField] private Button _startGameButton;
-        [SerializeField] private Button _exitGameButton;
+        [SerializeField] private MainMenuPresenter _mainMenuPresenter;
 
-        private void Start()
+        private void Awake()
         {
-            _startGameButton.onClick.AddListener(StartGame);
-            _exitGameButton.onClick.AddListener(ExitGame);
+            _mainMenuPresenter.Exiting  += ExitGame;
+            _mainMenuPresenter.Starting += StartGame;
         }
 
-        private void ExitGame()
-        {
-            Application.Quit();
-        }
+        private void ExitGame() { Application.Quit(); }
 
-        private void StartGame()
-        {
-            SceneManager.LoadScene(SceneNames.MainScene);
-        }
+        private void StartGame() { SceneManager.LoadScene(SceneNames.MainScene); }
     }
 }

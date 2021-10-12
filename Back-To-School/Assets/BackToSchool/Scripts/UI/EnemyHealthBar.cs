@@ -10,25 +10,16 @@ namespace Assets.BackToSchool.Scripts.UI
         private Slider _slider;
         private Enemy _enemy;
 
-        private void Awake()
-        {
-            _slider = GetComponent<Slider>();
-        }
+        private void Awake() { _slider = GetComponent<Slider>(); }
 
         private void Start()
         {
-            _enemy = GetComponentInParent<Enemy>();
+            _enemy               =  GetComponentInParent<Enemy>();
             _enemy.HealthChanged += OnHealthChanged;
         }
 
-        private void OnHealthChanged(int currentHealth, int maxHealth, int damage)
-        {
-            UpdateHealthBar((float) currentHealth / maxHealth);
-        }
+        private void OnHealthChanged(int currentHealth, int maxHealth) => UpdateHealthBar((float)currentHealth / maxHealth);
 
-        private void UpdateHealthBar(float newValue)
-        {
-            _slider.value = newValue;
-        }
+        private void UpdateHealthBar(float newValue) => _slider.value = newValue;
     }
 }

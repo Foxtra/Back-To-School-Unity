@@ -7,6 +7,6 @@ namespace Assets.BackToSchool.Scripts.Interfaces
     {
         void Move(Vector3 direction);
         void Stop();
-        void Rotate(RaycastHit rayCastHit);
+        void Rotate(Vector3 pointToRotate);
     }
 }

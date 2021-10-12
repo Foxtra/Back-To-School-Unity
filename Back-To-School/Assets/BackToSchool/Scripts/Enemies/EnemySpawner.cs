@@ -7,7 +7,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
 {
     public class EnemySpawner : MonoBehaviour
     {
-        [SerializeField] private GameObject _enemyPrefab;
+        [SerializeField] private Enemy _enemyPrefab;
 
         [SerializeField] private float _minXpos = -49f;
         [SerializeField] private float _maxXpos = 49f;
@@ -38,7 +38,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
         {
             _currentNumberOfEnemies--;
             var enemyIndex = _enemies.FindIndex(e => e.Equals(sender));
-            _enemies[enemyIndex].Death -= ReduceEnemyCount;
+            _enemies[enemyIndex].Died -= ReduceEnemyCount;
             _enemies.Remove(sender);
         }
 
@@ -68,8 +68,8 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
 
             var enemy = Instantiate(_enemyPrefab, _enemyPos, Quaternion.identity);
-            enemy.GetComponent<Enemy>().Death += ReduceEnemyCount;
-            enemy.GetComponent<Enemy>().SetTarget(_target);
+            enemy.Died += ReduceEnemyCount;
+            enemy.SetTarget(_target);
 
             _enemies.Add(enemy.GetComponent<Enemy>());
         }

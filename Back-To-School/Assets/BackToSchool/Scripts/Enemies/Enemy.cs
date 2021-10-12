@@ -1,7 +1,6 @@
 using System;
 using Assets.BackToSchool.Scripts.Constants;
 using Assets.BackToSchool.Scripts.Interfaces;
-using Assets.BackToSchool.Scripts.Player;
 using Assets.BackToSchool.Scripts.Utils;
 using UnityEngine;
 
@@ -10,8 +9,8 @@ namespace Assets.BackToSchool.Scripts.Enemies
 {
     public class Enemy : MonoBehaviour, IDamageable
     {
-        public event Action<int, int, int> HealthChanged;
-        public event Action<Enemy> Death;
+        public event Action<int, int> HealthChanged;
+        public event Action<Enemy> Died;
 
         [SerializeField] private float _speed = 5f;
         [SerializeField] private float _stopDistance = 1f;
@@ -21,7 +20,6 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
         private GameObject _target;
         private Animator _animator;
-        private PlayerInteracting _playerInteracting;
 
         private float _damageTime = 1.2f;
         private float _deathTime = 1.5f;
@@ -34,7 +32,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
         public void TakeDamage(int damage)
         {
             _currentHealth -= damage;
-            HealthChanged?.Invoke(_currentHealth, _maxHealth, damage);
+            HealthChanged?.Invoke(_currentHealth, _maxHealth);
             _isBusy = true;
 
             if (_currentHealth == 0 && !_isDead)
@@ -48,11 +46,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
             else { Invoke(nameof(EnableEnemy), _damageTime); }
         }
 
-        public void SetTarget(GameObject target)
-        {
-            _target = target;
-            if (target) _playerInteracting = _target.GetComponent<PlayerInteracting>();
-        }
+        public void SetTarget(GameObject target) => _target = target;
 
         private void Awake()
         {
@@ -89,7 +83,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
         private void Attack()
         {
             _animator.SetTrigger(AnimationStates.Attack);
-            _playerInteracting.TakeDamage(_enemyDamage);
+            _target.GetComponent<IDamageable>().TakeDamage(_enemyDamage);
         }
 
         private void EnableEnemy()
@@ -100,7 +94,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
         private void EnemyDeath()
         {
             Destroy(gameObject, _deathTime);
-            Death?.Invoke(this);
+            Died?.Invoke(this);
         }
     }
 }

@@ -9,7 +9,9 @@ namespace Assets.BackToSchool.Scripts.GameManagement
 {
     public class GameManager : MonoBehaviour
     {
-        [SerializeField] private Presenter _presenter;
+        [SerializeField] private HUDPresenter _hudPresenter;
+        [SerializeField] private GameOverPresenter _gameOverPresenter;
+        [SerializeField] private PausePresenter _pausePresenter;
 
         [SerializeField] private GameObject _playerPrefab;
         [SerializeField] private GameObject _inputManagerPrefab;
@@ -35,17 +37,18 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             CreateGameInstances();
 
             //Presenter
-            _presenter.Restarted += RestartGame;
-            _presenter.Continued += ContinueGame;
+            _gameOverPresenter.Restarted += RestartGame;
+            _pausePresenter.Restarted    += RestartGame;
+            _pausePresenter.Continued    += ContinueGame;
             //Presenter
 
             //Player class
             _playerInteracting               =  _player.GetComponent<PlayerInteracting>();
             _playerMovement                  =  _player.GetComponent<PlayerMovement>();
             _playerShooting                  =  _player.GetComponent<PlayerShooting>();
-            _playerShooting.AmmoChanged      += _presenter.OnAmmoChanged;
-            _playerInteracting.Death         += OnPlayerDeath;
-            _playerInteracting.HealthChanged += _presenter.OnHealthChanged;
+            _playerShooting.AmmoChanged      += _hudPresenter.OnAmmoChanged;
+            _playerInteracting.Died          += OnPlayerDeath;
+            _playerInteracting.HealthChanged += _hudPresenter.OnHealthChanged;
             //Player class
 
             //InputManager
@@ -80,11 +83,11 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             if (!(_isPlayerDead || _isGamePaused)) _playerShooting.Fire();
         }
 
-        private void OnPlayerStop() { _playerMovement.Stop(); }
+        private void OnPlayerStop() => _playerMovement.Stop();
 
-        private void OnPlayerRotate(RaycastHit rayCastHit)
+        private void OnPlayerRotate(Vector3 pointToRotate)
         {
-            if (!(_isPlayerDead || _isGamePaused)) _playerMovement.Rotate(rayCastHit);
+            if (!(_isPlayerDead || _isGamePaused)) _playerMovement.Rotate(pointToRotate);
         }
 
         private void OnPlayerMove(Vector3 direction)
@@ -107,23 +110,25 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         {
             Time.timeScale = 0f;
             _isGamePaused  = true;
-            _presenter.SwitchPausePanel(_isGamePaused);
+            _pausePresenter.TogglePausePanel(_isGamePaused);
         }
 
         private void OnGameStopped()
         {
-            if (_isGamePaused) { ContinueGame(); }
-            else { StopGame(); }
+            if (_isGamePaused)
+                ContinueGame();
+            else
+                StopGame();
         }
 
         private void ContinueGame()
         {
             Time.timeScale = 1f;
             _isGamePaused  = false;
-            _presenter.SwitchPausePanel(_isGamePaused);
+            _pausePresenter.TogglePausePanel(_isGamePaused);
         }
 
-        private void EndGame() { _presenter.ShowGameOverPanel(); }
+        private void EndGame() { _gameOverPresenter.ShowGameOverPanel(); }
 
         private void RestartGame()
         {

@@ -43,7 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3483b94e29542944cb2fe6bd630ea391, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _enemyPrefab: {fileID: 100050, guid: aad05534a7ba0dd49b8c54ce188308ec, type: 3}
+  _enemyPrefab: {fileID: 5805227456806100385, guid: aad05534a7ba0dd49b8c54ce188308ec, type: 3}
   _minXpos: -49
   _maxXpos: 49
   _minZpos: -49

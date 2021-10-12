@@ -1356,6 +1356,7 @@ GameObject:
   - component: {fileID: 687219877034871548}
   - component: {fileID: 687219876648269457}
   - component: {fileID: 687219876648269456}
+  - component: {fileID: 2139842896049318664}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1464,6 +1465,7 @@ MonoBehaviour:
   _reloadTime: 2
   _bulletForce: 20
   _maxAmmo: 10
+  _playerDamage: 1
 --- !u!114 &687219876648269456
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1478,6 +1480,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxHealth: 5
   _damageTime: 0.1
+  _delayBeforeDamage: 0.5
+--- !u!114 &2139842896049318664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7202607282731717208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26801464513c72d43b8862c320b9d0e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _weaponEffect: {fileID: 7269483416405931881}
 --- !u!1 &7202607282731717210
 GameObject:
   m_ObjectHideFlags: 0
@@ -2834,6 +2850,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f5d6d6071d410874e9523a98ea6338eb, type: 3}
+--- !u!1 &7269483416405931881 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7884424645119271418, guid: f5d6d6071d410874e9523a98ea6338eb, type: 3}
+  m_PrefabInstance: {fileID: 687219876441134739}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &191473614634267885 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 801991387049239166, guid: f5d6d6071d410874e9523a98ea6338eb, type: 3}

@@ -6,6 +6,12 @@ namespace Assets.BackToSchool.Scripts.GameManagement
 {
     public class InputManager : MonoBehaviour
     {
+        public event Action<Vector3> Moved;
+        public event Action<Vector3> Rotated;
+        public event Action Stopped;
+        public event Action Fired;
+        public event Action Reloaded;
+        public event Action Canceled;
         [SerializeField] private LayerMask _layerMask;
         [SerializeField] private float _rayCastLenght = 100f;
 
@@ -14,19 +20,13 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         private RaycastHit _previousHit;
         private RaycastHit _hit;
         private Ray _ray;
-        public event Action<Vector3> Moved;
-        public event Action<RaycastHit> Rotated;
-        public event Action Stopped;
-        public event Action Fired;
-        public event Action Reloaded;
-        public event Action Canceled;
 
         public void SetCamera(Camera camera) => _camera = camera;
 
         private void Update()
         {
             CheckDirection();
-            CheckRay();
+            CheckRotation();
             CheckFire();
             CheckReload();
             CheckCancel();
@@ -47,7 +47,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             if (Input.GetButtonDown("Fire1")) Fired?.Invoke();
         }
 
-        private void CheckRay()
+        private void CheckRotation()
         {
             _ray = _camera.ScreenPointToRay(Input.mousePosition);
 
@@ -55,7 +55,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             if (_previousHit.Equals(_hit)) return;
 
             _previousHit = _hit;
-            Rotated?.Invoke(_hit);
+            Rotated?.Invoke(_hit.point);
         }
 
         private void CheckDirection()
@@ -63,8 +63,10 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             _direction.x = Input.GetAxisRaw("Horizontal");
             _direction.z = Input.GetAxisRaw("Vertical");
 
-            if (_direction != Vector3.zero) { Moved?.Invoke(_direction); }
-            else { Stopped?.Invoke(); }
+            if (_direction != Vector3.zero)
+                Moved?.Invoke(_direction);
+            else
+                Stopped?.Invoke();
         }
     }
 }

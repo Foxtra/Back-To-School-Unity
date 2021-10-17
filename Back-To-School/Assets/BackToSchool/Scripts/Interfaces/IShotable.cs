@@ -1,7 +1,8 @@
 namespace Assets.BackToSchool.Scripts.Interfaces
 {
-    public interface IShotable
+    public interface IShootable
     {
         void Fire();
+        void Reload();
     }
 }

@@ -18,7 +18,7 @@ namespace Assets.BackToSchool.Scripts.UI
             _enemy.HealthChanged += OnHealthChanged;
         }
 
-        private void OnHealthChanged(int currentHealth, int maxHealth) => UpdateHealthBar((float)currentHealth / maxHealth);
+        private void OnHealthChanged(float currentHealth, int maxHealth) => UpdateHealthBar(currentHealth / maxHealth);
 
         private void UpdateHealthBar(float newValue) => _slider.value = newValue;
     }

@@ -1,5 +1,4 @@
 ﻿using Assets.BackToSchool.Scripts.Enemies;
-using Assets.BackToSchool.Scripts.Player;
 using Assets.BackToSchool.Scripts.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -18,15 +17,10 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         [SerializeField] private GameObject _enemySpawnerPrefab;
         [SerializeField] private Camera _mainCamera;
 
-        //Player class
-        private GameObject _player;
-        private PlayerInteracting _playerInteracting;
-        private PlayerMovement _playerMovement;
-        private PlayerShooting _playerShooting;
-        //Player class
-
+        private GameObject _playerObject;
         private EnemySpawner _enemySpawner;
         private InputManager _inputManager;
+        private Player.Player _player;
 
         private float _gameOverDelay = 1f;
         private bool _isGamePaused;
@@ -36,63 +30,55 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         {
             CreateGameInstances();
 
-            //Presenter
             _gameOverPresenter.Restarted += RestartGame;
             _pausePresenter.Restarted    += RestartGame;
             _pausePresenter.Continued    += ContinueGame;
-            //Presenter
 
-            //Player class
-            _playerInteracting               =  _player.GetComponent<PlayerInteracting>();
-            _playerMovement                  =  _player.GetComponent<PlayerMovement>();
-            _playerShooting                  =  _player.GetComponent<PlayerShooting>();
-            _playerShooting.AmmoChanged      += _hudPresenter.OnAmmoChanged;
-            _playerInteracting.Died          += OnPlayerDeath;
-            _playerInteracting.HealthChanged += _hudPresenter.OnHealthChanged;
-            //Player class
+            _player               =  _playerObject.GetComponent<Player.Player>();
+            _player.AmmoChanged   += _hudPresenter.OnAmmoChanged;
+            _player.Died          += OnPlayerDeath;
+            _player.HealthChanged += _hudPresenter.OnHealthChanged;
 
-            //InputManager
             _inputManager.Moved    += OnPlayerMove;
             _inputManager.Rotated  += OnPlayerRotate;
             _inputManager.Stopped  += OnPlayerStop;
             _inputManager.Fired    += OnPlayerFire;
             _inputManager.Reloaded += OnPlayerReloaded;
             _inputManager.Canceled += OnGameStopped;
-            //InputManager
         }
 
         private void CreateGameInstances()
         {
-            _player = Instantiate(_playerPrefab, transform.position, Quaternion.identity);
-            _mainCamera.GetComponent<CameraFollow>().SetTarget(_player.transform);
+            _playerObject = Instantiate(_playerPrefab, transform.position, Quaternion.identity);
+            _mainCamera.GetComponent<CameraFollow>().SetTarget(_playerObject.transform);
             _inputManager = Instantiate(_inputManagerPrefab, transform.position, Quaternion.identity).GetComponent<InputManager>();
             _inputManager.SetCamera(_mainCamera);
             _enemySpawner = Instantiate(_enemySpawnerPrefab, transform.position, Quaternion.identity).GetComponent<EnemySpawner>();
-            _enemySpawner.SetTarget(_player);
+            _enemySpawner.SetTarget(_playerObject);
         }
 
         #region PlayerHandlers
 
         private void OnPlayerReloaded()
         {
-            if (!(_isPlayerDead || _isGamePaused)) _playerShooting.Reload();
+            if (!(_isPlayerDead || _isGamePaused)) _player.Reload();
         }
 
         private void OnPlayerFire()
         {
-            if (!(_isPlayerDead || _isGamePaused)) _playerShooting.Fire();
+            if (!(_isPlayerDead || _isGamePaused)) _player.Fire();
         }
 
-        private void OnPlayerStop() => _playerMovement.Stop();
+        private void OnPlayerStop() => _player.Stop();
 
         private void OnPlayerRotate(Vector3 pointToRotate)
         {
-            if (!(_isPlayerDead || _isGamePaused)) _playerMovement.Rotate(pointToRotate);
+            if (!(_isPlayerDead || _isGamePaused)) _player.Rotate(pointToRotate);
         }
 
         private void OnPlayerMove(Vector3 direction)
         {
-            if (!(_isPlayerDead || _isGamePaused)) _playerMovement.Move(direction);
+            if (!(_isPlayerDead || _isGamePaused)) _player.Move(direction);
         }
 
         private void OnPlayerDeath()

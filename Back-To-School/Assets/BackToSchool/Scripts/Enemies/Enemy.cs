@@ -9,7 +9,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
 {
     public class Enemy : MonoBehaviour, IDamageable
     {
-        public event Action<int, int> HealthChanged;
+        public event Action<float, int> HealthChanged;
         public event Action<Enemy> Died;
 
         [SerializeField] private float _speed = 5f;
@@ -24,12 +24,12 @@ namespace Assets.BackToSchool.Scripts.Enemies
         private float _damageTime = 1.2f;
         private float _deathTime = 1.5f;
         private float _timer;
-        private int _currentHealth;
+        private float _currentHealth;
 
         private bool _isBusy;
         private bool _isDead;
 
-        public void TakeDamage(int damage)
+        public void TakeDamage(float damage)
         {
             _currentHealth -= damage;
             HealthChanged?.Invoke(_currentHealth, _maxHealth);
@@ -42,8 +42,10 @@ namespace Assets.BackToSchool.Scripts.Enemies
             }
             else if (_currentHealth > 0) _animator.SetTrigger(AnimationStates.GetDamage);
 
-            if (_currentHealth == 0 && _isDead) { EnemyDeath(); }
-            else { Invoke(nameof(EnableEnemy), _damageTime); }
+            if (_currentHealth == 0 && _isDead)
+                EnemyDeath();
+            else
+                Invoke(nameof(EnableEnemy), _damageTime);
         }
 
         public void SetTarget(GameObject target) => _target = target;
@@ -77,7 +79,8 @@ namespace Assets.BackToSchool.Scripts.Enemies
                     }
                 }
             }
-            else { _animator.SetBool(AnimationStates.IsMoving, false); }
+            else
+                _animator.SetBool(AnimationStates.IsMoving, false);
         }
 
         private void Attack()

@@ -175,6 +175,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _ammoText: {fileID: 466059005}
   _heathBar: {fileID: 1174978669}
+  _delayBeforeDamage: 0.5
 --- !u!1 &173128630
 GameObject:
   m_ObjectHideFlags: 0
@@ -408,7 +409,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 10 / 10
+  m_Text: 0 / 0
 --- !u!222 &466059006
 CanvasRenderer:
   m_ObjectHideFlags: 0

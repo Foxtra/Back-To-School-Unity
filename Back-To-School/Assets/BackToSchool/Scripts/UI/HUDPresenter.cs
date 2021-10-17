@@ -13,9 +13,9 @@ namespace Assets.BackToSchool.Scripts.UI
 
         private float sliderValue;
 
-        public void OnHealthChanged(int currentHealth, int maxHealth)
+        public void OnHealthChanged(float currentHealth, int maxHealth)
         {
-            sliderValue = (float)currentHealth / maxHealth;
+            sliderValue = currentHealth / maxHealth;
             Invoke(nameof(UpdateHealthBar), _delayBeforeDamage);
         }
 

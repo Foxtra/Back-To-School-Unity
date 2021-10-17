@@ -10,9 +10,9 @@ namespace Assets.BackToSchool.Scripts.Weapon
 
         private Rigidbody _rigidbody;
 
-        private int _bulletDamage;
+        private float _bulletDamage;
 
-        public void SetDamage(int damage) { _bulletDamage = damage; }
+        public void SetDamage(float damage) { _bulletDamage = damage; }
 
         public void Launch(float force)
         {

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 
-namespace Assets.BackToSchool.Scripts.WeaponEffects
+namespace Assets.BackToSchool.Scripts.Weapon
 {
     public class WeaponType : MonoBehaviour
     {

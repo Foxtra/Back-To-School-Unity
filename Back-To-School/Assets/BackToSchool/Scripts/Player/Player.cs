@@ -15,18 +15,11 @@ namespace Assets.BackToSchool.Scripts.Player
         public event Action<float, int> HealthChanged;
         public event Action Died;
 
-        public CharacterStats CharacterStats;
+        public PlayerStats PlayerStats;
         public LevelSystem LevelSystem;
 
         [SerializeField] private Bullet _bulletPrefab;
         [SerializeField] private GameObject _shootingPosition;
-
-        //TODO from stats
-        [SerializeField] private float _reloadTime = 2.0f;
-        [SerializeField] private float _bulletForce = 20.0f;
-        [SerializeField] private int _maxAmmo = 10;
-        [SerializeField] private float _playerDamage = 1f;
-        [SerializeField] private int _maxHealth = 5;
         [SerializeField] private float _damageTime = 0.1f;
         [SerializeField] private float _delayBeforeDamage = 0.5f;
 
@@ -37,7 +30,6 @@ namespace Assets.BackToSchool.Scripts.Player
         private WeaponType _weaponType;
 
         private int _currentAmmo;
-        private float _moveSpeed;
         private float _currentHealth;
         private bool _isDead;
         private bool _isReloading;
@@ -52,22 +44,23 @@ namespace Assets.BackToSchool.Scripts.Player
 
         private void Start()
         {
-            CharacterStats = new CharacterStats();
-            LevelSystem    = new LevelSystem();
+            _currentAmmo = PlayerStats.MaxAmmo.GetValue();
+            AmmoChanged?.Invoke(_currentAmmo, PlayerStats.MaxAmmo.GetValue());
 
-            _currentAmmo = _maxAmmo; //TODO from stats
-            AmmoChanged?.Invoke(_currentAmmo, _maxAmmo);
-            _moveSpeed     =  5f;
-            _currentHealth =  _maxHealth;
-            Died           += _weaponType.OnPlayerDeath;
+            _currentHealth = PlayerStats.MaxHealth.GetValue();
+            HealthChanged?.Invoke(_currentHealth, PlayerStats.MaxHealth.GetValue());
+
+            Died += _weaponType.OnPlayerDeath;
         }
 
         #region Interaction
 
         public void TakeDamage(float damage)
         {
+            damage         -= PlayerStats.Armor.GetValue();
+            damage         =  Mathf.Clamp(damage, 0, int.MaxValue);
             _currentHealth -= damage;
-            HealthChanged?.Invoke(_currentHealth, _maxHealth);
+            HealthChanged?.Invoke(_currentHealth, PlayerStats.MaxHealth.GetValue());
 
             if (_currentHealth == 0 && !_isDead)
             {
@@ -89,10 +82,7 @@ namespace Assets.BackToSchool.Scripts.Player
 
         private void ChangeColor(Color color)
         {
-            foreach (var renderer in _renderers)
-            {
-                renderer.material.color = color;
-            }
+            foreach (var renderer in _renderers) { renderer.material.color = color; }
         }
 
         #endregion
@@ -106,25 +96,25 @@ namespace Assets.BackToSchool.Scripts.Player
                 _bullet                    = Instantiate(_bulletPrefab);
                 _bullet.transform.position = _shootingPosition.transform.position;
                 _bullet.transform.rotation = _shootingPosition.transform.rotation;
-                _bullet.SetDamage(_playerDamage); //TODO from stats
-                _bullet.Launch(_bulletForce);
+                _bullet.SetDamage(PlayerStats.Damage.GetValue());
+                _bullet.Launch(_weaponType.BulletForce);
                 _currentAmmo--;
-                AmmoChanged?.Invoke(_currentAmmo, _maxAmmo);
+                AmmoChanged?.Invoke(_currentAmmo, PlayerStats.MaxAmmo.GetValue());
             }
         }
 
         public void Reload()
         {
             _isReloading = true;
-            _currentAmmo = _maxAmmo;
+            _currentAmmo = PlayerStats.MaxAmmo.GetValue();
             _animator.SetTrigger(AnimationStates.Reload);
-            Invoke(nameof(ReloadComplete), _reloadTime);
+            Invoke(nameof(ReloadComplete), _weaponType.ReloadTime);
         }
 
         private void ReloadComplete()
         {
             _isReloading = false;
-            AmmoChanged?.Invoke(_currentAmmo, _maxAmmo);
+            AmmoChanged?.Invoke(_currentAmmo, PlayerStats.MaxAmmo.GetValue());
         }
 
         #endregion
@@ -134,12 +124,10 @@ namespace Assets.BackToSchool.Scripts.Player
         public void Move(Vector3 direction)
         {
             _animator.SetBool(AnimationStates.IsMoving, true);
-            _rigidBody.MovePosition(transform.position + direction * _moveSpeed * Time.fixedDeltaTime);
+            _rigidBody.MovePosition(transform.position + direction * PlayerStats.MoveSpeed.GetValue() * Time.fixedDeltaTime);
         }
 
         public void Stop() => _animator.SetBool(AnimationStates.IsMoving, false);
-
-        public void SetMoveSpeed(float moveSpeed) => _moveSpeed = moveSpeed;
 
         public void Rotate(Vector3 pointToRotate)
         {

@@ -1,6 +1,7 @@
 using System;
 using Assets.BackToSchool.Scripts.Constants;
 using Assets.BackToSchool.Scripts.Interfaces;
+using Assets.BackToSchool.Scripts.Stats;
 using Assets.BackToSchool.Scripts.Utils;
 using UnityEngine;
 
@@ -12,11 +13,13 @@ namespace Assets.BackToSchool.Scripts.Enemies
         public event Action<float, int> HealthChanged;
         public event Action<Enemy> Died;
 
-        [SerializeField] private float _speed = 5f;
+        public CharacterStats EnemyStats;
+
+        [SerializeField] private float _speed;
         [SerializeField] private float _stopDistance = 1f;
         [SerializeField] private float _attackInterval = 2f;
-        [SerializeField] private int _maxHealth = 2;
-        [SerializeField] private int _enemyDamage = 1;
+        [SerializeField] private int _maxHealth;
+        [SerializeField] private int _enemyDamage;
 
         private GameObject _target;
         private Animator _animator;
@@ -50,10 +53,32 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
         public void SetTarget(GameObject target) => _target = target;
 
-        private void Awake()
+        private void Attack()
         {
-            _currentHealth = _maxHealth;
-            _animator      = GetComponent<Animator>();
+            _animator.SetTrigger(AnimationStates.Attack);
+            _target.GetComponent<IDamageable>().TakeDamage(_enemyDamage);
+        }
+
+        private void EnableEnemy()
+        {
+            if (!_isDead) _isBusy = false;
+        }
+
+        private void EnemyDeath()
+        {
+            Destroy(gameObject, _deathTime);
+            Died?.Invoke(this);
+        }
+
+        #region UnityMethods
+
+        private void Awake() => _animator = GetComponent<Animator>();
+
+        private void Start()
+        {
+            _currentHealth = EnemyStats.MaxHealth.GetValue();
+            _enemyDamage   = EnemyStats.Damage.GetValue();
+            _speed         = EnemyStats.MoveSpeed.GetValue();
         }
 
         private void FixedUpdate()
@@ -83,21 +108,6 @@ namespace Assets.BackToSchool.Scripts.Enemies
                 _animator.SetBool(AnimationStates.IsMoving, false);
         }
 
-        private void Attack()
-        {
-            _animator.SetTrigger(AnimationStates.Attack);
-            _target.GetComponent<IDamageable>().TakeDamage(_enemyDamage);
-        }
-
-        private void EnableEnemy()
-        {
-            if (!_isDead) _isBusy = false;
-        }
-
-        private void EnemyDeath()
-        {
-            Destroy(gameObject, _deathTime);
-            Died?.Invoke(this);
-        }
+        #endregion
     }
 }

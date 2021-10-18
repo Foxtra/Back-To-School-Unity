@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Assets.BackToSchool.Scripts.Stats;
 using Assets.BackToSchool.Scripts.Utils;
 using UnityEngine;
 
@@ -27,12 +28,19 @@ namespace Assets.BackToSchool.Scripts.Enemies
         private float _zPos;
         private float _timer;
         private int _currentNumberOfEnemies;
+        private int _enemyDamage = 1;
+        private int _enemyMaxHealth = 2;
+        private int _enemyMoveSpeed = 2;
 
         public void SetTarget(GameObject target)
         {
             _target = target;
             foreach (var enemy in _enemies) { enemy.GetComponent<Enemy>().SetTarget(_target); }
         }
+
+        public void SetEnemyDamage(int enemyDamage)  => _enemyDamage = enemyDamage;
+        public void SetEnemyMaxHealth(int maxHeath)  => _enemyMaxHealth = maxHeath;
+        public void SetEnemyMoveSpeed(int moveSpeed) => _enemyMoveSpeed = moveSpeed;
 
         private void ReduceEnemyCount(Enemy sender)
         {
@@ -70,6 +78,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
             var enemy = Instantiate(_enemyPrefab, _enemyPos, Quaternion.identity);
             enemy.Died += ReduceEnemyCount;
             enemy.SetTarget(_target);
+            enemy.EnemyStats = new CharacterStats(_enemyDamage, _enemyMaxHealth, _enemyMoveSpeed);
 
             _enemies.Add(enemy.GetComponent<Enemy>());
         }

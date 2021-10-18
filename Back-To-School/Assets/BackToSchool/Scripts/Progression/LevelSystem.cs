@@ -6,9 +6,9 @@ namespace Assets.BackToSchool.Scripts.Progression
 {
     public class LevelSystem
     {
-        public event EventHandler OnExperienceChanged;
-
         private static readonly int[] experiencePerLevel = { 100, 120, 140, 160, 180, 200, 220, 250, 300, 400 };
+
+        public Action<float> OnExperienceChanged;
         public Action<int> OnLevelChanged;
 
         private int level;
@@ -32,7 +32,7 @@ namespace Assets.BackToSchool.Scripts.Progression
                     OnLevelChanged?.Invoke(level);
                 }
 
-                if (OnExperienceChanged != null) OnExperienceChanged(this, EventArgs.Empty);
+                OnExperienceChanged?.Invoke(GetExperienceNormalized());
             }
         }
 

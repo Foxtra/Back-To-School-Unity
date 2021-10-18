@@ -45,6 +45,9 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             _statsManager.MaxAmmoChanged       += _hudPresenter.OnMaxAmmoChanged;
             _statsManager.MaxHealthChanged     += _hudPresenter.OnMaxHealthChanged;
             _statsManager.OnLevelUp(0); //calls initial hud update
+            _player.LevelSystem.OnLevelChanged      += _hudPresenter.OnLevelChanged;
+            _player.LevelSystem.OnExperienceChanged += _hudPresenter.OnExpChanged;
+
 
             _inputManager.Moved    += OnPlayerMove;
             _inputManager.Rotated  += OnPlayerRotate;

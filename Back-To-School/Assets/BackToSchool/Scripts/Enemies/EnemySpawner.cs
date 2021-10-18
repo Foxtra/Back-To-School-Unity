@@ -21,7 +21,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
         [SerializeField] private float _spawnInterval = 1f;
         [SerializeField] private float _maxRangeToPlayer = 10f;
-        [SerializeField] private int _maxEnemies = 10;
+        [SerializeField] private int _maxEnemies = 3;
 
         private List<Enemy> _enemies = new List<Enemy>();
         private GameObject _target;
@@ -43,9 +43,10 @@ namespace Assets.BackToSchool.Scripts.Enemies
             foreach (var enemy in _enemies) { enemy.GetComponent<Enemy>().SetTarget(_target); }
         }
 
-        public void SetEnemyDamage(int enemyDamage)  => _enemyDamage = enemyDamage;
-        public void SetEnemyMaxHealth(int maxHeath)  => _enemyMaxHealth = maxHeath;
-        public void SetEnemyMoveSpeed(int moveSpeed) => _enemyMoveSpeed = moveSpeed;
+        public void SetMaxEnemies(int maxEnemiesNumber) => _maxEnemies = maxEnemiesNumber;
+        public void SetEnemyDamage(int enemyDamage)     => _enemyDamage = enemyDamage;
+        public void SetEnemyMaxHealth(int maxHeath)     => _enemyMaxHealth = maxHeath;
+        public void SetEnemyMoveSpeed(int moveSpeed)    => _enemyMoveSpeed = moveSpeed;
 
         private void ReduceEnemyCount(Enemy sender)
         {

@@ -11,18 +11,40 @@ namespace Assets.BackToSchool.Scripts.UI
 
         [SerializeField] private float _delayBeforeDamage = 0.5f;
 
-        private float sliderValue;
+        private float _sliderValue;
+        private float _currentHealth;
+        private int _maxHealth;
+        private int _ammoValue;
+        private int _maxAmmoValue;
 
-        public void OnHealthChanged(float currentHealth, int maxHealth)
+        public void OnHealthChanged(float newCurrentHealth)
         {
-            sliderValue = currentHealth / maxHealth;
+            _currentHealth = newCurrentHealth;
+            _sliderValue   = _currentHealth / _maxHealth;
             Invoke(nameof(UpdateHealthBar), _delayBeforeDamage);
         }
 
-        public void OnAmmoChanged(int newAmmoValue, int maxAmmoValue) => UpdateAmmoText(newAmmoValue, maxAmmoValue);
+        public void OnMaxHealthChanged(int newMaxHealth)
+        {
+            _maxHealth   = newMaxHealth;
+            _sliderValue = _currentHealth / _maxHealth;
+            UpdateHealthBar();
+        }
 
-        private void UpdateHealthBar() => _heathBar.value = sliderValue;
+        public void OnAmmoChanged(int newAmmoValue)
+        {
+            _ammoValue = newAmmoValue;
+            UpdateAmmoText();
+        }
 
-        private void UpdateAmmoText(int newAmmoValue, int maxAmmoValue) => _ammoText.text = $"{newAmmoValue} / {maxAmmoValue}";
+        public void OnMaxAmmoChanged(int newMaxAmmoValue)
+        {
+            _maxAmmoValue = newMaxAmmoValue;
+            UpdateAmmoText();
+        }
+
+        private void UpdateHealthBar() => _heathBar.value = _sliderValue;
+
+        private void UpdateAmmoText() => _ammoText.text = $"{_ammoValue} / {_maxAmmoValue}";
     }
 }

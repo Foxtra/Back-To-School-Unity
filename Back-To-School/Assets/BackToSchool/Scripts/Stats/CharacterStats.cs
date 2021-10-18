@@ -12,7 +12,5 @@
             MaxHealth = new Stat(maxHealth);
             MoveSpeed = new Stat(moveSpeed);
         }
-
-        public CharacterStats() : this(1, 10, 5) { }
     }
 }

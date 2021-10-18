@@ -2,14 +2,14 @@
 using UnityEngine;
 
 
-namespace Assets.BackToSchool.Scripts.Stats
+namespace Assets.BackToSchool.Scripts.Progression
 {
     public class LevelSystem
     {
         public event EventHandler OnExperienceChanged;
-        public event EventHandler OnLevelChanged;
 
         private static readonly int[] experiencePerLevel = { 100, 120, 140, 160, 180, 200, 220, 250, 300, 400 };
+        public Action<int> OnLevelChanged;
 
         private int level;
         private int experience;
@@ -27,10 +27,9 @@ namespace Assets.BackToSchool.Scripts.Stats
                 experience += amount;
                 while (!IsMaxLevel() && experience >= GetExperienceToNextLevel(level))
                 {
-                    // Enough experience to level up
                     experience -= GetExperienceToNextLevel(level);
                     level++;
-                    if (OnLevelChanged != null) OnLevelChanged(this, EventArgs.Empty);
+                    OnLevelChanged?.Invoke(level);
                 }
 
                 if (OnExperienceChanged != null) OnExperienceChanged(this, EventArgs.Empty);
@@ -52,7 +51,7 @@ namespace Assets.BackToSchool.Scripts.Stats
         {
             if (level < experiencePerLevel.Length)
                 return experiencePerLevel[level];
-            // Level Invalid
+
             Debug.LogError("Level invalid: " + level);
             return 100;
         }

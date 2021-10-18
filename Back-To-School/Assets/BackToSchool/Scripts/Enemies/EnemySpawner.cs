@@ -1,13 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Assets.BackToSchool.Scripts.Stats;
 using Assets.BackToSchool.Scripts.Utils;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 
 namespace Assets.BackToSchool.Scripts.Enemies
 {
     public class EnemySpawner : MonoBehaviour
     {
+        public Action<int> EnemyDied;
+
         [SerializeField] private Enemy _enemyPrefab;
 
         [SerializeField] private float _minXpos = -49f;
@@ -31,6 +35,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
         private int _enemyDamage = 1;
         private int _enemyMaxHealth = 2;
         private int _enemyMoveSpeed = 2;
+        private int _experienceForEnemy = 20;
 
         public void SetTarget(GameObject target)
         {
@@ -48,6 +53,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
             var enemyIndex = _enemies.FindIndex(e => e.Equals(sender));
             _enemies[enemyIndex].Died -= ReduceEnemyCount;
             _enemies.Remove(sender);
+            EnemyDied?.Invoke(_experienceForEnemy);
         }
 
         private void Update()

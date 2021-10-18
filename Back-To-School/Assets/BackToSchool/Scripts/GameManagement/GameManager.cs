@@ -1,4 +1,5 @@
 ﻿using Assets.BackToSchool.Scripts.Enemies;
+using Assets.BackToSchool.Scripts.Progression;
 using Assets.BackToSchool.Scripts.Stats;
 using Assets.BackToSchool.Scripts.UI;
 using UnityEngine;
@@ -22,6 +23,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         private EnemySpawner _enemySpawner;
         private InputManager _inputManager;
         private Player.Player _player;
+        private StatsManager _statsManager;
 
         private float _gameOverDelay = 1f;
         private bool _isGamePaused;
@@ -35,9 +37,14 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             _pausePresenter.Restarted    += RestartGame;
             _pausePresenter.Continued    += ContinueGame;
 
-            _player.AmmoChanged   += _hudPresenter.OnAmmoChanged;
-            _player.Died          += OnPlayerDeath;
-            _player.HealthChanged += _hudPresenter.OnHealthChanged;
+            _player.AmmoChanged                += _hudPresenter.OnAmmoChanged;
+            _player.Died                       += OnPlayerDeath;
+            _player.HealthChanged              += _hudPresenter.OnHealthChanged;
+            _enemySpawner.EnemyDied            += _player.LevelSystem.AddExperience;
+            _player.LevelSystem.OnLevelChanged += _statsManager.OnLevelUp;
+            _statsManager.MaxAmmoChanged       += _hudPresenter.OnMaxAmmoChanged;
+            _statsManager.MaxHealthChanged     += _hudPresenter.OnMaxHealthChanged;
+            _statsManager.OnLevelUp(0); //calls initial hud update
 
             _inputManager.Moved    += OnPlayerMove;
             _inputManager.Rotated  += OnPlayerRotate;
@@ -54,6 +61,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             _player.PlayerStats = new PlayerStats();
             _player.LevelSystem = new LevelSystem();
 
+            _statsManager = new StatsManager(_player);
             _mainCamera.GetComponent<CameraFollow>().SetTarget(_playerObject.transform);
             _inputManager = Instantiate(_inputManagerPrefab, transform.position, Quaternion.identity).GetComponent<InputManager>();
             _inputManager.SetCamera(_mainCamera);

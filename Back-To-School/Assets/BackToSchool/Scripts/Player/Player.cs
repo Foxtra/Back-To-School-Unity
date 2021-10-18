@@ -2,6 +2,7 @@
 using System.Collections;
 using Assets.BackToSchool.Scripts.Constants;
 using Assets.BackToSchool.Scripts.Interfaces;
+using Assets.BackToSchool.Scripts.Progression;
 using Assets.BackToSchool.Scripts.Stats;
 using Assets.BackToSchool.Scripts.Weapon;
 using UnityEngine;
@@ -11,8 +12,8 @@ namespace Assets.BackToSchool.Scripts.Player
 {
     public class Player : MonoBehaviour, IMovable, IShootable, IDamageable
     {
-        public event Action<int, int> AmmoChanged;
-        public event Action<float, int> HealthChanged;
+        public event Action<int> AmmoChanged;
+        public event Action<float> HealthChanged;
         public event Action Died;
 
         public PlayerStats PlayerStats;
@@ -45,10 +46,10 @@ namespace Assets.BackToSchool.Scripts.Player
         private void Start()
         {
             _currentAmmo = PlayerStats.MaxAmmo.GetValue();
-            AmmoChanged?.Invoke(_currentAmmo, PlayerStats.MaxAmmo.GetValue());
+            AmmoChanged?.Invoke(_currentAmmo);
 
             _currentHealth = PlayerStats.MaxHealth.GetValue();
-            HealthChanged?.Invoke(_currentHealth, PlayerStats.MaxHealth.GetValue());
+            HealthChanged?.Invoke(_currentHealth);
 
             Died += _weaponType.OnPlayerDeath;
         }
@@ -60,7 +61,7 @@ namespace Assets.BackToSchool.Scripts.Player
             damage         -= PlayerStats.Armor.GetValue();
             damage         =  Mathf.Clamp(damage, 0, int.MaxValue);
             _currentHealth -= damage;
-            HealthChanged?.Invoke(_currentHealth, PlayerStats.MaxHealth.GetValue());
+            HealthChanged?.Invoke(_currentHealth);
 
             if (_currentHealth == 0 && !_isDead)
             {
@@ -99,7 +100,7 @@ namespace Assets.BackToSchool.Scripts.Player
                 _bullet.SetDamage(PlayerStats.Damage.GetValue());
                 _bullet.Launch(_weaponType.BulletForce);
                 _currentAmmo--;
-                AmmoChanged?.Invoke(_currentAmmo, PlayerStats.MaxAmmo.GetValue());
+                AmmoChanged?.Invoke(_currentAmmo);
             }
         }
 
@@ -114,7 +115,7 @@ namespace Assets.BackToSchool.Scripts.Player
         private void ReloadComplete()
         {
             _isReloading = false;
-            AmmoChanged?.Invoke(_currentAmmo, PlayerStats.MaxAmmo.GetValue());
+            AmmoChanged?.Invoke(_currentAmmo);
         }
 
         #endregion

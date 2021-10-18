@@ -8,6 +8,9 @@ namespace Assets.BackToSchool.Scripts.UI
     {
         [SerializeField] private Text _ammoText;
         [SerializeField] private Text _levelText;
+        [SerializeField] private Text _armorText;
+        [SerializeField] private Text _damageText;
+        [SerializeField] private Text _moveSpeedText;
         [SerializeField] private Slider _heathBar;
         [SerializeField] private Slider _levelBar;
 
@@ -47,12 +50,19 @@ namespace Assets.BackToSchool.Scripts.UI
 
         public void OnLevelChanged(int newLevel) => UpdateLevelText(newLevel);
 
-        public void OnExpChanged(float newSliderValue) { UpdateLevelBar(newSliderValue); }
+        public void OnExpChanged(float newSliderValue) => UpdateLevelBar(newSliderValue);
+
+        public void OnArmorChanged(int newValue)     => UpdateArmorText(newValue);
+        public void OnDamageChanged(int newValue)    => UpdateDamageText(newValue);
+        public void OnMoveSpeedChanged(int newValue) => UpdateMoveSpeedText(newValue);
 
         private void UpdateHealthBar()                      => _heathBar.value = _healthSliderValue;
         private void UpdateLevelBar(float levelSliderValue) => _levelBar.value = levelSliderValue;
 
-        private void UpdateAmmoText()           => _ammoText.text = $"{_ammoValue} / {_maxAmmoValue}";
-        private void UpdateLevelText(int level) => _levelText.text = $"Level: {level}";
+        private void UpdateAmmoText()                  => _ammoText.text = $"{_ammoValue} / {_maxAmmoValue}";
+        private void UpdateArmorText(int newValue)     => _armorText.text = $"{newValue}";
+        private void UpdateDamageText(int newValue)    => _damageText.text = $"{newValue}";
+        private void UpdateMoveSpeedText(int newValue) => _moveSpeedText.text = $"{newValue}";
+        private void UpdateLevelText(int level)        => _levelText.text = $"Level: {level}";
     }
 }

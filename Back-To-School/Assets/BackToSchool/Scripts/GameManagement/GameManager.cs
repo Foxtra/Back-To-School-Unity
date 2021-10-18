@@ -37,16 +37,20 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             _pausePresenter.Restarted    += RestartGame;
             _pausePresenter.Continued    += ContinueGame;
 
-            _player.AmmoChanged                += _hudPresenter.OnAmmoChanged;
-            _player.Died                       += OnPlayerDeath;
-            _player.HealthChanged              += _hudPresenter.OnHealthChanged;
-            _enemySpawner.EnemyDied            += _player.LevelSystem.AddExperience;
-            _player.LevelSystem.OnLevelChanged += _statsManager.OnLevelUp;
-            _statsManager.MaxAmmoChanged       += _hudPresenter.OnMaxAmmoChanged;
-            _statsManager.MaxHealthChanged     += _hudPresenter.OnMaxHealthChanged;
-            _statsManager.OnLevelUp(0); //calls initial hud update
+            _player.AmmoChanged                     += _hudPresenter.OnAmmoChanged;
+            _player.Died                            += OnPlayerDeath;
+            _player.HealthChanged                   += _hudPresenter.OnHealthChanged;
+            _enemySpawner.EnemyDied                 += _player.LevelSystem.AddExperience;
+            _player.LevelSystem.OnLevelChanged      += _statsManager.OnLevelUp;
             _player.LevelSystem.OnLevelChanged      += _hudPresenter.OnLevelChanged;
             _player.LevelSystem.OnExperienceChanged += _hudPresenter.OnExpChanged;
+
+            _statsManager.ArmorChanged     += _hudPresenter.OnArmorChanged;
+            _statsManager.DamageChanged    += _hudPresenter.OnDamageChanged;
+            _statsManager.MaxAmmoChanged   += _hudPresenter.OnMaxAmmoChanged;
+            _statsManager.MaxHealthChanged += _hudPresenter.OnMaxHealthChanged;
+            _statsManager.MoveSpeedChanged += _hudPresenter.OnMoveSpeedChanged;
+            _statsManager.OnLevelUp(0); //calls initial hud update
 
 
             _inputManager.Moved    += OnPlayerMove;

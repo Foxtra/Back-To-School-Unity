@@ -8,16 +8,19 @@ namespace Assets.BackToSchool.Scripts.Progression
     {
         public event Action<int> MaxAmmoChanged;
         public event Action<int> MaxHealthChanged;
+        public event Action<int> ArmorChanged;
+        public event Action<int> DamageChanged;
+        public event Action<int> MoveSpeedChanged;
 
         private Player.Player _player;
         private Dictionary<string, int[]> _playerProgression = new Dictionary<string, int[]>
         {
-            ["Armor"]       = new[] { 0, 0, 1, 1, 2, 2, 3, 3, 4, 4 },
-            ["Damage"]      = new[] { 0, 0, 1, 1, 2, 2, 3, 3, 4, 4 },
+            ["Armor"]       = new[] { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+            ["Damage"]      = new[] { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
             ["FireRate"]    = new[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
             ["MaxAmmo"]     = new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 10 },
             ["MaxHealth"]   = new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 10 },
-            ["MoveSpeed"]   = new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 10 },
+            ["MoveSpeed"]   = new[] { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
             ["ReloadSpeed"] = new[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
         };
 
@@ -38,8 +41,11 @@ namespace Assets.BackToSchool.Scripts.Progression
 
         private void UpdateHUD()
         {
+            ArmorChanged?.Invoke(_player.PlayerStats.Armor.GetValue());
+            DamageChanged?.Invoke(_player.PlayerStats.Damage.GetValue());
             MaxAmmoChanged?.Invoke(_player.PlayerStats.MaxAmmo.GetValue());
             MaxHealthChanged?.Invoke(_player.PlayerStats.MaxHealth.GetValue());
+            MoveSpeedChanged?.Invoke(_player.PlayerStats.MoveSpeed.GetValue());
         }
     }
 }

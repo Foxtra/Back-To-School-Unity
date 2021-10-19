@@ -1,6 +1,7 @@
 using System;
 using Assets.BackToSchool.Scripts.Constants;
 using Assets.BackToSchool.Scripts.Interfaces;
+using Assets.BackToSchool.Scripts.Stats;
 using Assets.BackToSchool.Scripts.Utils;
 using UnityEngine;
 
@@ -9,14 +10,16 @@ namespace Assets.BackToSchool.Scripts.Enemies
 {
     public class Enemy : MonoBehaviour, IDamageable
     {
-        public event Action<int, int> HealthChanged;
+        public event Action<float, int> HealthChanged;
         public event Action<Enemy> Died;
 
-        [SerializeField] private float _speed = 5f;
+        public CharacterStats EnemyStats;
+
+        [SerializeField] private float _speed;
         [SerializeField] private float _stopDistance = 1f;
         [SerializeField] private float _attackInterval = 2f;
-        [SerializeField] private int _maxHealth = 2;
-        [SerializeField] private int _enemyDamage = 1;
+        [SerializeField] private int _maxHealth;
+        [SerializeField] private int _enemyDamage;
 
         private GameObject _target;
         private Animator _animator;
@@ -24,12 +27,12 @@ namespace Assets.BackToSchool.Scripts.Enemies
         private float _damageTime = 1.2f;
         private float _deathTime = 1.5f;
         private float _timer;
-        private int _currentHealth;
+        private float _currentHealth;
 
         private bool _isBusy;
         private bool _isDead;
 
-        public void TakeDamage(int damage)
+        public void TakeDamage(float damage)
         {
             _currentHealth -= damage;
             HealthChanged?.Invoke(_currentHealth, _maxHealth);
@@ -42,16 +45,40 @@ namespace Assets.BackToSchool.Scripts.Enemies
             }
             else if (_currentHealth > 0) _animator.SetTrigger(AnimationStates.GetDamage);
 
-            if (_currentHealth == 0 && _isDead) { EnemyDeath(); }
-            else { Invoke(nameof(EnableEnemy), _damageTime); }
+            if (_currentHealth == 0 && _isDead)
+                EnemyDeath();
+            else
+                Invoke(nameof(EnableEnemy), _damageTime);
         }
 
         public void SetTarget(GameObject target) => _target = target;
 
-        private void Awake()
+        private void Attack()
         {
-            _currentHealth = _maxHealth;
-            _animator      = GetComponent<Animator>();
+            _animator.SetTrigger(AnimationStates.Attack);
+            _target.GetComponent<IDamageable>().TakeDamage(_enemyDamage);
+        }
+
+        private void EnableEnemy()
+        {
+            if (!_isDead) _isBusy = false;
+        }
+
+        private void EnemyDeath()
+        {
+            Destroy(gameObject, _deathTime);
+            Died?.Invoke(this);
+        }
+
+        #region UnityMethods
+
+        private void Awake() => _animator = GetComponent<Animator>();
+
+        private void Start()
+        {
+            _currentHealth = EnemyStats.MaxHealth.GetValue();
+            _enemyDamage   = EnemyStats.Damage.GetValue();
+            _speed         = EnemyStats.MoveSpeed.GetValue();
         }
 
         private void FixedUpdate()
@@ -77,24 +104,10 @@ namespace Assets.BackToSchool.Scripts.Enemies
                     }
                 }
             }
-            else { _animator.SetBool(AnimationStates.IsMoving, false); }
+            else
+                _animator.SetBool(AnimationStates.IsMoving, false);
         }
 
-        private void Attack()
-        {
-            _animator.SetTrigger(AnimationStates.Attack);
-            _target.GetComponent<IDamageable>().TakeDamage(_enemyDamage);
-        }
-
-        private void EnableEnemy()
-        {
-            if (!_isDead) _isBusy = false;
-        }
-
-        private void EnemyDeath()
-        {
-            Destroy(gameObject, _deathTime);
-            Died?.Invoke(this);
-        }
+        #endregion
     }
 }

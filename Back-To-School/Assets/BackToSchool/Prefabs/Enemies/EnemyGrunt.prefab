@@ -902,6 +902,7 @@ MonoBehaviour:
   _stopDistance: 3.1
   _attackInterval: 2
   _maxHealth: 2
+  _enemyDamage: 2
 --- !u!1 &1358563975474555179
 GameObject:
   m_ObjectHideFlags: 0

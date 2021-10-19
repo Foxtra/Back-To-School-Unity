@@ -6,10 +6,11 @@ namespace Assets.BackToSchool.Scripts.Progression
 {
     public class LevelSystem
     {
-        private static readonly int[] experiencePerLevel = { 100, 120, 140, 160, 180, 200, 220, 250, 300, 400 };
+        public event Action<float> ExperienceChanged;
+        public event Action<int> LevelChanged;
+        public event Action ProgressChanged;
 
-        public Action<float> OnExperienceChanged;
-        public Action<int> OnLevelChanged;
+        private static readonly int[] experiencePerLevel = { 100, 120, 140, 160, 180, 200, 220, 250, 300, 400 };
 
         private int level;
         private int experience;
@@ -29,11 +30,18 @@ namespace Assets.BackToSchool.Scripts.Progression
                 {
                     experience -= GetExperienceToNextLevel(level);
                     level++;
-                    OnLevelChanged?.Invoke(level);
+                    LevelChanged?.Invoke(level);
                 }
 
-                OnExperienceChanged?.Invoke(GetExperienceNormalized());
+                ExperienceChanged?.Invoke(GetExperienceNormalized());
+                ProgressChanged?.Invoke();
             }
+        }
+
+        public void SetLevelNumber(int newLevel)
+        {
+            level = newLevel;
+            LevelChanged?.Invoke(level);
         }
 
         public int GetLevelNumber() => level;

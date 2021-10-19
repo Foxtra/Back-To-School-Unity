@@ -32,7 +32,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
         private float _zPos;
         private float _timer;
         private int _currentNumberOfEnemies;
-        private int _enemyDamage = 1;
+        private int _enemyDamage = 2;
         private int _enemyMaxHealth = 2;
         private int _enemyMoveSpeed = 2;
         private int _experienceForEnemy = 20;

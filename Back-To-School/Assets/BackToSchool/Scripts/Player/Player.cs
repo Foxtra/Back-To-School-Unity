@@ -43,18 +43,33 @@ namespace Assets.BackToSchool.Scripts.Player
             _weaponType = GetComponent<WeaponType>();
         }
 
-        private void Start()
+        private void Start() { Died += _weaponType.OnPlayerDeath; }
+
+        #region Interaction
+
+        public void InitializeAmmoAndHealt()
         {
             _currentAmmo = PlayerStats.MaxAmmo.GetValue();
             AmmoChanged?.Invoke(_currentAmmo);
 
             _currentHealth = PlayerStats.MaxHealth.GetValue();
             HealthChanged?.Invoke(_currentHealth);
-
-            Died += _weaponType.OnPlayerDeath;
         }
 
-        #region Interaction
+        public float GetHealthValue() => _currentHealth;
+        public int   GetAmmoValue()   => _currentAmmo;
+
+        public void SetHealthValue(float health)
+        {
+            _currentHealth = health;
+            HealthChanged?.Invoke(_currentHealth);
+        }
+
+        public void SetAmmoValue(int ammo)
+        {
+            _currentAmmo = ammo;
+            AmmoChanged?.Invoke(_currentAmmo);
+        }
 
         public void TakeDamage(float damage)
         {
@@ -94,13 +109,14 @@ namespace Assets.BackToSchool.Scripts.Player
         {
             if (!_isReloading && _currentAmmo != 0)
             {
+                _currentAmmo--;
+                AmmoChanged?.Invoke(_currentAmmo);
+
                 _bullet                    = Instantiate(_bulletPrefab);
                 _bullet.transform.position = _shootingPosition.transform.position;
                 _bullet.transform.rotation = _shootingPosition.transform.rotation;
                 _bullet.SetDamage(PlayerStats.Damage.GetValue());
                 _bullet.Launch(_weaponType.BulletForce);
-                _currentAmmo--;
-                AmmoChanged?.Invoke(_currentAmmo);
             }
         }
 

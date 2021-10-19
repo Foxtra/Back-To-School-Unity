@@ -52,10 +52,11 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             _statsManager.MaxAmmoChanged   += _hudPresenter.OnMaxAmmoChanged;
             _statsManager.MaxHealthChanged += _hudPresenter.OnMaxHealthChanged;
             _statsManager.MoveSpeedChanged += _hudPresenter.OnMoveSpeedChanged;
-            if (_saveSystem.IsSaveDataExists())
+            if (!GlobalSettings.IsNewGame && _saveSystem.IsSaveDataExists())
                 _saveSystem.LoadPlayerProgress();
             else
             {
+                _saveSystem.ResetPlayerProgress();
                 _statsManager.OnLevelUp(0);
                 _player.InitializeAmmoAndHealt();
             }
@@ -147,6 +148,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         private void RestartGame()
         {
             if (_isGamePaused) ContinueGame();
+            GlobalSettings.IsNewGame = true;
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 

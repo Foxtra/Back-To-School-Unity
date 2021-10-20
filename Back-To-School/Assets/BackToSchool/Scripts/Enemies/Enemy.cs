@@ -38,14 +38,14 @@ namespace Assets.BackToSchool.Scripts.Enemies
             HealthChanged?.Invoke(_currentHealth, _maxHealth);
             _isBusy = true;
 
-            if (_currentHealth == 0 && !_isDead)
+            if (_currentHealth <= 0 && !_isDead)
             {
                 _animator.SetTrigger(AnimationStates.Die);
                 _isDead = true;
             }
             else if (_currentHealth > 0) _animator.SetTrigger(AnimationStates.GetDamage);
 
-            if (_currentHealth == 0 && _isDead)
+            if (_currentHealth <= 0 && _isDead)
                 EnemyDeath();
             else
                 Invoke(nameof(EnableEnemy), _damageTime);

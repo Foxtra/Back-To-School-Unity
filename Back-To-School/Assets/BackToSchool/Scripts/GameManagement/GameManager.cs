@@ -24,6 +24,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         private InputManager _inputManager;
         private Player.Player _player;
         private StatsManager _statsManager;
+        private SaveSystem _saveSystem;
 
         private float _gameOverDelay = 1f;
         private bool _isGamePaused;
@@ -37,20 +38,28 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             _pausePresenter.Restarted    += RestartGame;
             _pausePresenter.Continued    += ContinueGame;
 
-            _player.AmmoChanged                     += _hudPresenter.OnAmmoChanged;
-            _player.Died                            += OnPlayerDeath;
-            _player.HealthChanged                   += _hudPresenter.OnHealthChanged;
-            _enemySpawner.EnemyDied                 += _player.LevelSystem.AddExperience;
-            _player.LevelSystem.OnLevelChanged      += _statsManager.OnLevelUp;
-            _player.LevelSystem.OnLevelChanged      += _hudPresenter.OnLevelChanged;
-            _player.LevelSystem.OnExperienceChanged += _hudPresenter.OnExpChanged;
+            _player.AmmoChanged                   += _hudPresenter.OnAmmoChanged;
+            _player.Died                          += OnPlayerDeath;
+            _player.HealthChanged                 += _hudPresenter.OnHealthChanged;
+            _enemySpawner.EnemyDied               += _player.LevelSystem.AddExperience;
+            _player.LevelSystem.LevelChanged      += _statsManager.OnLevelUp;
+            _player.LevelSystem.LevelChanged      += _hudPresenter.OnLevelChanged;
+            _player.LevelSystem.ExperienceChanged += _hudPresenter.OnExpChanged;
+            _player.LevelSystem.ProgressChanged   += _saveSystem.OnPlayerProgressChanged;
 
             _statsManager.ArmorChanged     += _hudPresenter.OnArmorChanged;
             _statsManager.DamageChanged    += _hudPresenter.OnDamageChanged;
             _statsManager.MaxAmmoChanged   += _hudPresenter.OnMaxAmmoChanged;
             _statsManager.MaxHealthChanged += _hudPresenter.OnMaxHealthChanged;
             _statsManager.MoveSpeedChanged += _hudPresenter.OnMoveSpeedChanged;
-            _statsManager.OnLevelUp(0); //calls initial hud update
+            if (!GlobalSettings.IsNewGame && _saveSystem.IsSaveDataExists())
+                _saveSystem.LoadPlayerProgress();
+            else
+            {
+                _saveSystem.ResetPlayerProgress();
+                _statsManager.OnLevelUp(0);
+                _player.InitializeAmmoAndHealt();
+            }
 
 
             _inputManager.Moved    += OnPlayerMove;
@@ -69,6 +78,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             _player.LevelSystem = new LevelSystem();
 
             _statsManager = new StatsManager(_player);
+            _saveSystem   = new SaveSystem(_player, _statsManager);
             _mainCamera.GetComponent<CameraFollow>().SetTarget(_playerObject.transform);
             _inputManager = Instantiate(_inputManagerPrefab, transform.position, Quaternion.identity).GetComponent<InputManager>();
             _inputManager.SetCamera(_mainCamera);
@@ -138,6 +148,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         private void RestartGame()
         {
             if (_isGamePaused) ContinueGame();
+            GlobalSettings.IsNewGame = true;
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 

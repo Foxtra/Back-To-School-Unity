@@ -2,6 +2,7 @@
 using System.Collections;
 using Assets.BackToSchool.Scripts.Constants;
 using Assets.BackToSchool.Scripts.Interfaces;
+using Assets.BackToSchool.Scripts.Items;
 using Assets.BackToSchool.Scripts.Progression;
 using Assets.BackToSchool.Scripts.Stats;
 using Assets.BackToSchool.Scripts.Weapon;
@@ -19,16 +20,14 @@ namespace Assets.BackToSchool.Scripts.Player
         public PlayerStats PlayerStats;
         public LevelSystem LevelSystem;
 
-        [SerializeField] private Bullet _bulletPrefab;
-        [SerializeField] private GameObject _shootingPosition;
         [SerializeField] private float _damageTime = 0.1f;
         [SerializeField] private float _delayBeforeDamage = 0.5f;
 
         private Animator _animator;
-        private Bullet _bullet;
+        private Inventory _inventory;
         private Rigidbody _rigidBody;
         private SkinnedMeshRenderer[] _renderers;
-        private WeaponType _weaponType;
+        private WeaponController _weaponController;
 
         private int _currentAmmo;
         private float _currentHealth;
@@ -37,13 +36,13 @@ namespace Assets.BackToSchool.Scripts.Player
 
         private void Awake()
         {
-            _rigidBody  = GetComponent<Rigidbody>();
-            _animator   = GetComponent<Animator>();
-            _renderers  = GetComponentsInChildren<SkinnedMeshRenderer>();
-            _weaponType = GetComponent<WeaponType>();
+            _rigidBody        = GetComponent<Rigidbody>();
+            _animator         = GetComponent<Animator>();
+            _renderers        = GetComponentsInChildren<SkinnedMeshRenderer>();
+            _weaponController = GetComponent<WeaponController>();
+            _inventory        = GetComponent<Inventory>();
+            _weaponController.SetInventory(_inventory);
         }
-
-        private void Start() { Died += _weaponType.OnPlayerDeath; }
 
         #region Interaction
 
@@ -105,18 +104,15 @@ namespace Assets.BackToSchool.Scripts.Player
 
         #region Shooting
 
+        public void ChangeWeapon(bool isNext) { _weaponController.ChangeWeapon(isNext); }
+
         public void Fire()
         {
             if (!_isReloading && _currentAmmo != 0)
             {
                 _currentAmmo--;
                 AmmoChanged?.Invoke(_currentAmmo);
-
-                _bullet                    = Instantiate(_bulletPrefab);
-                _bullet.transform.position = _shootingPosition.transform.position;
-                _bullet.transform.rotation = _shootingPosition.transform.rotation;
-                _bullet.SetDamage(PlayerStats.Damage.GetValue());
-                _bullet.Launch(_weaponType.BulletForce);
+                _weaponController.Shoot(PlayerStats.Damage.GetValue());
             }
         }
 
@@ -125,7 +121,7 @@ namespace Assets.BackToSchool.Scripts.Player
             _isReloading = true;
             _currentAmmo = PlayerStats.MaxAmmo.GetValue();
             _animator.SetTrigger(AnimationStates.Reload);
-            Invoke(nameof(ReloadComplete), _weaponType.ReloadTime);
+            Invoke(nameof(ReloadComplete), _weaponController.ReloadTime);
         }
 
         private void ReloadComplete()

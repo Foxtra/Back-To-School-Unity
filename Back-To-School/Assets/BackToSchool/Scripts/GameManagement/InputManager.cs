@@ -68,5 +68,18 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             else
                 Stopped?.Invoke();
         }
+
+        private void CheckWeaponChange()
+        {
+            var scroll = Input.GetAxis("Mouse ScrollWheel");
+            if (scroll > 0)
+            {
+                //Upwards
+            }
+            else if (scroll < 0)
+            {
+                //Downwards
+            }
+        }
     }
 }

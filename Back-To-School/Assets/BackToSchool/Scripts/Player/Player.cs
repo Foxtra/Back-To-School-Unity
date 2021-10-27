@@ -104,7 +104,7 @@ namespace Assets.BackToSchool.Scripts.Player
 
         #region Shooting
 
-        public void ChangeWeapon(bool isNext) { _weaponController.ChangeWeapon(isNext); }
+        public void NextWeapon(bool isNext) { _weaponController.NextWeapon(isNext); }
 
         public void Fire()
         {

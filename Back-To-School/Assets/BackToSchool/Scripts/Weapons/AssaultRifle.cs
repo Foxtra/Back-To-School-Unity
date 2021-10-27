@@ -2,7 +2,7 @@
 using UnityEngine;
 
 
-namespace Assets.BackToSchool.Scripts.Weapon
+namespace Assets.BackToSchool.Scripts.Weapons
 {
     public class AssaultRifle : MonoBehaviour, IWeapon
     {

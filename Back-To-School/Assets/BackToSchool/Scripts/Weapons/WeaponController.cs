@@ -11,17 +11,18 @@ namespace Assets.BackToSchool.Scripts.Weapon
 
         private IWeapon _activeWeapon;
         private GameObject _activeWeaponObj;
+        private GameObject _weaponToCreate;
         private Inventory _inventory;
 
         public float ReloadTime { get; private set; }
 
         public void SetInventory(Inventory inventory) => _inventory = inventory;
 
-        public void ChangeWeapon(bool isNext)
+        public void NextWeapon(bool isNext)
         {
             if (_activeWeapon != null) HideWeapon();
-            _activeWeaponObj = isNext ? _inventory.GetNextWeapon() : _inventory.GetPreviousWeapon();
-            ShowWeapon();
+            _weaponToCreate = isNext ? _inventory.GetNextWeapon() : _inventory.GetPreviousWeapon();
+            _activeWeapon   = ShowWeapon();
         }
 
         public void Shoot(float playerDamage) => _activeWeapon.Attack(playerDamage);
@@ -34,15 +35,15 @@ namespace Assets.BackToSchool.Scripts.Weapon
 
         private void GetInitialWeapon()
         {
-            _activeWeaponObj = _inventory.GetInitialWeapon();
-            _activeWeapon    = ShowWeapon();
+            _weaponToCreate = _inventory.GetInitialWeapon();
+            _activeWeapon   = ShowWeapon();
         }
 
         private IWeapon ShowWeapon()
         {
-            var weapon = Instantiate(_activeWeaponObj, _weaponPosition.position, _weaponPosition.rotation);
-            weapon.transform.parent = gameObject.transform;
-            return weapon.GetComponent<IWeapon>();
+            _activeWeaponObj                  = Instantiate(_weaponToCreate, _weaponPosition.position, _weaponPosition.rotation);
+            _activeWeaponObj.transform.parent = gameObject.transform;
+            return _activeWeaponObj.GetComponent<IWeapon>();
         }
 
         private void HideWeapon()

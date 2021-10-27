@@ -62,12 +62,13 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             }
 
 
-            _inputManager.Moved    += OnPlayerMove;
-            _inputManager.Rotated  += OnPlayerRotate;
-            _inputManager.Stopped  += OnPlayerStop;
-            _inputManager.Fired    += OnPlayerFire;
-            _inputManager.Reloaded += OnPlayerReloaded;
-            _inputManager.Canceled += OnGameStopped;
+            _inputManager.Moved            += OnPlayerMove;
+            _inputManager.Rotated          += OnPlayerRotate;
+            _inputManager.Stopped          += OnPlayerStop;
+            _inputManager.Fired            += OnPlayerFire;
+            _inputManager.Reloaded         += OnPlayerReloaded;
+            _inputManager.Canceled         += OnGameStopped;
+            _inputManager.NextWeaponCalled += OnNextWeapon;
         }
 
         private void CreateGameInstances()
@@ -92,6 +93,8 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         {
             if (!(_isPlayerDead || _isGamePaused)) _player.Reload();
         }
+
+        private void OnNextWeapon(bool isNext) => _player.NextWeapon(isNext);
 
         private void OnPlayerFire()
         {

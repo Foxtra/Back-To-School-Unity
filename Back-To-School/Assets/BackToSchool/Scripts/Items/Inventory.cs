@@ -10,7 +10,15 @@ namespace Assets.BackToSchool.Scripts.Items
 
         private int _currentWeaponNumber;
 
+        public int GetCurrentWeaponNumber() => _currentWeaponNumber;
+
         public GameObject GetInitialWeapon() => _weapons.Count != 0 ? _weapons[0] : null;
+
+        public GameObject GetWeapon(int weaponNumber)
+        {
+            _currentWeaponNumber = weaponNumber;
+            return _weapons[weaponNumber];
+        }
 
         public GameObject GetNextWeapon()
         {

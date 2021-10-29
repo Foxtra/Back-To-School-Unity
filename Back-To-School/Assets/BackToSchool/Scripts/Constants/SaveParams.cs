@@ -6,6 +6,7 @@
         public const string PlayerExperience = "PlayerExperience";
         public const string PlayerHealth = "PlayerHealth";
         public const string PlayerAmmo = "PlayerAmmo";
+        public const string PlayerWeapon = "PlayerWeapon";
         public const string IsSaveDataExists = "IsSaveDataExists";
     }
 }

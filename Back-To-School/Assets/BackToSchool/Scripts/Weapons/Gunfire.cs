@@ -60,6 +60,7 @@ namespace Assets.BackToSchool.Scripts.Weapons
                 _rocket = Instantiate(projectilePrefab, muzzlePosition.transform.position, muzzlePosition.transform.rotation,
                     transform);
                 _rocket.SetDamage(damage);
+                _rocket.transform.parent = null;
             }
 
             // --- Disable any gameobjects, if needed ---

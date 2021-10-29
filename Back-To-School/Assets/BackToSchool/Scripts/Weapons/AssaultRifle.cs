@@ -17,6 +17,7 @@ namespace Assets.BackToSchool.Scripts.Weapons
             _bullet                    = Instantiate(_bulletPrefab);
             _bullet.transform.position = _shootingPosition.position;
             _bullet.transform.rotation = _shootingPosition.rotation;
+            _bullet.transform.parent   = null;
             _bullet.SetDamage(damage);
             _bullet.Launch(_bulletForce);
         }

@@ -38,7 +38,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             _pausePresenter.Restarted    += RestartGame;
             _pausePresenter.Continued    += ContinueGame;
 
-            _player.AmmoChanged                   += _hudPresenter.OnAmmoChanged;
+            _player.WeaponController.AmmoChanged  += _hudPresenter.OnAmmoChanged;
             _player.Died                          += OnPlayerDeath;
             _player.HealthChanged                 += _hudPresenter.OnHealthChanged;
             _enemySpawner.EnemyDied               += _player.LevelSystem.AddExperience;
@@ -58,7 +58,9 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             {
                 _saveSystem.ResetPlayerProgress();
                 _statsManager.OnLevelUp(0);
-                _player.InitializeAmmoAndHealt();
+                _player.InitializeHealth();
+                _player.WeaponController.InitializeAmmo();
+                _player.WeaponController.InitializeWeapon();
             }
 
 
@@ -91,10 +93,10 @@ namespace Assets.BackToSchool.Scripts.GameManagement
 
         private void OnPlayerReloaded()
         {
-            if (!(_isPlayerDead || _isGamePaused)) _player.Reload();
+            if (!(_isPlayerDead || _isGamePaused)) _player.WeaponController.Reload();
         }
 
-        private void OnNextWeapon(bool isNext) => _player.NextWeapon(isNext);
+        private void OnNextWeapon(bool isNext) => _player.WeaponController.NextWeapon(isNext);
 
         private void OnPlayerFire()
         {

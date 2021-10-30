@@ -13,6 +13,8 @@ namespace Assets.BackToSchool.Scripts.UI
         [SerializeField] private Text _moveSpeedText;
         [SerializeField] private Slider _heathBar;
         [SerializeField] private Slider _levelBar;
+        [SerializeField] private Image _currentWeaponIcon;
+        [SerializeField] private Sprite[] _weaponIcons;
 
         [SerializeField] private float _delayBeforeDamage = 0.5f;
 
@@ -34,6 +36,11 @@ namespace Assets.BackToSchool.Scripts.UI
             _maxHealth         = newMaxHealth;
             _healthSliderValue = _currentHealth / _maxHealth;
             UpdateHealthBar();
+        }
+
+        public void OnWeaponChanged(int weaponNumber)
+        {
+            _currentWeaponIcon.sprite = _weaponIcons[weaponNumber];
         }
 
         public void OnAmmoChanged(int newAmmoValue)

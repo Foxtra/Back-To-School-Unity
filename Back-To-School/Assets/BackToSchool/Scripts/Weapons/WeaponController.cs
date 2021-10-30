@@ -10,6 +10,7 @@ namespace Assets.BackToSchool.Scripts.Weapon
     public class WeaponController : MonoBehaviour
     {
         public event Action<int> AmmoChanged;
+        public event Action<int> WeaponChanged;
 
         [SerializeField] private Transform _weaponPosition;
 
@@ -86,6 +87,7 @@ namespace Assets.BackToSchool.Scripts.Weapon
         {
             _activeWeaponObj                  = Instantiate(_weaponToCreate, _weaponPosition.position, _weaponPosition.rotation);
             _activeWeaponObj.transform.parent = gameObject.transform;
+            WeaponChanged?.Invoke(_inventory.GetCurrentWeaponNumber());
             return _activeWeaponObj.GetComponent<IWeapon>();
         }
 

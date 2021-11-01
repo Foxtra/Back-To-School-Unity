@@ -21,7 +21,8 @@ namespace Assets.BackToSchool.Scripts.Progression
         {
             PlayerPrefs.SetInt(SaveParams.PlayerLevel, _player.LevelSystem.GetLevelNumber());
             PlayerPrefs.SetInt(SaveParams.PlayerExperience, _player.LevelSystem.GetExperience());
-            PlayerPrefs.SetInt(SaveParams.PlayerAmmo, _player.GetAmmoValue());
+            PlayerPrefs.SetInt(SaveParams.PlayerAmmo, _player.WeaponController.GetAmmoValue());
+            PlayerPrefs.SetInt(SaveParams.PlayerWeapon, _player.Inventory.GetCurrentWeaponNumber());
             PlayerPrefs.SetFloat(SaveParams.PlayerHealth, _player.GetHealthValue());
 
             PlayerPrefs.SetInt(SaveParams.IsSaveDataExists, 1);
@@ -31,7 +32,8 @@ namespace Assets.BackToSchool.Scripts.Progression
         {
             for (var i = 1; i <= PlayerPrefs.GetInt(SaveParams.PlayerLevel); i++) { _statsManager.OnLevelUp(i); }
 
-            _player.SetAmmoValue(PlayerPrefs.GetInt(SaveParams.PlayerAmmo));
+            _player.WeaponController.SetAmmoValue(PlayerPrefs.GetInt(SaveParams.PlayerAmmo));
+            _player.WeaponController.SetWeapon(PlayerPrefs.GetInt(SaveParams.PlayerWeapon));
             _player.SetHealthValue(PlayerPrefs.GetFloat(SaveParams.PlayerHealth));
             _player.LevelSystem.SetLevelNumber(PlayerPrefs.GetInt(SaveParams.PlayerLevel));
             _player.LevelSystem.AddExperience(PlayerPrefs.GetInt(SaveParams.PlayerExperience));

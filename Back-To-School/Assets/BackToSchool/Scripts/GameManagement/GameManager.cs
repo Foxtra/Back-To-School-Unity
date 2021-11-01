@@ -38,36 +38,41 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             _pausePresenter.Restarted    += RestartGame;
             _pausePresenter.Continued    += ContinueGame;
 
-            _player.AmmoChanged                   += _hudPresenter.OnAmmoChanged;
-            _player.Died                          += OnPlayerDeath;
-            _player.HealthChanged                 += _hudPresenter.OnHealthChanged;
-            _enemySpawner.EnemyDied               += _player.LevelSystem.AddExperience;
-            _player.LevelSystem.LevelChanged      += _statsManager.OnLevelUp;
-            _player.LevelSystem.LevelChanged      += _hudPresenter.OnLevelChanged;
-            _player.LevelSystem.ExperienceChanged += _hudPresenter.OnExpChanged;
-            _player.LevelSystem.ProgressChanged   += _saveSystem.OnPlayerProgressChanged;
+            _player.WeaponController.AmmoChanged   += _hudPresenter.OnAmmoChanged;
+            _player.WeaponController.WeaponChanged += _hudPresenter.OnWeaponChanged;
+            _player.Died                           += OnPlayerDeath;
+            _player.HealthChanged                  += _hudPresenter.OnHealthChanged;
+            _enemySpawner.EnemyDied                += _player.LevelSystem.AddExperience;
+            _player.LevelSystem.LevelChanged       += _statsManager.OnLevelUp;
+            _player.LevelSystem.LevelChanged       += _hudPresenter.OnLevelChanged;
+            _player.LevelSystem.ExperienceChanged  += _hudPresenter.OnExpChanged;
+            _player.LevelSystem.ProgressChanged    += _saveSystem.OnPlayerProgressChanged;
 
             _statsManager.ArmorChanged     += _hudPresenter.OnArmorChanged;
             _statsManager.DamageChanged    += _hudPresenter.OnDamageChanged;
             _statsManager.MaxAmmoChanged   += _hudPresenter.OnMaxAmmoChanged;
             _statsManager.MaxHealthChanged += _hudPresenter.OnMaxHealthChanged;
             _statsManager.MoveSpeedChanged += _hudPresenter.OnMoveSpeedChanged;
+
             if (!GlobalSettings.IsNewGame && _saveSystem.IsSaveDataExists())
                 _saveSystem.LoadPlayerProgress();
             else
             {
                 _saveSystem.ResetPlayerProgress();
                 _statsManager.OnLevelUp(0);
-                _player.InitializeAmmoAndHealt();
+                _player.InitializeHealth();
+                _player.WeaponController.InitializeAmmo();
+                _player.WeaponController.InitializeWeapon();
             }
 
 
-            _inputManager.Moved    += OnPlayerMove;
-            _inputManager.Rotated  += OnPlayerRotate;
-            _inputManager.Stopped  += OnPlayerStop;
-            _inputManager.Fired    += OnPlayerFire;
-            _inputManager.Reloaded += OnPlayerReloaded;
-            _inputManager.Canceled += OnGameStopped;
+            _inputManager.Moved            += OnPlayerMove;
+            _inputManager.Rotated          += OnPlayerRotate;
+            _inputManager.Stopped          += OnPlayerStop;
+            _inputManager.Fired            += OnPlayerFire;
+            _inputManager.Reloaded         += OnPlayerReloaded;
+            _inputManager.Canceled         += OnGameStopped;
+            _inputManager.NextWeaponCalled += OnNextWeapon;
         }
 
         private void CreateGameInstances()
@@ -90,8 +95,10 @@ namespace Assets.BackToSchool.Scripts.GameManagement
 
         private void OnPlayerReloaded()
         {
-            if (!(_isPlayerDead || _isGamePaused)) _player.Reload();
+            if (!(_isPlayerDead || _isGamePaused)) _player.WeaponController.Reload();
         }
+
+        private void OnNextWeapon(bool isNext) => _player.WeaponController.NextWeapon(isNext);
 
         private void OnPlayerFire()
         {

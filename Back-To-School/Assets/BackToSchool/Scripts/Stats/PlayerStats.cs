@@ -5,7 +5,7 @@
         public static readonly int _initialArmor = 0;
         public static readonly int _initialDamage = 1;
         public static readonly int _initialFireRate = 1;
-        public static readonly int _initialMaxAmmo = 10;
+        public static readonly int _initialMaxAmmo = 5;
         public static readonly int _initialMaxHealth = 5;
         public static readonly int _initialMoveSpeed = 4;
         public static readonly int _initialReloadSpeed = 1;

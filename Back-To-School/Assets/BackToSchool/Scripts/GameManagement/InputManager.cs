@@ -12,6 +12,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         public event Action Fired;
         public event Action Reloaded;
         public event Action Canceled;
+        public event Action<bool> NextWeaponCalled;
         [SerializeField] private LayerMask _layerMask;
         [SerializeField] private float _rayCastLenght = 100f;
 
@@ -30,6 +31,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             CheckFire();
             CheckReload();
             CheckCancel();
+            CheckWeaponChange();
         }
 
         private void CheckCancel()
@@ -67,6 +69,15 @@ namespace Assets.BackToSchool.Scripts.GameManagement
                 Moved?.Invoke(_direction);
             else
                 Stopped?.Invoke();
+        }
+
+        private void CheckWeaponChange()
+        {
+            var scroll = Input.GetAxis("Mouse ScrollWheel");
+            if (scroll > 0)
+                NextWeaponCalled?.Invoke(true);
+            else if (scroll < 0)
+                NextWeaponCalled?.Invoke(false);
         }
     }
 }

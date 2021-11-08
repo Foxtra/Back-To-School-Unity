@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 
-namespace Assets.BackToSchool.Scripts.GameManagement
+namespace Assets.BackToSchool.Scripts.Player
 {
     public class CameraFollow : MonoBehaviour
     {
@@ -15,7 +15,8 @@ namespace Assets.BackToSchool.Scripts.GameManagement
 
         private void FixedUpdate()
         {
-            transform.position = Vector3.SmoothDamp(transform.position, _target.position + _offset, ref _velocity, _smoothSpeed);
+            if (_target)
+                transform.position = Vector3.SmoothDamp(transform.position, _target.position + _offset, ref _velocity, _smoothSpeed);
         }
     }
 }

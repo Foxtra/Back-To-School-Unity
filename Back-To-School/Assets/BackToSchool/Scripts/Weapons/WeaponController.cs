@@ -1,7 +1,7 @@
 ﻿using System;
-using Assets.BackToSchool.Scripts.Constants;
 using Assets.BackToSchool.Scripts.Interfaces;
 using Assets.BackToSchool.Scripts.Items;
+using Assets.BackToSchool.Scripts.Stats;
 using UnityEngine;
 
 
@@ -11,6 +11,7 @@ namespace Assets.BackToSchool.Scripts.Weapon
     {
         public event Action<int> AmmoChanged;
         public event Action<int> WeaponChanged;
+        public event Action WeaponReloaded;
 
         [SerializeField] private Transform _weaponPosition;
 
@@ -18,13 +19,15 @@ namespace Assets.BackToSchool.Scripts.Weapon
         private GameObject _activeWeaponObj;
         private GameObject _weaponToCreate;
         private Inventory _inventory;
-        private Player.Player _player;
+        private PlayerStats _playerStats;
 
         private int _currentAmmo;
         private bool _isReloading;
 
         public void SetInventory(Inventory inventory) => _inventory = inventory;
-        public void SetPlayer(Player.Player player)   => _player = player;
+
+        public void SetPlayerStats(PlayerStats playerStats) => _playerStats = playerStats;
+        // TODO move max ammo to weapon
 
         public int GetAmmoValue() => _currentAmmo;
 
@@ -61,8 +64,8 @@ namespace Assets.BackToSchool.Scripts.Weapon
         public void Reload()
         {
             _isReloading = true;
-            _currentAmmo = _player.PlayerStats.MaxAmmo.GetValue();
-            _player.Animator.SetTrigger(AnimationStates.Reload);
+            _currentAmmo = _playerStats.MaxAmmo.GetValue();
+            WeaponReloaded?.Invoke();
         }
 
         public void ReloadComplete()
@@ -73,7 +76,7 @@ namespace Assets.BackToSchool.Scripts.Weapon
 
         public void InitializeAmmo()
         {
-            _currentAmmo = _player.PlayerStats.MaxAmmo.GetValue();
+            _currentAmmo = _playerStats.MaxAmmo.GetValue();
             AmmoChanged?.Invoke(_currentAmmo);
         }
 

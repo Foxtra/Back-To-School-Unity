@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections;
-using Assets.BackToSchool.Scripts.Constants;
 using Assets.BackToSchool.Scripts.Interfaces;
+using Assets.BackToSchool.Scripts.Interfaces.Input;
 using Assets.BackToSchool.Scripts.Items;
-using Assets.BackToSchool.Scripts.Progression;
 using Assets.BackToSchool.Scripts.Stats;
 using Assets.BackToSchool.Scripts.Weapon;
 using UnityEngine;
@@ -11,42 +10,71 @@ using UnityEngine;
 
 namespace Assets.BackToSchool.Scripts.Player
 {
-    public class Player : MonoBehaviour, IMovable, IShootable, IDamageable
+    public class PlayerController : MonoBehaviour, IMovable, IShootable, IDamageable
     {
         public event Action<float> HealthChanged;
         public event Action Died;
 
-        public Animator Animator;
         public Inventory Inventory;
-        public LevelSystem LevelSystem;
-        public PlayerStats PlayerStats;
         public WeaponController WeaponController;
 
         [SerializeField] private float _damageTime = 0.1f;
         [SerializeField] private float _delayBeforeDamage = 0.5f;
 
+        private Animator _animator;
+        private IPlayerInput _playerInput;
+        private PlayerStats _playerStats;
         private Rigidbody _rigidBody;
         private SkinnedMeshRenderer[] _renderers;
 
         private float _currentHealth;
         private bool _isDead;
 
+        public void Initialize(IPlayerInput playerInput, PlayerStats playerStats)
+        {
+            _playerInput = playerInput;
+            _playerStats = playerStats;
+
+            _playerInput.Reloaded      += Reload;
+            _playerInput.Fired         += Fire;
+            _playerInput.Stopped       += Stop;
+            _playerInput.Moved         += Move;
+            _playerInput.Rotated       += Rotate;
+            _playerInput.WeaponChanged += NextWeapon;
+        }
+
         private void Awake()
         {
             _rigidBody       = GetComponent<Rigidbody>();
-            Animator         = GetComponent<Animator>();
+            _animator        = GetComponent<Animator>();
             _renderers       = GetComponentsInChildren<SkinnedMeshRenderer>();
             WeaponController = GetComponent<WeaponController>();
             Inventory        = GetComponent<Inventory>();
             WeaponController.SetInventory(Inventory);
-            WeaponController.SetPlayer(this);
+            WeaponController.SetPlayerStats(_playerStats);
         }
 
         #region Shooting
 
+        public void Reload()
+        {
+            if (!_isDead)
+                _animator.SetTrigger(Constants.AnimationStates.Reload.ToString());
+        }
+
         public void ReloadFinished() => WeaponController.ReloadComplete();
 
-        public void Fire() => WeaponController.Shoot(PlayerStats.Damage.GetValue());
+        public void Fire()
+        {
+            if (!_isDead)
+                WeaponController.Shoot(_playerStats.Damage.GetValue());
+        }
+
+        public void NextWeapon(bool isNext)
+        {
+            if (!_isDead)
+                WeaponController.NextWeapon(isNext);
+        }
 
         #endregion
 
@@ -54,7 +82,7 @@ namespace Assets.BackToSchool.Scripts.Player
 
         public void InitializeHealth()
         {
-            _currentHealth = PlayerStats.MaxHealth.GetValue();
+            _currentHealth = _playerStats.MaxHealth.GetValue();
             HealthChanged?.Invoke(_currentHealth);
         }
 
@@ -68,14 +96,14 @@ namespace Assets.BackToSchool.Scripts.Player
 
         public void TakeDamage(float damage)
         {
-            damage         -= PlayerStats.Armor.GetValue();
+            damage         -= _playerStats.Armor.GetValue();
             damage         =  Mathf.Clamp(damage, 0, int.MaxValue);
             _currentHealth -= damage;
             HealthChanged?.Invoke(_currentHealth);
 
-            if (_currentHealth == 0 && !_isDead)
+            if (_currentHealth <= 0 && !_isDead)
             {
-                Animator.SetTrigger(AnimationStates.Die);
+                _animator.SetTrigger(Constants.AnimationStates.Die.ToString());
                 _isDead = true;
                 Died?.Invoke();
             }
@@ -102,18 +130,24 @@ namespace Assets.BackToSchool.Scripts.Player
 
         public void Move(Vector3 direction)
         {
-            Animator.SetBool(AnimationStates.IsMoving, true);
-            _rigidBody.MovePosition(transform.position + direction * PlayerStats.MoveSpeed.GetValue() * Time.fixedDeltaTime);
+            if (!_isDead)
+            {
+                _animator.SetBool(Constants.AnimationStates.IsMoving.ToString(), true);
+                _rigidBody.MovePosition(transform.position + direction * _playerStats.MoveSpeed.GetValue() * Time.fixedDeltaTime);
+            }
         }
 
-        public void Stop() => Animator.SetBool(AnimationStates.IsMoving, false);
+        public void Stop() => _animator.SetBool(Constants.AnimationStates.IsMoving.ToString(), false);
 
         public void Rotate(Vector3 pointToRotate)
         {
-            var targetPosition = new Vector3(pointToRotate.x,
-                transform.position.y,
-                pointToRotate.z);
-            transform.LookAt(targetPosition);
+            if (!_isDead)
+            {
+                var targetPosition = new Vector3(pointToRotate.x,
+                    transform.position.y,
+                    pointToRotate.z);
+                transform.LookAt(targetPosition);
+            }
         }
 
         #endregion

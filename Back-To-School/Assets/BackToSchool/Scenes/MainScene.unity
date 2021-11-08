@@ -2007,7 +2007,7 @@ GameObject:
   - component: {fileID: 1309782627}
   - component: {fileID: 1309782628}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: Game
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2042,7 +2042,7 @@ MonoBehaviour:
   _hudPresenter: {fileID: 76510006}
   _gameOverPresenter: {fileID: 913168432}
   _pausePresenter: {fileID: 711889838}
-  _playerPrefab: {fileID: 7202607282731717208, guid: f0d7f073c0366194cb908f9690b6d2df, type: 3}
+  _playerPrefab: {fileID: 339401192247128475, guid: f0d7f073c0366194cb908f9690b6d2df, type: 3}
   _inputManagerPrefab: {fileID: 8294383978670191236, guid: 3f8c19034d394bd46a6eae581e21a3a3, type: 3}
   _enemySpawnerPrefab: {fileID: 1325073312042078483, guid: 3650c7abafc811f42af5a276997591d3, type: 3}
   _mainCamera: {fileID: 963194227}

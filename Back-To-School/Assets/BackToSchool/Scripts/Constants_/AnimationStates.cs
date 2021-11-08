@@ -1,4 +1,4 @@
-namespace Assets.BackToSchool.Scripts.Constants
+namespace Assets.BackToSchool.Scripts.Constants_
 {
     internal class AnimationStates
     {

@@ -22,7 +22,6 @@ namespace Assets.BackToSchool.Scripts.Player
         [SerializeField] private float _delayBeforeDamage = 0.5f;
 
         private Animator _animator;
-        //private IPlayerInput _playerInput;
         private PlayerStats _playerStats;
         private Rigidbody _rigidBody;
         private SkinnedMeshRenderer[] _renderers;
@@ -35,7 +34,8 @@ namespace Assets.BackToSchool.Scripts.Player
             _playerStats = playerStats;
             WeaponController.SetPlayerStats(_playerStats);
 
-            playerInput.Reloaded      += Reload;
+            playerInput.Reloaded      += WeaponController.Reload;
+            WeaponController.WeaponReloaded += Reload;
             playerInput.Fired         += Fire;
             playerInput.Stopped       += Stop;
             playerInput.Moved         += Move;

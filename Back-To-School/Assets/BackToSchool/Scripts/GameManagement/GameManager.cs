@@ -39,7 +39,9 @@ namespace Assets.BackToSchool.Scripts.GameManagement
 
         private void AddParametersForLevel(GameParameters param)
         {
-            if (_saveSystem.IsSaveDataExists())
+            if (param.IsNewGame)
+                param.SetInitialLevel(0);
+            else if (_saveSystem.IsSaveDataExists())
             {
                 var playerLevel = _saveSystem.GetPlayerLevel();
                 param.SetInitialLevel(playerLevel);

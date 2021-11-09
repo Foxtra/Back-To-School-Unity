@@ -39,11 +39,14 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             _saveSystem   = saveSystem;
             _playerStats  = new PlayerStats();
             _levelSystem  = new LevelSystem();
-            _statsManager = new StatsManager(_playerStats, parameters.InitialLevel);
+            _statsManager = new StatsManager();
 
             _player       = Instantiate(_playerPrefab, transform.position, Quaternion.identity);
             _inputManager = Instantiate(_inputManagerPrefab, transform.position, Quaternion.identity).GetComponent<InputManager>();
             _enemySpawner = Instantiate(_enemySpawnerPrefab, transform.position, Quaternion.identity).GetComponent<EnemySpawner>();
+
+            SubscribeEvents();
+            _statsManager.Initialize(_playerStats, parameters.InitialLevel);
 
             _mainCamera.GetComponent<CameraFollow>().SetTarget(_player.transform);
             _enemySpawner.SetTarget(_player.gameObject);
@@ -58,14 +61,13 @@ namespace Assets.BackToSchool.Scripts.GameManagement
 
             if (parameters.IsNewGame)
             {
+                _saveSystem.ResetPlayerProgress();
                 _player.InitializeHealth();
                 _player.WeaponController.InitializeAmmo();
                 _player.WeaponController.InitializeWeapon();
             }
             else
                 _saveSystem.LoadPlayerProgress(_player, _levelSystem);
-
-            SubscribeEvents();
         }
 
         private void SubscribeEvents()

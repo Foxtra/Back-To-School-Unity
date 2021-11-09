@@ -13,7 +13,7 @@ namespace Assets.BackToSchool.Scripts.Progression
         public event Action<int> DamageChanged;
         public event Action<int> MoveSpeedChanged;
 
-        private readonly PlayerStats _playerStats;
+        private PlayerStats _playerStats;
         private Dictionary<string, int[]> _playerProgression = new Dictionary<string, int[]>
         {
             ["Armor"]       = new[] { 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -25,10 +25,10 @@ namespace Assets.BackToSchool.Scripts.Progression
             ["ReloadSpeed"] = new[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
         };
 
-        public StatsManager(PlayerStats playerStats, int initialLevel)
+        public void Initialize(PlayerStats playerStats, int initialLevel)
         {
             _playerStats = playerStats;
-            for (var i = 1; i <= initialLevel; i++) { LevelUp(i); }
+            for (var i = 0; i <= initialLevel; i++) { LevelUp(i); }
         }
 
         public void LevelUp(int level)
@@ -41,10 +41,10 @@ namespace Assets.BackToSchool.Scripts.Progression
             _playerStats.MoveSpeed.AddModifier(_playerProgression["MoveSpeed"][level]);
             //_playerStats.ReloadSpeed.AddModifier(_playerProgression["ReloadSpeed"][level]); TODO
 
-            UpdateHUD();
+            UpdateHud();
         }
 
-        private void UpdateHUD()
+        private void UpdateHud()
         {
             ArmorChanged?.Invoke(_playerStats.Armor.GetValue());
             DamageChanged?.Invoke(_playerStats.Damage.GetValue());

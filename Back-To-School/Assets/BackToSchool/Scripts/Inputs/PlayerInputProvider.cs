@@ -25,6 +25,8 @@ namespace Assets.BackToSchool.Scripts.Inputs
 
         public PlayerInputProvider(Camera mainCamera) => _mainCamera = mainCamera;
 
+        public void SetIsPause(bool isPause) => _isPaused = isPause;
+
         public void CancelInvoked() { }
 
         public void FireInvoked() => Fired?.Invoke();
@@ -66,11 +68,5 @@ namespace Assets.BackToSchool.Scripts.Inputs
                 Rotated?.Invoke(_hit.point);
             }
         }
-
-        public void StartListeningInput() { }
-
-        public void PauseListeningInput() => _isPaused = true;
-
-        public void ContinueListeningInput() => _isPaused = false;
     }
 }

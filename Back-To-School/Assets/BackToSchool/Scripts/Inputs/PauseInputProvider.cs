@@ -9,12 +9,7 @@ namespace Assets.BackToSchool.Scripts.Inputs
     {
         public event Action Cancelled;
 
-        private bool _isPaused;
-
-        public void CancelInvoked()
-        {
-            if (_isPaused) Cancelled?.Invoke();
-        }
+        public void CancelInvoked() { Cancelled?.Invoke(); }
 
         public void ScrollInvoked(float scrollValue) { }
 
@@ -25,11 +20,5 @@ namespace Assets.BackToSchool.Scripts.Inputs
         public void DirectionChangeInvoked(Vector3 direction) { }
 
         public void ReloadInvoked() { }
-
-        public void StartListeningInput() { }
-
-        public void PauseListeningInput() => _isPaused = true;
-
-        public void ContinueListeningInput() => _isPaused = false;
     }
 }

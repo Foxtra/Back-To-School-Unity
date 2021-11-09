@@ -29,6 +29,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         private StatsManager _statsManager;
         private SaveSystem _saveSystem;
         private LevelSystem _levelSystem;
+        private PlayerInputProvider _playerInput;
 
         private float _gameOverDelay = 1f;
         private bool _isGamePaused;
@@ -51,9 +52,9 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             _mainCamera.GetComponent<CameraFollow>().SetTarget(_player.transform);
             _enemySpawner.SetTarget(_player.gameObject);
 
-            var playerInput = new PlayerInputProvider(_mainCamera);
-            _inputManager.Subscribe(playerInput);
-            _player.Initialize(playerInput, _playerStats);
+            _playerInput = new PlayerInputProvider(_mainCamera);
+            _inputManager.Subscribe(_playerInput);
+            _player.Initialize(_playerInput, _playerStats);
 
             var pauseInput = new PauseInputProvider();
             _inputManager.Subscribe(pauseInput);
@@ -107,6 +108,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         {
             Time.timeScale = 0f;
             _isGamePaused  = true;
+            _playerInput.SetIsPause(_isGamePaused);
             _pausePresenter.TogglePausePanel(_isGamePaused);
         }
 
@@ -122,6 +124,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         {
             Time.timeScale = 1f;
             _isGamePaused  = false;
+            _playerInput.SetIsPause(_isGamePaused);
             _pausePresenter.TogglePausePanel(_isGamePaused);
         }
 

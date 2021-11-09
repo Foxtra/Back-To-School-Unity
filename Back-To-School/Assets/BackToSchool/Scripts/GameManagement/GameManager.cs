@@ -13,9 +13,9 @@ namespace Assets.BackToSchool.Scripts.GameManagement
 
         public void ExitGame() { Application.Quit(); }
 
-        //public void LoadGame() {  } TODO
+        public void StartGame(GameParameters parameters) => StartCoroutine(LoadGame(parameters));
 
-        public IEnumerator StartGame(GameParameters parameters)
+        public IEnumerator LoadGame(GameParameters parameters)
         {
             AddParametersForLevel(parameters);
             var asyncOp = SceneManager.LoadSceneAsync(parameters.NextScene);

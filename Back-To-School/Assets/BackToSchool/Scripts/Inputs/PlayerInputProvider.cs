@@ -18,20 +18,20 @@ namespace Assets.BackToSchool.Scripts.Inputs
         private RaycastHit _previousHit;
         private RaycastHit _hit;
         private Ray _ray;
-        private LayerMask _layerMask = LayerMask.NameToLayer("Ground");
+        private LayerMask _layerMask = LayerMask.GetMask("Ground");
 
         private float _rayCastLength = 100f;
         private bool _isPaused;
 
         public PlayerInputProvider(Camera mainCamera) => _mainCamera = mainCamera;
 
-        public void CancelInvoked() => throw new NotSupportedException();
+        public void CancelInvoked() { }
 
         public void FireInvoked() => Fired?.Invoke();
 
         public void DirectionChangeInvoked(Vector3 direction)
         {
-            if (_isPaused)
+            if (!_isPaused)
             {
                 if (direction != Vector3.zero)
                     Moved?.Invoke(direction);
@@ -42,26 +42,32 @@ namespace Assets.BackToSchool.Scripts.Inputs
 
         public void ScrollInvoked(float scrollValue)
         {
-            if (scrollValue > 0)
-                WeaponChanged?.Invoke(true);
-            else if (scrollValue < 0)
-                WeaponChanged?.Invoke(false);
+            if (!_isPaused)
+            {
+                if (scrollValue > 0)
+                    WeaponChanged?.Invoke(true);
+                else if (scrollValue < 0)
+                    WeaponChanged?.Invoke(false);
+            }
         }
 
         public void ReloadInvoked() => Reloaded?.Invoke();
 
         public void RotateInvoked(Vector3 mousePosition)
         {
-            _ray = _mainCamera.ScreenPointToRay(mousePosition);
+            if (!_isPaused)
+            {
+                _ray = _mainCamera.ScreenPointToRay(mousePosition);
 
-            if (!Physics.Raycast(_ray, out _hit, _rayCastLength, _layerMask)) return;
-            if (_previousHit.Equals(_hit)) return;
+                if (!Physics.Raycast(_ray, out _hit, _rayCastLength, _layerMask)) return;
+                if (_previousHit.Equals(_hit)) return;
 
-            _previousHit = _hit;
-            Rotated?.Invoke(_hit.point);
+                _previousHit = _hit;
+                Rotated?.Invoke(_hit.point);
+            }
         }
 
-        public void StartListeningInput() => throw new NotImplementedException();
+        public void StartListeningInput() { }
 
         public void PauseListeningInput() => _isPaused = true;
 

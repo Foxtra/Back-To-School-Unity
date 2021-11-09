@@ -16,12 +16,17 @@ namespace Assets.BackToSchool.Scripts.Inputs
             if (_isPaused) Cancelled?.Invoke();
         }
 
-        public void ScrollInvoked(float scrollValue)          => throw new NotSupportedException();
-        public void RotateInvoked(Vector3 position)           => throw new NotSupportedException();
-        public void FireInvoked()                             => throw new NotSupportedException();
-        public void DirectionChangeInvoked(Vector3 direction) => throw new NotSupportedException();
-        public void ReloadInvoked()                           => throw new NotSupportedException();
-        public void StartListeningInput()                     => throw new NotSupportedException();
+        public void ScrollInvoked(float scrollValue) { }
+
+        public void RotateInvoked(Vector3 position) { }
+
+        public void FireInvoked() { }
+
+        public void DirectionChangeInvoked(Vector3 direction) { }
+
+        public void ReloadInvoked() { }
+
+        public void StartListeningInput() { }
 
         public void PauseListeningInput() => _isPaused = true;
 

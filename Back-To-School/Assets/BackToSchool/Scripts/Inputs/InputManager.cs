@@ -10,7 +10,7 @@ namespace Assets.BackToSchool.Scripts.Inputs
         private Vector3 _direction = Vector3.zero;
         private Vector3 _mousePosition;
 
-        private List<IInputProvider> _providers;
+        private List<IInputProvider> _providers = new List<IInputProvider>();
 
         public void Subscribe(IInputProvider provider) => _providers.Add(provider);
 

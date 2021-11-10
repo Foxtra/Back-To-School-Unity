@@ -15,6 +15,8 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         public void ExitGame() { Application.Quit(); }
 
         public void StartGame(GameParameters parameters) => StartCoroutine(LoadGame(parameters));
+        public void ReturnToMenu()                       => SceneManager.LoadScene(Constants.SceneNames.MainMenu.ToString());
+        public void RestartLevel(string sceneName)       => SceneManager.LoadScene(sceneName);
 
         public IEnumerator LoadGame(GameParameters parameters)
         {
@@ -23,7 +25,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             while (!asyncOp.isDone) { yield return null; }
 
             var game = FindObjectOfType<Game>();
-            game.Initialize(_saveSystem, parameters);
+            game.Initialize(_saveSystem, Instance, parameters);
         }
 
         private void Awake()

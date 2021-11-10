@@ -22,22 +22,24 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         [SerializeField] private GameObject _enemySpawnerPrefab;
         [SerializeField] private Camera _mainCamera;
 
-        private PlayerController _player;
-        private PlayerStats _playerStats;
         private EnemySpawner _enemySpawner;
+        private GameManager _gameManager;
         private IInputManager _inputManager;
+        private LevelSystem _levelSystem;
+        private PlayerController _player;
+        private PlayerInputProvider _playerInput;
+        private PlayerStats _playerStats;
         private StatsManager _statsManager;
         private SaveSystem _saveSystem;
-        private LevelSystem _levelSystem;
-        private PlayerInputProvider _playerInput;
 
         private float _gameOverDelay = 1f;
         private bool _isGamePaused;
         private bool _isPlayerDead;
 
-        public void Initialize(SaveSystem saveSystem, GameParameters parameters)
+        public void Initialize(SaveSystem saveSystem, GameManager gameManager, GameParameters parameters)
         {
             _saveSystem   = saveSystem;
+            _gameManager  = gameManager;
             _playerStats  = new PlayerStats();
             _levelSystem  = new LevelSystem();
             _statsManager = new StatsManager();
@@ -76,6 +78,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             _gameOverPresenter.Restarted += RestartGame;
             _pausePresenter.Restarted    += RestartGame;
             _pausePresenter.Continued    += ContinueGame;
+            _pausePresenter.MenuReturned += ReturnToMenu;
 
             _player.WeaponController.AmmoChanged   += _hudPresenter.OnAmmoChanged;
             _player.WeaponController.WeaponChanged += _hudPresenter.OnWeaponChanged;
@@ -130,11 +133,17 @@ namespace Assets.BackToSchool.Scripts.GameManagement
 
         private void EndGame() { _gameOverPresenter.ShowGameOverPanel(); }
 
+        private void ReturnToMenu()
+        {
+            _saveSystem.SavePlayerProgress(_player, _levelSystem);
+            _gameManager.ReturnToMenu();
+        }
+
         private void RestartGame()
         {
             if (_isGamePaused) ContinueGame();
             _saveSystem.ResetPlayerProgress();
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            _gameManager.RestartLevel(SceneManager.GetActiveScene().name);
         }
 
         #endregion

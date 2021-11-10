@@ -9,9 +9,11 @@ namespace Assets.BackToSchool.Scripts.UI
     {
         public event Action Restarted;
         public event Action Continued;
+        public event Action MenuReturned;
 
         [SerializeField] private Button _pauseRestartButton;
         [SerializeField] private Button _pauseContinueButton;
+        [SerializeField] private Button _returnToMenuButton;
 
         public void TogglePausePanel(bool isPausePanelShowed) => gameObject.SetActive(isPausePanelShowed);
 
@@ -19,10 +21,12 @@ namespace Assets.BackToSchool.Scripts.UI
         {
             _pauseRestartButton.onClick.AddListener(Restart);
             _pauseContinueButton.onClick.AddListener(Continue);
+            _returnToMenuButton.onClick.AddListener(Return);
         }
 
         private void Continue() => Continued?.Invoke();
 
         private void Restart() => Restarted?.Invoke();
+        private void Return()  => MenuReturned?.Invoke();
     }
 }

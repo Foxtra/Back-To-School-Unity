@@ -1,4 +1,5 @@
 ﻿using Assets.BackToSchool.Scripts.Interfaces;
+using Assets.BackToSchool.Scripts.Stats;
 using UnityEngine;
 
 
@@ -11,6 +12,11 @@ namespace Assets.BackToSchool.Scripts.Weapons
         [SerializeField] private float _bulletForce;
 
         private Bullet _bullet;
+
+        public AssaultRifle() => WeaponStats = new WeaponStats(1, 10, 1);
+
+        public WeaponStats WeaponStats { get; set; }
+        public int CurrentAmmo { get; set; }
 
         public void Attack(float damage)
         {

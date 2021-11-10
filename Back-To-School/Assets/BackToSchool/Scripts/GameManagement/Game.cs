@@ -66,7 +66,6 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             {
                 _saveSystem.ResetPlayerProgress();
                 _player.InitializeHealth();
-                _player.WeaponController.InitializeAmmo();
                 _player.WeaponController.InitializeWeapon();
             }
             else
@@ -80,11 +79,12 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             _pausePresenter.Continued    += ContinueGame;
             _pausePresenter.MenuReturned += ReturnToMenu;
 
-            _player.WeaponController.AmmoChanged   += _hudPresenter.OnAmmoChanged;
-            _player.WeaponController.WeaponChanged += _hudPresenter.OnWeaponChanged;
-            _player.Died                           += OnPlayerDeath;
-            _player.HealthChanged                  += _hudPresenter.OnHealthChanged;
-            _enemySpawner.EnemyDied                += _levelSystem.AddExperience;
+            _player.WeaponController.AmmoChanged    += _hudPresenter.OnAmmoChanged;
+            _player.WeaponController.WeaponChanged  += _hudPresenter.OnWeaponChanged;
+            _player.WeaponController.MaxAmmoChanged += _hudPresenter.OnMaxAmmoChanged;
+            _player.Died                            += OnPlayerDeath;
+            _player.HealthChanged                   += _hudPresenter.OnHealthChanged;
+            _enemySpawner.EnemyDied                 += _levelSystem.AddExperience;
 
             _levelSystem.LevelChanged      += _statsManager.LevelUp;
             _levelSystem.LevelChanged      += _hudPresenter.OnLevelChanged;
@@ -93,7 +93,6 @@ namespace Assets.BackToSchool.Scripts.GameManagement
 
             _statsManager.ArmorChanged     += _hudPresenter.OnArmorChanged;
             _statsManager.DamageChanged    += _hudPresenter.OnDamageChanged;
-            _statsManager.MaxAmmoChanged   += _hudPresenter.OnMaxAmmoChanged;
             _statsManager.MaxHealthChanged += _hudPresenter.OnMaxHealthChanged;
             _statsManager.MoveSpeedChanged += _hudPresenter.OnMoveSpeedChanged;
         }

@@ -7,7 +7,6 @@ namespace Assets.BackToSchool.Scripts.Progression
 {
     public class StatsManager
     {
-        public event Action<int> MaxAmmoChanged;
         public event Action<int> MaxHealthChanged;
         public event Action<int> ArmorChanged;
         public event Action<int> DamageChanged;
@@ -36,7 +35,6 @@ namespace Assets.BackToSchool.Scripts.Progression
             _playerStats.Armor.AddModifier(_playerProgression["Armor"][level]);
             _playerStats.Damage.AddModifier(_playerProgression["Damage"][level]);
             //_playerStats.FireRate.AddModifier(_playerProgression["FireRate"][level]); TODO
-            _playerStats.MaxAmmo.AddModifier(_playerProgression["MaxAmmo"][level]);
             _playerStats.MaxHealth.AddModifier(_playerProgression["MaxHealth"][level]);
             _playerStats.MoveSpeed.AddModifier(_playerProgression["MoveSpeed"][level]);
             //_playerStats.ReloadSpeed.AddModifier(_playerProgression["ReloadSpeed"][level]); TODO
@@ -48,7 +46,6 @@ namespace Assets.BackToSchool.Scripts.Progression
         {
             ArmorChanged?.Invoke(_playerStats.Armor.GetValue());
             DamageChanged?.Invoke(_playerStats.Damage.GetValue());
-            MaxAmmoChanged?.Invoke(_playerStats.MaxAmmo.GetValue());
             MaxHealthChanged?.Invoke(_playerStats.MaxHealth.GetValue());
             MoveSpeedChanged?.Invoke(_playerStats.MoveSpeed.GetValue());
         }

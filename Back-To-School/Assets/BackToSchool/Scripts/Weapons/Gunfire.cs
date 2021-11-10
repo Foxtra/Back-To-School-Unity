@@ -1,4 +1,5 @@
 ﻿using Assets.BackToSchool.Scripts.Interfaces;
+using Assets.BackToSchool.Scripts.Stats;
 using UnityEngine;
 
 
@@ -39,6 +40,10 @@ namespace Assets.BackToSchool.Scripts.Weapons
 
         // --- Timing ---
         [SerializeField] private float timeLastFired;
+
+        public Gunfire() => WeaponStats = new WeaponStats();
+        public WeaponStats WeaponStats { get; set; }
+        public int CurrentAmmo { get; set; }
 
         /// <summary>
         ///     Creates an instance of the muzzle flash.

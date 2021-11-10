@@ -32,15 +32,14 @@ namespace Assets.BackToSchool.Scripts.Player
         public void Initialize(IPlayerInput playerInput, PlayerStats playerStats)
         {
             _playerStats = playerStats;
-            WeaponController.SetPlayerStats(_playerStats);
 
-            playerInput.Reloaded      += WeaponController.Reload;
+            playerInput.Reloaded            += WeaponController.Reload;
             WeaponController.WeaponReloaded += Reload;
-            playerInput.Fired         += Fire;
-            playerInput.Stopped       += Stop;
-            playerInput.Moved         += Move;
-            playerInput.Rotated       += Rotate;
-            playerInput.WeaponChanged += NextWeapon;
+            playerInput.Fired               += Fire;
+            playerInput.Stopped             += Stop;
+            playerInput.Moved               += Move;
+            playerInput.Rotated             += Rotate;
+            playerInput.WeaponChanged       += NextWeapon;
         }
 
         private void Awake()

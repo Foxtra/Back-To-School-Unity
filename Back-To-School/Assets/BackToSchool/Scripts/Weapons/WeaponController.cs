@@ -67,6 +67,7 @@ namespace Assets.BackToSchool.Scripts.Weapon
         public void ReloadComplete()
         {
             _isReloading = false;
+            _activeWeapon.ReloadFinished();
             AmmoChanged?.Invoke(_activeWeapon.CurrentAmmo);
         }
 

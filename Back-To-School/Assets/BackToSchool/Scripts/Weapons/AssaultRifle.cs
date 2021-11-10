@@ -27,5 +27,7 @@ namespace Assets.BackToSchool.Scripts.Weapons
             _bullet.SetDamage(damage);
             _bullet.Launch(_bulletForce);
         }
+
+        public void ReloadFinished() { }
     }
 }

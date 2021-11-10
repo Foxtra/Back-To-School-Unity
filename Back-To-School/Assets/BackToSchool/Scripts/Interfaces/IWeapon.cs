@@ -8,5 +8,6 @@ namespace Assets.BackToSchool.Scripts.Interfaces
         WeaponStats WeaponStats { get; set; }
         int CurrentAmmo { get; set; }
         void Attack(float damage);
+        void ReloadFinished();
     }
 }

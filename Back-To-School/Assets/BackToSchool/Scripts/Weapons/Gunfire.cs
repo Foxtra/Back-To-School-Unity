@@ -69,11 +69,7 @@ namespace Assets.BackToSchool.Scripts.Weapons
             }
 
             // --- Disable any gameobjects, if needed ---
-            if (projectileToDisableOnFire != null)
-            {
-                projectileToDisableOnFire.SetActive(false);
-                Invoke("ReEnableDisabledProjectile", 3);
-            }
+            if (projectileToDisableOnFire != null) projectileToDisableOnFire.SetActive(false);
 
             // --- Handle Audio ---
             if (source != null)
@@ -105,6 +101,8 @@ namespace Assets.BackToSchool.Scripts.Weapons
 
             // --- Insert custom code here to shoot projectile or hitscan from weapon ---
         }
+
+        public void ReloadFinished() => ReEnableDisabledProjectile();
 
         private void Start()
         {

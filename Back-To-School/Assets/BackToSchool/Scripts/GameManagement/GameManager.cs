@@ -10,6 +10,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
     {
         private SaveSystem _saveSystem;
         public static GameManager Instance { get; private set; }
+        public bool IsSaveDataExists { get; private set; }
 
         public void ExitGame() { Application.Quit(); }
 
@@ -27,7 +28,8 @@ namespace Assets.BackToSchool.Scripts.GameManagement
 
         private void Awake()
         {
-            _saveSystem = new SaveSystem();
+            _saveSystem      = new SaveSystem();
+            IsSaveDataExists = _saveSystem.IsSaveDataExists();
 
             if (Instance == null)
                 Instance = this;
@@ -41,7 +43,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         {
             if (param.IsNewGame)
                 param.SetInitialLevel(0);
-            else if (_saveSystem.IsSaveDataExists())
+            else if (IsSaveDataExists)
             {
                 var playerLevel = _saveSystem.GetPlayerLevel();
                 param.SetInitialLevel(playerLevel);

@@ -15,6 +15,8 @@ namespace Assets.BackToSchool.Scripts.UI
         [SerializeField] private Button _continueGameButton;
         [SerializeField] private Button _exitGameButton;
 
+        public void ShowContinueButton(bool isShown) => _continueGameButton.gameObject.SetActive(isShown);
+
         private void Start()
         {
             _startGameButton.onClick.AddListener(StartGame);

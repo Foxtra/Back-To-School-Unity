@@ -18,7 +18,7 @@ namespace Assets.BackToSchool.Scripts.Menus
             _mainMenuPresenter.StartTriggered    += StartGame;
             _mainMenuPresenter.ContinueTriggered += ContinueGame;
 
-            _mainMenuPresenter.ShowContinueButton(_gameManager.IsSaveDataExists);
+            _mainMenuPresenter.ShowContinueButton(_gameManager.IsSaveDataExists());
         }
 
         private void ContinueGame() => _gameManager.StartGame(new GameParameters(false));

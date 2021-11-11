@@ -21,8 +21,8 @@ namespace Assets.BackToSchool.Scripts.Progression
 
         public void LoadPlayerProgress(PlayerController player, LevelSystem levelSystem)
         {
-            player.WeaponController.SetAmmoValue(PlayerPrefs.GetInt(Constants.SaveParams.PlayerAmmo.ToString()));
             player.WeaponController.SetWeapon(PlayerPrefs.GetInt(Constants.SaveParams.PlayerWeapon.ToString()));
+            player.WeaponController.SetAmmoValue(PlayerPrefs.GetInt(Constants.SaveParams.PlayerAmmo.ToString()));
             player.SetHealthValue(PlayerPrefs.GetFloat(Constants.SaveParams.PlayerHealth.ToString()));
             levelSystem.SetLevelNumber(PlayerPrefs.GetInt(Constants.SaveParams.PlayerLevel.ToString()));
             levelSystem.AddExperience(PlayerPrefs.GetInt(Constants.SaveParams.PlayerExperience.ToString()));

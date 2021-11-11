@@ -2,12 +2,12 @@
 {
     public class GameParameters
     {
-        public GameParameters(bool isNew) : this(isNew, Constants.SceneNames.MainScene) { }
+        public GameParameters(bool isNew) : this(isNew, Constants.SceneNames.MainScene.ToString()) { }
 
-        public GameParameters(bool isNew, Constants.SceneNames scene)
+        public GameParameters(bool isNew, string scene)
         {
             IsNewGame = isNew;
-            NextScene = scene.ToString();
+            NextScene = scene;
         }
 
         public string NextScene { get; private set; }

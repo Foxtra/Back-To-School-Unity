@@ -134,6 +134,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
 
         private void ReturnToMenu()
         {
+            if (_isGamePaused) ContinueGame();
             _saveSystem.SavePlayerProgress(_player, _levelSystem);
             _gameManager.ReturnToMenu();
         }

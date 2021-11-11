@@ -30,6 +30,7 @@ namespace Assets.BackToSchool.Scripts.Weapon
         {
             _activeWeapon.CurrentAmmo = ammo;
             AmmoChanged?.Invoke(_activeWeapon.CurrentAmmo);
+            MaxAmmoChanged?.Invoke(_activeWeapon.WeaponStats.MaxAmmo.GetValue());
         }
 
         public void SetWeapon(int weaponNumber)

@@ -3,7 +3,7 @@
 
 namespace Assets.BackToSchool.Scripts.Interfaces.Input
 {
-    internal interface IPauseInput : IInputProvider
+    internal interface IPauseInput
     {
         event Action Cancelled;
     }

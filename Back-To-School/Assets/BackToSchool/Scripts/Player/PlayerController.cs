@@ -4,7 +4,7 @@ using Assets.BackToSchool.Scripts.Interfaces;
 using Assets.BackToSchool.Scripts.Interfaces.Input;
 using Assets.BackToSchool.Scripts.Items;
 using Assets.BackToSchool.Scripts.Stats;
-using Assets.BackToSchool.Scripts.Weapon;
+using Assets.BackToSchool.Scripts.Weapons;
 using UnityEngine;
 
 

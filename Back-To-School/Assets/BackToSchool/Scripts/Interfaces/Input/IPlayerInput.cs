@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Assets.BackToSchool.Scripts.Interfaces.Input
 {
-    public interface IPlayerInput : IInputProvider
+    public interface IPlayerInput
     {
         event Action<Vector3> Moved;
         event Action<Vector3> Rotated;

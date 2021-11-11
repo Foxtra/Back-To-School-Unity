@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Assets.BackToSchool.Scripts.Inputs
 {
-    public class PlayerInputProvider : IPlayerInput
+    public class PlayerInputProvider : BaseInput, IPlayerInput
     {
         public event Action<Vector3> Moved;
         public event Action<Vector3> Rotated;
@@ -27,11 +27,9 @@ namespace Assets.BackToSchool.Scripts.Inputs
 
         public void SetIsPause(bool isPause) => _isPaused = isPause;
 
-        public void CancelInvoked() { }
+        public override void FireInvoked() => Fired?.Invoke();
 
-        public void FireInvoked() => Fired?.Invoke();
-
-        public void DirectionChangeInvoked(Vector3 direction)
+        public override void DirectionChangeInvoked(Vector3 direction)
         {
             if (!_isPaused)
             {
@@ -42,7 +40,7 @@ namespace Assets.BackToSchool.Scripts.Inputs
             }
         }
 
-        public void ScrollInvoked(float scrollValue)
+        public override void ScrollInvoked(float scrollValue)
         {
             if (!_isPaused)
             {
@@ -53,9 +51,9 @@ namespace Assets.BackToSchool.Scripts.Inputs
             }
         }
 
-        public void ReloadInvoked() => Reloaded?.Invoke();
+        public override void ReloadInvoked() => Reloaded?.Invoke();
 
-        public void RotateInvoked(Vector3 mousePosition)
+        public override void RotateInvoked(Vector3 mousePosition)
         {
             if (!_isPaused)
             {

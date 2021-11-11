@@ -4,7 +4,7 @@ using Assets.BackToSchool.Scripts.Items;
 using UnityEngine;
 
 
-namespace Assets.BackToSchool.Scripts.Weapon
+namespace Assets.BackToSchool.Scripts.Weapons
 {
     public class WeaponController : MonoBehaviour
     {

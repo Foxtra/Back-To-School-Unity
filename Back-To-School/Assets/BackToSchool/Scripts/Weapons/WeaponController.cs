@@ -56,6 +56,7 @@ namespace Assets.BackToSchool.Scripts.Weapons
                 AmmoChanged?.Invoke(_activeWeapon.CurrentAmmo);
                 _activeWeapon.Attack(playerDamage);
             }
+            else Reload();
         }
 
         public void Reload()

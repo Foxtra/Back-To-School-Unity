@@ -34,10 +34,8 @@ namespace Assets.BackToSchool.Scripts.Progression
         {
             _playerStats.Armor.AddModifier(_playerProgression["Armor"][level]);
             _playerStats.Damage.AddModifier(_playerProgression["Damage"][level]);
-            //_playerStats.FireRate.AddModifier(_playerProgression["FireRate"][level]); TODO
             _playerStats.MaxHealth.AddModifier(_playerProgression["MaxHealth"][level]);
             _playerStats.MoveSpeed.AddModifier(_playerProgression["MoveSpeed"][level]);
-            //_playerStats.ReloadSpeed.AddModifier(_playerProgression["ReloadSpeed"][level]); TODO
 
             UpdateHud();
         }

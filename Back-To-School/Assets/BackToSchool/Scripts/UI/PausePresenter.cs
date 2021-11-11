@@ -24,6 +24,13 @@ namespace Assets.BackToSchool.Scripts.UI
             _returnToMenuButton.onClick.AddListener(Return);
         }
 
+        private void OnDestroy()
+        {
+            _pauseRestartButton.onClick.RemoveListener(Restart);
+            _pauseContinueButton.onClick.RemoveListener(Continue);
+            _returnToMenuButton.onClick.RemoveListener(Return);
+        }
+
         private void Continue() => Continued?.Invoke();
 
         private void Restart() => Restarted?.Invoke();

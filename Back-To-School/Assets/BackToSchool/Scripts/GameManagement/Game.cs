@@ -1,4 +1,5 @@
-﻿using Assets.BackToSchool.Scripts.Enemies;
+﻿using System;
+using Assets.BackToSchool.Scripts.Enemies;
 using Assets.BackToSchool.Scripts.Inputs;
 using Assets.BackToSchool.Scripts.Interfaces.Input;
 using Assets.BackToSchool.Scripts.Player;
@@ -23,6 +24,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         [SerializeField] private Camera _mainCamera;
 
         private EnemySpawner _enemySpawner;
+        private Action _saveAction;
         private GameManager _gameManager;
         private IInputManager _inputManager;
         private LevelSystem _levelSystem;
@@ -89,12 +91,38 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             _levelSystem.LevelChanged      += _statsManager.LevelUp;
             _levelSystem.LevelChanged      += _hudPresenter.OnLevelChanged;
             _levelSystem.ExperienceChanged += _hudPresenter.OnExpChanged;
-            _levelSystem.ProgressChanged   += () => _saveSystem.SavePlayerProgress(_player, _levelSystem);
+            _saveAction                    =  delegate { _saveSystem.SavePlayerProgress(_player, _levelSystem); };
+            _levelSystem.ProgressChanged   += _saveAction;
 
             _statsManager.ArmorChanged     += _hudPresenter.OnArmorChanged;
             _statsManager.DamageChanged    += _hudPresenter.OnDamageChanged;
             _statsManager.MaxHealthChanged += _hudPresenter.OnMaxHealthChanged;
             _statsManager.MoveSpeedChanged += _hudPresenter.OnMoveSpeedChanged;
+        }
+
+        private void OnDestroy()
+        {
+            _gameOverPresenter.Restarted -= RestartGame;
+            _pausePresenter.Restarted    -= RestartGame;
+            _pausePresenter.Continued    -= ContinueGame;
+            _pausePresenter.MenuReturned -= ReturnToMenu;
+
+            _player.WeaponController.AmmoChanged    -= _hudPresenter.OnAmmoChanged;
+            _player.WeaponController.WeaponChanged  -= _hudPresenter.OnWeaponChanged;
+            _player.WeaponController.MaxAmmoChanged -= _hudPresenter.OnMaxAmmoChanged;
+            _player.Died                            -= OnPlayerDeath;
+            _player.HealthChanged                   -= _hudPresenter.OnHealthChanged;
+            _enemySpawner.EnemyDied                 -= _levelSystem.AddExperience;
+
+            _levelSystem.LevelChanged      -= _statsManager.LevelUp;
+            _levelSystem.LevelChanged      -= _hudPresenter.OnLevelChanged;
+            _levelSystem.ExperienceChanged -= _hudPresenter.OnExpChanged;
+            _levelSystem.ProgressChanged   -= _saveAction;
+
+            _statsManager.ArmorChanged     -= _hudPresenter.OnArmorChanged;
+            _statsManager.DamageChanged    -= _hudPresenter.OnDamageChanged;
+            _statsManager.MaxHealthChanged -= _hudPresenter.OnMaxHealthChanged;
+            _statsManager.MoveSpeedChanged -= _hudPresenter.OnMoveSpeedChanged;
         }
 
         #region GameHandlers

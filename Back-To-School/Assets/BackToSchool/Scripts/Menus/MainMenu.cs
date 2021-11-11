@@ -26,5 +26,12 @@ namespace Assets.BackToSchool.Scripts.Menus
         private void ExitGame() => _gameManager.ExitGame();
 
         private void StartGame() => _gameManager.StartGame(new GameParameters(true));
+
+        private void OnDestroy()
+        {
+            _mainMenuPresenter.ExitTriggered     -= ExitGame;
+            _mainMenuPresenter.StartTriggered    -= StartGame;
+            _mainMenuPresenter.ContinueTriggered -= ContinueGame;
+        }
     }
 }

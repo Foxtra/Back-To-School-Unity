@@ -79,7 +79,8 @@ namespace Assets.BackToSchool.Scripts.Enemies
                 _zPos = Random.Range(_minZpos, _maxZpos);
 
                 _enemyPos = new Vector3(_xPos, _yPos, _zPos);
-            } while (SpaceOperations.CheckIfTwoObjectsClose(_enemyPos, _target.transform.position, _maxRangeToPlayer));
+            }
+            while (SpaceOperations.CheckIfTwoObjectsClose(_enemyPos, _target.transform.position, _maxRangeToPlayer));
 
 
             var enemy = Instantiate(_enemyPrefab, _enemyPos, Quaternion.identity);
@@ -88,6 +89,11 @@ namespace Assets.BackToSchool.Scripts.Enemies
             enemy.EnemyStats = new CharacterStats(_enemyDamage, _enemyMaxHealth, _enemyMoveSpeed);
 
             _enemies.Add(enemy.GetComponent<Enemy>());
+        }
+
+        private void OnDestroy()
+        {
+            foreach (var enemy in _enemies) { enemy.Died -= ReduceEnemyCount; }
         }
     }
 }

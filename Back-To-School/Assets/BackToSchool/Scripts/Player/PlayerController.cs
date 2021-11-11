@@ -22,6 +22,7 @@ namespace Assets.BackToSchool.Scripts.Player
         [SerializeField] private float _delayBeforeDamage = 0.5f;
 
         private Animator _animator;
+        private IPlayerInput _playerInput;
         private PlayerStats _playerStats;
         private Rigidbody _rigidBody;
         private SkinnedMeshRenderer[] _renderers;
@@ -32,14 +33,15 @@ namespace Assets.BackToSchool.Scripts.Player
         public void Initialize(IPlayerInput playerInput, PlayerStats playerStats)
         {
             _playerStats = playerStats;
+            _playerInput = playerInput;
 
-            playerInput.Reloaded            += WeaponController.Reload;
+            _playerInput.Reloaded           += WeaponController.Reload;
             WeaponController.WeaponReloaded += Reload;
-            playerInput.Fired               += Fire;
-            playerInput.Stopped             += Stop;
-            playerInput.Moved               += Move;
-            playerInput.Rotated             += Rotate;
-            playerInput.WeaponChanged       += NextWeapon;
+            _playerInput.Fired              += Fire;
+            _playerInput.Stopped            += Stop;
+            _playerInput.Moved              += Move;
+            _playerInput.Rotated            += Rotate;
+            _playerInput.WeaponChanged      += NextWeapon;
         }
 
         private void Awake()
@@ -50,6 +52,17 @@ namespace Assets.BackToSchool.Scripts.Player
             WeaponController = GetComponent<WeaponController>();
             Inventory        = GetComponent<Inventory>();
             WeaponController.SetInventory(Inventory);
+        }
+
+        private void OnDestroy()
+        {
+            _playerInput.Reloaded           -= WeaponController.Reload;
+            WeaponController.WeaponReloaded -= Reload;
+            _playerInput.Fired              -= Fire;
+            _playerInput.Stopped            -= Stop;
+            _playerInput.Moved              -= Move;
+            _playerInput.Rotated            -= Rotate;
+            _playerInput.WeaponChanged      -= NextWeapon;
         }
 
         #region Shooting

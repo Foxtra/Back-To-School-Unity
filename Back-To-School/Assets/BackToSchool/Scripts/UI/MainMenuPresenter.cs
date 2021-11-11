@@ -24,6 +24,13 @@ namespace Assets.BackToSchool.Scripts.UI
             _exitGameButton.onClick.AddListener(ExitGame);
         }
 
+        private void OnDestroy()
+        {
+            _startGameButton.onClick.RemoveListener(StartGame);
+            _continueGameButton.onClick.RemoveListener(ContinueGame);
+            _exitGameButton.onClick.RemoveListener(ExitGame);
+        }
+
         private void ExitGame() => ExitTriggered?.Invoke();
 
         private void StartGame() => StartTriggered?.Invoke();

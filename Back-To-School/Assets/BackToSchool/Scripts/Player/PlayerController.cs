@@ -108,7 +108,7 @@ namespace Assets.BackToSchool.Scripts.Player
         public void TakeDamage(float damage)
         {
             damage         -= _playerStats.Armor.GetValue();
-            damage         =  Mathf.Clamp(damage, 0, int.MaxValue);
+            damage         =  Mathf.Clamp(damage, 1, int.MaxValue);
             _currentHealth -= damage;
             HealthChanged?.Invoke(_currentHealth);
 

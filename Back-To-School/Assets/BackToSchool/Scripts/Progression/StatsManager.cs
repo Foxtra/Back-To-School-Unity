@@ -15,13 +15,10 @@ namespace Assets.BackToSchool.Scripts.Progression
         private PlayerStats _playerStats;
         private Dictionary<string, int[]> _playerProgression = new Dictionary<string, int[]>
         {
-            ["Armor"]       = new[] { 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 },
+            ["Armor"]       = new[] { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
             ["Damage"]      = new[] { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-            ["FireRate"]    = new[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-            ["MaxAmmo"]     = new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 10 },
             ["MaxHealth"]   = new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 10 },
             ["MoveSpeed"]   = new[] { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-            ["ReloadSpeed"] = new[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
         };
 
         public void Initialize(PlayerStats playerStats, int initialLevel)

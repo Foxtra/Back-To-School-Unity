@@ -50,4 +50,4 @@ MonoBehaviour:
   _maxZpos: 49
   _spawnInterval: 3
   _maxRangeToPlayer: 10
-  _maxEnemies: 3
+  _maxEnemies: 4

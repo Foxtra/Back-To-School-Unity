@@ -11,6 +11,13 @@
             Attack
         }
 
+        public enum EnemyStates
+        {
+            Patrolling,
+            Chasing,
+            Attacking
+        }
+
         public enum SaveParams
         {
             PlayerLevel,
@@ -26,5 +33,10 @@
             MainMenu,
             MainScene
         }
+
+        public static float MinXpos = -49f;
+        public static float MaxXpos = 49f;
+        public static float MinZpos = -49f;
+        public static float MaxZpos = 49f;
     }
 }

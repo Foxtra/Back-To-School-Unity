@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Assets.BackToSchool.Scripts.Stats;
 using Assets.BackToSchool.Scripts.Utils;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 
 namespace Assets.BackToSchool.Scripts.Enemies
@@ -12,18 +11,13 @@ namespace Assets.BackToSchool.Scripts.Enemies
     {
         public Action<int> EnemyDied;
 
-        [SerializeField] private Enemy _enemyPrefab;
-
-        [SerializeField] private float _minXpos = -49f;
-        [SerializeField] private float _maxXpos = 49f;
-        [SerializeField] private float _minZpos = -49f;
-        [SerializeField] private float _maxZpos = 49f;
+        [SerializeField] private EnemyWarrior _enemyPrefab;
 
         [SerializeField] private float _spawnInterval = 1f;
         [SerializeField] private float _maxRangeToPlayer = 10f;
         [SerializeField] private int _maxEnemies = 3;
 
-        private List<Enemy> _enemies = new List<Enemy>();
+        private List<BaseEnemy> _enemies = new List<BaseEnemy>();
         private GameObject _target;
         private Vector3 _enemyPos = Vector3.zero;
 
@@ -40,7 +34,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
         public void SetTarget(GameObject target)
         {
             _target = target;
-            foreach (var enemy in _enemies) { enemy.GetComponent<Enemy>().SetTarget(_target); }
+            foreach (var enemy in _enemies) { enemy.GetComponent<EnemyWarrior>().SetTarget(_target); }
         }
 
         public void SetMaxEnemies(int maxEnemiesNumber) => _maxEnemies = maxEnemiesNumber;
@@ -48,7 +42,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
         public void SetEnemyMaxHealth(int maxHeath)     => _enemyMaxHealth = maxHeath;
         public void SetEnemyMoveSpeed(int moveSpeed)    => _enemyMoveSpeed = moveSpeed;
 
-        private void ReduceEnemyCount(Enemy sender)
+        private void ReduceEnemyCount(BaseEnemy sender)
         {
             _currentNumberOfEnemies--;
             var enemyIndex = _enemies.FindIndex(e => e.Equals(sender));
@@ -75,10 +69,8 @@ namespace Assets.BackToSchool.Scripts.Enemies
         {
             do
             {
-                _xPos = Random.Range(_minXpos, _maxXpos);
-                _zPos = Random.Range(_minZpos, _maxZpos);
-
-                _enemyPos = new Vector3(_xPos, _yPos, _zPos);
+                _enemyPos = SpaceOperations.GeneratePositionOnField(Constants.MinXpos, Constants.MaxXpos, Constants.MinZpos,
+                    Constants.MaxZpos);
             }
             while (SpaceOperations.CheckIfTwoObjectsClose(_enemyPos, _target.transform.position, _maxRangeToPlayer));
 
@@ -88,7 +80,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
             enemy.SetTarget(_target);
             enemy.EnemyStats = new CharacterStats(_enemyDamage, _enemyMaxHealth, _enemyMoveSpeed);
 
-            _enemies.Add(enemy.GetComponent<Enemy>());
+            _enemies.Add(enemy.GetComponent<EnemyWarrior>());
         }
 
         private void OnDestroy()

@@ -1,15 +1,7 @@
-﻿using UnityEngine;
-
-
-namespace Assets.BackToSchool.Scripts.Interfaces.Input
+﻿namespace Assets.BackToSchool.Scripts.Interfaces.Input
 {
     public interface IInputProvider
     {
-        void DirectionChangeInvoked(Vector3 direction);
-        void RotateInvoked(Vector3 position);
-        void FireInvoked();
-        void ReloadInvoked();
-        void CancelInvoked();
-        void ScrollInvoked(float scrollValue);
+        void TogglePause(bool isPaused);
     }
 }

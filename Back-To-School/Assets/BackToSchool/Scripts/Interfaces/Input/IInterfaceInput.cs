@@ -3,7 +3,7 @@
 
 namespace Assets.BackToSchool.Scripts.Interfaces.Input
 {
-    public interface IInterfaceInput : IInputProvider
+    public interface IInterfaceInput : IRawInputProvider
     {
         event Action PauseTriggered;
         event Action UpgradeMenuTriggered;

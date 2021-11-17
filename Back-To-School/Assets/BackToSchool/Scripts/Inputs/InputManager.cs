@@ -10,11 +10,11 @@ namespace Assets.BackToSchool.Scripts.Inputs
         private Vector3 _direction = Vector3.zero;
         private Vector3 _mousePosition;
 
-        private List<IInputProvider> _providers = new List<IInputProvider>();
+        private List<IRawInputProvider> _providers = new List<IRawInputProvider>();
 
-        public void Subscribe(IInputProvider provider) => _providers.Add(provider);
+        public void Subscribe(IRawInputProvider provider) => _providers.Add(provider);
 
-        public void Unsubscribe(IInputProvider provider) => _providers.Remove(provider);
+        public void Unsubscribe(IRawInputProvider provider) => _providers.Remove(provider);
 
         private void Update()
         {

@@ -21,11 +21,8 @@ namespace Assets.BackToSchool.Scripts.Inputs
         private LayerMask _layerMask = LayerMask.GetMask("Ground");
 
         private float _rayCastLength = 100f;
-        private bool _isPaused;
 
         public PlayerInputProvider(Camera mainCamera) => _mainCamera = mainCamera;
-
-        public void TogglePause(bool isPause) => _isPaused = isPause;
 
         public override void FireInvoked() => Fired?.Invoke();
 

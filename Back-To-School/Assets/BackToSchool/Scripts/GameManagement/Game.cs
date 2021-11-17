@@ -32,7 +32,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         private EnemySpawner _enemySpawner;
 
         private PlayerController _player;
-        private PlayerInputProvider _playerInput;
+        private IPlayerInput _playerInput;
         private PlayerStats _playerStats;
         private PlayerData _playerData;
 

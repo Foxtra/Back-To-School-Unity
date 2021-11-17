@@ -25,7 +25,7 @@ namespace Assets.BackToSchool.Scripts.Inputs
 
         public PlayerInputProvider(Camera mainCamera) => _mainCamera = mainCamera;
 
-        public void SetIsPause(bool isPause) => _isPaused = isPause;
+        public void TogglePause(bool isPause) => _isPaused = isPause;
 
         public override void FireInvoked() => Fired?.Invoke();
 

@@ -9,9 +9,9 @@ namespace Assets.BackToSchool.Scripts.Weapons
     public class WeaponController : MonoBehaviour
     {
         public event Action<int> AmmoChanged;
+        public event Action<int> MaxAmmoChanged;
         public event Action<int> WeaponChanged;
         public event Action WeaponReloaded;
-        public event Action<int> MaxAmmoChanged;
 
         [SerializeField] private Transform _weaponPosition;
 
@@ -24,7 +24,8 @@ namespace Assets.BackToSchool.Scripts.Weapons
 
         public void SetInventory(Inventory inventory) => _inventory = inventory;
 
-        public int GetAmmoValue() => _activeWeapon.CurrentAmmo;
+        public int GetAmmoValue()   => _activeWeapon.CurrentAmmo;
+        public int GetWeaponIndex() => _inventory.GetCurrentWeaponNumber();
 
         public void SetAmmoValue(int ammo)
         {
@@ -45,7 +46,7 @@ namespace Assets.BackToSchool.Scripts.Weapons
             if (_activeWeapon != null) HideWeapon();
             _weaponToCreate = isNext ? _inventory.GetNextWeapon() : _inventory.GetPreviousWeapon();
             _activeWeapon   = ShowWeapon();
-            InitializeAmmo();
+            InitializeAmmo(0);
         }
 
         public void Shoot(float playerDamage)
@@ -73,18 +74,18 @@ namespace Assets.BackToSchool.Scripts.Weapons
             AmmoChanged?.Invoke(_activeWeapon.CurrentAmmo);
         }
 
-        public void InitializeAmmo()
+        public void InitializeAmmo(int ammo)
         {
-            _activeWeapon.CurrentAmmo = _activeWeapon.WeaponStats.MaxAmmo.GetValue();
+            _activeWeapon.CurrentAmmo = ammo == 0 ? _activeWeapon.WeaponStats.MaxAmmo.GetValue() : ammo;
+
             AmmoChanged?.Invoke(_activeWeapon.CurrentAmmo);
             MaxAmmoChanged?.Invoke(_activeWeapon.WeaponStats.MaxAmmo.GetValue());
         }
 
-        public void InitializeWeapon()
+        public void InitializeWeapon(int weaponIndex)
         {
-            _weaponToCreate = _inventory.GetInitialWeapon();
+            _weaponToCreate = weaponIndex == 0 ? _inventory.GetInitialWeapon() : _inventory.GetWeapon(weaponIndex);
             _activeWeapon   = ShowWeapon();
-            InitializeAmmo();
         }
 
         private IWeapon ShowWeapon()

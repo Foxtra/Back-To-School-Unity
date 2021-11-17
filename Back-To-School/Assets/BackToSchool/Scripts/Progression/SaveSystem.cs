@@ -1,5 +1,6 @@
 ﻿using Assets.BackToSchool.Scripts.Enums;
 using Assets.BackToSchool.Scripts.Player;
+using Newtonsoft.Json;
 using UnityEngine;
 
 
@@ -9,28 +10,20 @@ namespace Assets.BackToSchool.Scripts.Progression
     {
         public bool IsSaveDataExists() => PlayerPrefs.GetInt(SaveParams.IsSaveDataExists.ToString()) == 1;
 
-        public void SavePlayerProgress(PlayerController player, LevelSystem levelSystem)
+        public void SavePlayerProgress(PlayerData playerData)
         {
-            PlayerPrefs.SetInt(SaveParams.PlayerLevel.ToString(), levelSystem.GetLevelNumber());
-            PlayerPrefs.SetInt(SaveParams.PlayerExperience.ToString(), levelSystem.GetExperience());
-            PlayerPrefs.SetInt(SaveParams.PlayerAmmo.ToString(), player.WeaponController.GetAmmoValue());
-            PlayerPrefs.SetInt(SaveParams.PlayerWeapon.ToString(), player.Inventory.GetCurrentWeaponNumber());
-            PlayerPrefs.SetFloat(SaveParams.PlayerHealth.ToString(), player.GetHealthValue());
+            var json = JsonConvert.SerializeObject(playerData);
 
+            PlayerPrefs.SetString(SaveParams.PlayerData.ToString(), json);
             PlayerPrefs.SetInt(SaveParams.IsSaveDataExists.ToString(), 1);
         }
 
-        public void LoadPlayerProgress(PlayerController player, LevelSystem levelSystem)
+        public PlayerData LoadPlayerProgress()
         {
-            player.WeaponController.SetWeapon(PlayerPrefs.GetInt(SaveParams.PlayerWeapon.ToString()));
-            player.WeaponController.SetAmmoValue(PlayerPrefs.GetInt(SaveParams.PlayerAmmo.ToString()));
-            player.SetHealthValue(PlayerPrefs.GetFloat(SaveParams.PlayerHealth.ToString()));
-            levelSystem.SetLevelNumber(PlayerPrefs.GetInt(SaveParams.PlayerLevel.ToString()));
-            levelSystem.AddExperience(PlayerPrefs.GetInt(SaveParams.PlayerExperience.ToString()));
+            var json = PlayerPrefs.GetString(SaveParams.PlayerData.ToString());
+            return JsonConvert.DeserializeObject<PlayerData>(json);
         }
 
         public void ResetPlayerProgress() => PlayerPrefs.DeleteAll();
-
-        public int GetPlayerLevel() => PlayerPrefs.GetInt(SaveParams.PlayerLevel.ToString());
     }
 }

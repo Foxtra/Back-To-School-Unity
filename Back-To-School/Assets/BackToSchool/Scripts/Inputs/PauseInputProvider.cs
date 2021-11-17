@@ -8,6 +8,6 @@ namespace Assets.BackToSchool.Scripts.Inputs
     {
         public event Action Cancelled;
 
-        public override void CancelInvoked() { Cancelled?.Invoke(); }
+        public override void CancelInvoked() => Cancelled?.Invoke();
     }
 }

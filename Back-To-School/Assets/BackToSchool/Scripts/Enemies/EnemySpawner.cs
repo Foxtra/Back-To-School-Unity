@@ -40,7 +40,8 @@ namespace Assets.BackToSchool.Scripts.Enemies
         public void SetTarget(GameObject target)
         {
             _target = target;
-            foreach (var enemy in _enemies) { enemy.GetComponent<Enemy>().SetTarget(_target); }
+            foreach (var enemy in _enemies)
+                enemy.GetComponent<Enemy>().SetTarget(_target);
         }
 
         public void SetMaxEnemies(int maxEnemiesNumber) => _maxEnemies = maxEnemiesNumber;
@@ -93,7 +94,8 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
         private void OnDestroy()
         {
-            foreach (var enemy in _enemies) { enemy.Died -= ReduceEnemyCount; }
+            foreach (var enemy in _enemies)
+                enemy.Died -= ReduceEnemyCount;
         }
     }
 }

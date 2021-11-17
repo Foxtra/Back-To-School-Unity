@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Assets.BackToSchool.Scripts.Enums;
 using Assets.BackToSchool.Scripts.Progression;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -16,14 +17,15 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         public void ExitGame() { Application.Quit(); }
 
         public void StartGame(GameParameters parameters) => StartCoroutine(LoadGame(parameters));
-        public void ReturnToMenu()                       => SceneManager.LoadScene(Constants.SceneNames.MainMenu.ToString());
+        public void ReturnToMenu()                       => SceneManager.LoadScene(SceneNames.MainMenu.ToString());
         public void RestartLevel(string sceneName)       => StartGame(new GameParameters(true, sceneName));
 
         public IEnumerator LoadGame(GameParameters parameters)
         {
             AddParametersForLevel(parameters);
             var asyncOp = SceneManager.LoadSceneAsync(parameters.NextScene);
-            while (!asyncOp.isDone) { yield return null; }
+            while (!asyncOp.isDone)
+                yield return null;
 
             var game = FindObjectOfType<Game>();
             game.Initialize(_saveSystem, Instance, parameters);

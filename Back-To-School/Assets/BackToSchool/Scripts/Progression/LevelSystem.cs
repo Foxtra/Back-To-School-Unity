@@ -10,62 +10,68 @@ namespace Assets.BackToSchool.Scripts.Progression
         public event Action<int> LevelChanged;
         public event Action ProgressChanged;
 
-        private static readonly int[] experiencePerLevel = { 100, 120, 140, 160, 180, 200, 220, 250, 300, 400 };
+        private static readonly int[] _experiencePerLevel = { 100, 120, 140, 160, 180, 200, 220, 250, 300, 400 };
 
-        private int level;
-        private int experience;
+        private int _level;
+        private int _experience;
 
-        public LevelSystem()
+        public void Initialize(int level, int experience)
         {
-            level      = 0;
-            experience = 0;
+            SetLevelNumber(level);
+            SetExperience(experience);
         }
 
         public void AddExperience(int amount)
         {
-            if (!IsMaxLevel())
-            {
-                experience += amount;
-                while (!IsMaxLevel() && experience >= GetExperienceToNextLevel(level))
-                {
-                    experience -= GetExperienceToNextLevel(level);
-                    level++;
-                    LevelChanged?.Invoke(level);
-                }
+            if (IsMaxLevel())
+                return;
 
-                ExperienceChanged?.Invoke(GetExperienceNormalized());
-                ProgressChanged?.Invoke();
+            _experience += amount;
+            while (!IsMaxLevel() && _experience >= GetExperienceToNextLevel(_level))
+            {
+                _experience -= GetExperienceToNextLevel(_level);
+                _level++;
+                LevelChanged?.Invoke(_level);
             }
+
+            ExperienceChanged?.Invoke(GetExperienceNormalized());
+            ProgressChanged?.Invoke();
         }
 
         public void SetLevelNumber(int newLevel)
         {
-            level = newLevel;
-            LevelChanged?.Invoke(level);
+            _level = newLevel;
+            LevelChanged?.Invoke(_level);
         }
 
-        public int GetLevelNumber() => level;
+        public void SetExperience(int experience)
+        {
+            _experience = experience;
+            ExperienceChanged?.Invoke(GetExperienceNormalized());
+        }
+
+        public int GetLevelNumber() => _level;
 
         public float GetExperienceNormalized()
         {
             if (IsMaxLevel())
                 return 1f;
-            return (float)experience / GetExperienceToNextLevel(level);
+            return (float)_experience / GetExperienceToNextLevel(_level);
         }
 
-        public int GetExperience() => experience;
+        public int GetExperience() => _experience;
 
         public int GetExperienceToNextLevel(int level)
         {
-            if (level < experiencePerLevel.Length)
-                return experiencePerLevel[level];
+            if (level < _experiencePerLevel.Length)
+                return _experiencePerLevel[level];
 
             Debug.LogError("Level invalid: " + level);
             return 100;
         }
 
-        public bool IsMaxLevel() => IsMaxLevel(level);
+        public bool IsMaxLevel() => IsMaxLevel(_level);
 
-        public bool IsMaxLevel(int level) => level == experiencePerLevel.Length - 1;
+        public bool IsMaxLevel(int level) => level == _experiencePerLevel.Length - 1;
     }
 }

@@ -2,7 +2,7 @@
 {
     public interface IInputManager
     {
-        void Subscribe(IInputProvider provider);
-        void Unsubscribe(IInputProvider provider);
+        void Subscribe(IRawInputProvider provider);
+        void Unsubscribe(IRawInputProvider provider);
     }
 }

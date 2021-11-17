@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Assets.BackToSchool.Scripts.Enums;
 using Assets.BackToSchool.Scripts.Interfaces;
 using Assets.BackToSchool.Scripts.Interfaces.Input;
 using Assets.BackToSchool.Scripts.Items;
@@ -14,9 +15,11 @@ namespace Assets.BackToSchool.Scripts.Player
     {
         public event Action<float> HealthChanged;
         public event Action Died;
+        public event Action<int> AmmoChanged;
+        public event Action<int> WeaponChanged;
+        public event Action<int> MaxAmmoChanged;
 
         public Inventory Inventory;
-        public WeaponController WeaponController;
 
         [SerializeField] private float _damageTime = 0.1f;
 
@@ -25,43 +28,61 @@ namespace Assets.BackToSchool.Scripts.Player
         private PlayerStats _playerStats;
         private Rigidbody _rigidBody;
         private SkinnedMeshRenderer[] _renderers;
+        private WeaponController _weaponController;
 
         private float _currentHealth;
         private bool _isDead;
 
-        public void Initialize(IPlayerInput playerInput, PlayerStats playerStats)
+        public void Initialize(IPlayerInput playerInput, PlayerStats playerStats, PlayerData playerData)
         {
             _playerStats = playerStats;
             _playerInput = playerInput;
 
-            _playerInput.Reloaded           += WeaponController.Reload;
-            WeaponController.WeaponReloaded += Reload;
-            _playerInput.Fired              += Fire;
-            _playerInput.Stopped            += Stop;
-            _playerInput.Moved              += Move;
-            _playerInput.Rotated            += Rotate;
-            _playerInput.WeaponChanged      += NextWeapon;
+            _playerInput.Reloaded            += _weaponController.Reload;
+            _weaponController.WeaponReloaded += Reload;
+            _playerInput.Fired               += Fire;
+            _playerInput.Stopped             += Stop;
+            _playerInput.Moved               += Move;
+            _playerInput.Rotated             += Rotate;
+            _playerInput.WeaponChanged       += NextWeapon;
+
+            _weaponController.AmmoChanged    += OnAmmoChanged;
+            _weaponController.MaxAmmoChanged += OnMaxAmmoChanged;
+            _weaponController.WeaponChanged  += OnWeaponChanged;
+
+            if (playerData.PlayerHealth != 0)
+                _currentHealth = playerData.PlayerHealth;
+            else
+                _currentHealth = _playerStats.MaxHealth.GetValue();
+            HealthChanged?.Invoke(_currentHealth);
+
+            _weaponController.InitializeWeapon(playerData.PlayerWeapon);
+            _weaponController.InitializeAmmo(playerData.PlayerAmmo);
         }
 
         private void Awake()
         {
-            _rigidBody       = GetComponent<Rigidbody>();
-            _animator        = GetComponent<Animator>();
-            _renderers       = GetComponentsInChildren<SkinnedMeshRenderer>();
-            WeaponController = GetComponent<WeaponController>();
-            Inventory        = GetComponent<Inventory>();
-            WeaponController.SetInventory(Inventory);
+            _rigidBody        = GetComponent<Rigidbody>();
+            _animator         = GetComponent<Animator>();
+            _renderers        = GetComponentsInChildren<SkinnedMeshRenderer>();
+            _weaponController = GetComponent<WeaponController>();
+            Inventory         = GetComponent<Inventory>();
+            _weaponController.SetInventory(Inventory);
         }
 
         private void OnDestroy()
         {
-            _playerInput.Reloaded           -= WeaponController.Reload;
-            WeaponController.WeaponReloaded -= Reload;
-            _playerInput.Fired              -= Fire;
-            _playerInput.Stopped            -= Stop;
-            _playerInput.Moved              -= Move;
-            _playerInput.Rotated            -= Rotate;
-            _playerInput.WeaponChanged      -= NextWeapon;
+            _playerInput.Reloaded            -= _weaponController.Reload;
+            _weaponController.WeaponReloaded -= Reload;
+            _playerInput.Fired               -= Fire;
+            _playerInput.Stopped             -= Stop;
+            _playerInput.Moved               -= Move;
+            _playerInput.Rotated             -= Rotate;
+            _playerInput.WeaponChanged       -= NextWeapon;
+
+            _weaponController.AmmoChanged    -= OnAmmoChanged;
+            _weaponController.MaxAmmoChanged -= OnMaxAmmoChanged;
+            _weaponController.WeaponChanged  -= OnWeaponChanged;
         }
 
         #region Shooting
@@ -69,34 +90,30 @@ namespace Assets.BackToSchool.Scripts.Player
         public void Reload()
         {
             if (!_isDead)
-                _animator.SetTrigger(Constants.AnimationStates.Reload.ToString());
+                _animator.SetTrigger(AnimationStates.Reload.ToString());
         }
 
-        public void ReloadFinished() => WeaponController.ReloadComplete();
+        public void ReloadFinished() => _weaponController.ReloadComplete();
 
         public void Fire()
         {
             if (!_isDead)
-                WeaponController.Shoot(_playerStats.Damage.GetValue());
+                _weaponController.Shoot(_playerStats.Damage.GetValue());
         }
 
         public void NextWeapon(bool isNext)
         {
             if (!_isDead)
-                WeaponController.NextWeapon(isNext);
+                _weaponController.NextWeapon(isNext);
         }
 
         #endregion
 
         #region Interaction
 
-        public void InitializeHealth()
-        {
-            _currentHealth = _playerStats.MaxHealth.GetValue();
-            HealthChanged?.Invoke(_currentHealth);
-        }
-
-        public float GetHealthValue() => _currentHealth;
+        public float GetHealthValue()       => _currentHealth;
+        public int   GetAmmoValue()         => _weaponController.GetAmmoValue();
+        public int   GetActiveWeaponIndex() => _weaponController.GetWeaponIndex();
 
         public void SetHealthValue(float health)
         {
@@ -113,7 +130,7 @@ namespace Assets.BackToSchool.Scripts.Player
 
             if (_currentHealth <= 0 && !_isDead)
             {
-                _animator.SetTrigger(Constants.AnimationStates.Die.ToString());
+                _animator.SetTrigger(AnimationStates.Die.ToString());
                 _isDead = true;
                 Died?.Invoke();
             }
@@ -134,6 +151,10 @@ namespace Assets.BackToSchool.Scripts.Player
                 renderer.material.color = color;
         }
 
+        private void OnAmmoChanged(int ammo)          => AmmoChanged?.Invoke(ammo);
+        private void OnMaxAmmoChanged(int maxAmmo)    => MaxAmmoChanged?.Invoke(maxAmmo);
+        private void OnWeaponChanged(int weaponIndex) => WeaponChanged?.Invoke(weaponIndex);
+
         #endregion
 
         #region Movement
@@ -142,12 +163,12 @@ namespace Assets.BackToSchool.Scripts.Player
         {
             if (!_isDead)
             {
-                _animator.SetBool(Constants.AnimationStates.IsMoving.ToString(), true);
+                _animator.SetBool(AnimationStates.IsMoving.ToString(), true);
                 _rigidBody.MovePosition(transform.position + direction * _playerStats.MoveSpeed.GetValue() * Time.fixedDeltaTime);
             }
         }
 
-        public void Stop() => _animator.SetBool(Constants.AnimationStates.IsMoving.ToString(), false);
+        public void Stop() => _animator.SetBool(AnimationStates.IsMoving.ToString(), false);
 
         public void Rotate(Vector3 pointToRotate)
         {

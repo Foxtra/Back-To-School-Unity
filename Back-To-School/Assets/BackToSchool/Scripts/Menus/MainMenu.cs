@@ -21,11 +21,11 @@ namespace Assets.BackToSchool.Scripts.Menus
             _mainMenuPresenter.ShowContinueButton(_gameManager.IsSaveDataExists());
         }
 
-        private void ContinueGame() => _gameManager.StartGame(new GameParameters(false));
+        private void ContinueGame() => _gameManager.StartGame(new StartParameters(false));
 
         private void ExitGame() => _gameManager.ExitGame();
 
-        private void StartGame() => _gameManager.StartGame(new GameParameters(true));
+        private void StartGame() => _gameManager.StartGame(new StartParameters(true));
 
         private void OnDestroy()
         {

@@ -1,5 +1,5 @@
 using System;
-using Assets.BackToSchool.Scripts.Constants;
+using Assets.BackToSchool.Scripts.Enums;
 using Assets.BackToSchool.Scripts.Interfaces;
 using Assets.BackToSchool.Scripts.Stats;
 using Assets.BackToSchool.Scripts.Utils;
@@ -40,10 +40,10 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
             if (_currentHealth <= 0 && !_isDead)
             {
-                _animator.SetTrigger(AnimationStates.Die);
+                _animator.SetTrigger(AnimationStates.Die.ToString());
                 _isDead = true;
             }
-            else if (_currentHealth > 0) _animator.SetTrigger(AnimationStates.GetDamage);
+            else if (_currentHealth > 0) _animator.SetTrigger(AnimationStates.GetDamage.ToString());
 
             if (_currentHealth <= 0 && _isDead)
                 EnemyDeath();
@@ -55,7 +55,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
         private void Attack()
         {
-            _animator.SetTrigger(AnimationStates.Attack);
+            _animator.SetTrigger(AnimationStates.Attack.ToString());
             _target.GetComponent<IDamageable>().TakeDamage(_enemyDamage);
         }
 
@@ -90,7 +90,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
                 if (!SpaceOperations.CheckIfTwoObjectsClose(transform.position, _target.transform.position, _stopDistance))
                 {
-                    _animator.SetBool(AnimationStates.IsMoving, true);
+                    _animator.SetBool(AnimationStates.IsMoving.ToString(), true);
                     transform.position = Vector3.MoveTowards(transform.position, _target.transform.position, _speed * Time.fixedDeltaTime);
                 }
                 else
@@ -105,7 +105,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
                 }
             }
             else
-                _animator.SetBool(AnimationStates.IsMoving, false);
+                _animator.SetBool(AnimationStates.IsMoving.ToString(), false);
         }
 
         #endregion

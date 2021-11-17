@@ -1,4 +1,5 @@
 ﻿using Assets.BackToSchool.Scripts.Interfaces;
+using Assets.BackToSchool.Scripts.Stats;
 using UnityEngine;
 
 
@@ -12,6 +13,11 @@ namespace Assets.BackToSchool.Scripts.Weapons
 
         private Bullet _bullet;
 
+        public AssaultRifle() => WeaponStats = new WeaponStats(1, 10, 1);
+
+        public WeaponStats WeaponStats { get; set; }
+        public int CurrentAmmo { get; set; }
+
         public void Attack(float damage)
         {
             _bullet                    = Instantiate(_bulletPrefab);
@@ -21,5 +27,7 @@ namespace Assets.BackToSchool.Scripts.Weapons
             _bullet.SetDamage(damage);
             _bullet.Launch(_bulletForce);
         }
+
+        public void ReloadFinished() { }
     }
 }

@@ -1,16 +1,17 @@
 ﻿using System;
-using Assets.BackToSchool.Scripts.Constants;
 using Assets.BackToSchool.Scripts.Interfaces;
 using Assets.BackToSchool.Scripts.Items;
 using UnityEngine;
 
 
-namespace Assets.BackToSchool.Scripts.Weapon
+namespace Assets.BackToSchool.Scripts.Weapons
 {
     public class WeaponController : MonoBehaviour
     {
         public event Action<int> AmmoChanged;
+        public event Action<int> MaxAmmoChanged;
         public event Action<int> WeaponChanged;
+        public event Action WeaponReloaded;
 
         [SerializeField] private Transform _weaponPosition;
 
@@ -18,20 +19,19 @@ namespace Assets.BackToSchool.Scripts.Weapon
         private GameObject _activeWeaponObj;
         private GameObject _weaponToCreate;
         private Inventory _inventory;
-        private Player.Player _player;
 
-        private int _currentAmmo;
         private bool _isReloading;
 
         public void SetInventory(Inventory inventory) => _inventory = inventory;
-        public void SetPlayer(Player.Player player)   => _player = player;
 
-        public int GetAmmoValue() => _currentAmmo;
+        public int GetAmmoValue()   => _activeWeapon.CurrentAmmo;
+        public int GetWeaponIndex() => _inventory.GetCurrentWeaponNumber();
 
         public void SetAmmoValue(int ammo)
         {
-            _currentAmmo = ammo;
-            AmmoChanged?.Invoke(_currentAmmo);
+            _activeWeapon.CurrentAmmo = ammo;
+            AmmoChanged?.Invoke(_activeWeapon.CurrentAmmo);
+            MaxAmmoChanged?.Invoke(_activeWeapon.WeaponStats.MaxAmmo.GetValue());
         }
 
         public void SetWeapon(int weaponNumber)
@@ -46,40 +46,45 @@ namespace Assets.BackToSchool.Scripts.Weapon
             if (_activeWeapon != null) HideWeapon();
             _weaponToCreate = isNext ? _inventory.GetNextWeapon() : _inventory.GetPreviousWeapon();
             _activeWeapon   = ShowWeapon();
+            InitializeAmmo(0);
         }
 
         public void Shoot(float playerDamage)
         {
-            if (!_isReloading && _currentAmmo != 0)
+            if (!_isReloading && _activeWeapon.CurrentAmmo != 0)
             {
-                _currentAmmo--;
-                AmmoChanged?.Invoke(_currentAmmo);
+                _activeWeapon.CurrentAmmo--;
+                AmmoChanged?.Invoke(_activeWeapon.CurrentAmmo);
                 _activeWeapon.Attack(playerDamage);
             }
+            else Reload();
         }
 
         public void Reload()
         {
-            _isReloading = true;
-            _currentAmmo = _player.PlayerStats.MaxAmmo.GetValue();
-            _player.Animator.SetTrigger(AnimationStates.Reload);
+            _isReloading              = true;
+            _activeWeapon.CurrentAmmo = _activeWeapon.WeaponStats.MaxAmmo.GetValue();
+            WeaponReloaded?.Invoke();
         }
 
         public void ReloadComplete()
         {
             _isReloading = false;
-            AmmoChanged?.Invoke(_currentAmmo);
+            _activeWeapon.ReloadFinished();
+            AmmoChanged?.Invoke(_activeWeapon.CurrentAmmo);
         }
 
-        public void InitializeAmmo()
+        public void InitializeAmmo(int ammo)
         {
-            _currentAmmo = _player.PlayerStats.MaxAmmo.GetValue();
-            AmmoChanged?.Invoke(_currentAmmo);
+            _activeWeapon.CurrentAmmo = ammo == 0 ? _activeWeapon.WeaponStats.MaxAmmo.GetValue() : ammo;
+
+            AmmoChanged?.Invoke(_activeWeapon.CurrentAmmo);
+            MaxAmmoChanged?.Invoke(_activeWeapon.WeaponStats.MaxAmmo.GetValue());
         }
 
-        public void InitializeWeapon()
+        public void InitializeWeapon(int weaponIndex)
         {
-            _weaponToCreate = _inventory.GetInitialWeapon();
+            _weaponToCreate = weaponIndex == 0 ? _inventory.GetInitialWeapon() : _inventory.GetWeapon(weaponIndex);
             _activeWeapon   = ShowWeapon();
         }
 

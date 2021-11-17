@@ -1,4 +1,5 @@
 ﻿using Assets.BackToSchool.Scripts.Interfaces;
+using Assets.BackToSchool.Scripts.Stats;
 using UnityEngine;
 
 
@@ -40,6 +41,10 @@ namespace Assets.BackToSchool.Scripts.Weapons
         // --- Timing ---
         [SerializeField] private float timeLastFired;
 
+        public Gunfire() => WeaponStats = new WeaponStats();
+        public WeaponStats WeaponStats { get; set; }
+        public int CurrentAmmo { get; set; }
+
         /// <summary>
         ///     Creates an instance of the muzzle flash.
         ///     Also creates an instance of the audioSource so that multiple shots are not overlapped on the same audio source.
@@ -64,11 +69,7 @@ namespace Assets.BackToSchool.Scripts.Weapons
             }
 
             // --- Disable any gameobjects, if needed ---
-            if (projectileToDisableOnFire != null)
-            {
-                projectileToDisableOnFire.SetActive(false);
-                Invoke("ReEnableDisabledProjectile", 3);
-            }
+            if (projectileToDisableOnFire != null) projectileToDisableOnFire.SetActive(false);
 
             // --- Handle Audio ---
             if (source != null)
@@ -100,6 +101,8 @@ namespace Assets.BackToSchool.Scripts.Weapons
 
             // --- Insert custom code here to shoot projectile or hitscan from weapon ---
         }
+
+        public void ReloadFinished() => ReEnableDisabledProjectile();
 
         private void Start()
         {

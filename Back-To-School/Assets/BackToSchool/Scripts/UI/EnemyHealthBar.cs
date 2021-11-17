@@ -8,13 +8,13 @@ namespace Assets.BackToSchool.Scripts.UI
     public class EnemyHealthBar : MonoBehaviour
     {
         private Slider _slider;
-        private EnemyWarrior _enemy;
+        private BaseEnemy _enemy;
 
         private void Awake() { _slider = GetComponent<Slider>(); }
 
         private void Start()
         {
-            _enemy               =  GetComponentInParent<EnemyWarrior>();
+            _enemy               =  GetComponentInParent<BaseEnemy>();
             _enemy.HealthChanged += OnHealthChanged;
         }
 

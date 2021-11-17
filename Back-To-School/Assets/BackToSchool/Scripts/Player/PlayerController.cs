@@ -19,7 +19,6 @@ namespace Assets.BackToSchool.Scripts.Player
         public WeaponController WeaponController;
 
         [SerializeField] private float _damageTime = 0.1f;
-        [SerializeField] private float _delayBeforeDamage = 0.5f;
 
         private Animator _animator;
         private IPlayerInput _playerInput;
@@ -124,7 +123,6 @@ namespace Assets.BackToSchool.Scripts.Player
 
         private IEnumerator ShowDamageEffect()
         {
-            yield return new WaitForSeconds(_delayBeforeDamage);
             ChangeColor(Color.red);
             yield return new WaitForSeconds(_damageTime);
             ChangeColor(Color.white);
@@ -132,7 +130,8 @@ namespace Assets.BackToSchool.Scripts.Player
 
         private void ChangeColor(Color color)
         {
-            foreach (var renderer in _renderers) { renderer.material.color = color; }
+            foreach (var renderer in _renderers)
+                renderer.material.color = color;
         }
 
         #endregion

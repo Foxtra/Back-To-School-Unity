@@ -55,6 +55,8 @@ namespace Assets.BackToSchool.Scripts.Enemies
         protected void EnableEnemy()
         {
             if (_isDead) return;
+            if (_target == null) return;
+            transform.LookAt(_target.transform.position);
             _isBusy          = false;
             _agent.isStopped = false;
         }

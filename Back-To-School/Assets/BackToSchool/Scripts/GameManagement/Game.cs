@@ -16,6 +16,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         [SerializeField] private HUDPresenter _hudPresenter;
         [SerializeField] private GameOverPresenter _gameOverPresenter;
         [SerializeField] private PausePresenter _pausePresenter;
+        [SerializeField] private CompleteLevelPresenter _completeLevelPresenter;
 
         [SerializeField] private PlayerController _playerPrefab;
         [SerializeField] private GameObject _inputManagerPrefab;
@@ -24,6 +25,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
 
         private GameManager _gameManager;
         private SaveSystem _saveSystem;
+        private ObjectiveSystem _objectiveSystem;
         private IInputManager _inputManager;
 
         private StatsManager _statsManager;
@@ -40,14 +42,18 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         private bool _isGamePaused;
         private bool _isPlayerDead;
 
-        public void Initialize(SaveSystem saveSystem, GameManager gameManager, StartParameters parameters)
+        public void Initialize(SaveSystem saveSystem, GameManager gameManager, StartParameters startParameters)
         {
-            _saveSystem   = saveSystem;
-            _gameManager  = gameManager;
-            _playerStats  = new PlayerStats();
-            _statsManager = new StatsManager();
-            _playerData   = parameters.IsNewGame ? new PlayerData() : _saveSystem.LoadPlayerProgress();
-            _levelSystem  = new LevelSystem();
+            _saveSystem      = saveSystem;
+            _gameManager     = gameManager;
+            _playerStats     = new PlayerStats();
+            _statsManager    = new StatsManager();
+            _playerData      = startParameters.IsNewGame ? new PlayerData() : _saveSystem.LoadPlayerProgress();
+            _levelSystem     = new LevelSystem();
+            _objectiveSystem = new ObjectiveSystem();
+            var objectives = startParameters.IsNewGame
+                ? new ObjectiveParameters(startParameters.GameMode)
+                : _saveSystem.LoadObjectiveProgress();
 
             _player       = Instantiate(_playerPrefab, transform.position, Quaternion.identity);
             _inputManager = Instantiate(_inputManagerPrefab, transform.position, Quaternion.identity).GetComponent<InputManager>();
@@ -56,6 +62,8 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             SubscribeEvents();
             _statsManager.Initialize(_playerStats, _playerData.PlayerLevel);
             _levelSystem.Initialize(_playerData.PlayerLevel, _playerData.PlayerExperience);
+            _objectiveSystem.Initialize(objectives);
+            _hudPresenter.InitializeObjectives(objectives);
 
             _mainCamera.GetComponent<CameraFollow>().SetTarget(_player.transform);
             _enemySpawner.SetTarget(_player.gameObject);
@@ -69,6 +77,12 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             pauseInput.Cancelled += OnGamePaused;
         }
 
+        private void Update()
+        {
+            if (_objectiveSystem != null)
+                _objectiveSystem.CountTimePassed(Time.deltaTime);
+        }
+
         private void SubscribeEvents()
         {
             _gameOverPresenter.Restarted += RestartGame;
@@ -76,12 +90,20 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             _pausePresenter.Continued    += ContinueGame;
             _pausePresenter.MenuReturned += ReturnToMenu;
 
-            _player.AmmoChanged     += _hudPresenter.OnAmmoChanged;
-            _player.WeaponChanged   += _hudPresenter.OnWeaponChanged;
-            _player.MaxAmmoChanged  += _hudPresenter.OnMaxAmmoChanged;
-            _player.Died            += OnPlayerDeath;
-            _player.HealthChanged   += _hudPresenter.OnHealthChanged;
-            _enemySpawner.EnemyDied += _levelSystem.AddExperience;
+            _completeLevelPresenter.MenuReturned += ReturnToMenu;
+            _completeLevelPresenter.Restarted    += RestartGame;
+
+            _player.AmmoChanged                 += _hudPresenter.OnAmmoChanged;
+            _player.WeaponChanged               += _hudPresenter.OnWeaponChanged;
+            _player.MaxAmmoChanged              += _hudPresenter.OnMaxAmmoChanged;
+            _player.Died                        += OnPlayerDeath;
+            _player.HealthChanged               += _hudPresenter.OnHealthChanged;
+            _enemySpawner.ExperienceForEnemyGot += _levelSystem.AddExperience;
+
+            _enemySpawner.EnemyDied              += _objectiveSystem.CountEnemyDeath;
+            _objectiveSystem.ObjectivesCompleted += CompleteLevel;
+            _objectiveSystem.EnemiesKilled       += _hudPresenter.OnEnemiesKillChanged;
+            _objectiveSystem.TimeSurvivedChanged += _hudPresenter.OnTimeChanged;
 
             _levelSystem.LevelChanged      += _statsManager.LevelUp;
             _levelSystem.LevelChanged      += _hudPresenter.OnLevelChanged;
@@ -98,6 +120,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         {
             _saveSystem.SavePlayerProgress(new PlayerData(_levelSystem.GetLevelNumber(), _levelSystem.GetExperience(),
                 _player.GetAmmoValue(), _player.GetActiveWeaponIndex(), _player.GetHealthValue()));
+            _saveSystem.SaveObjectiveProgress(_objectiveSystem.GetObjectivesProgress());
         }
 
         private void OnDestroy()
@@ -107,12 +130,17 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             _pausePresenter.Continued    -= ContinueGame;
             _pausePresenter.MenuReturned -= ReturnToMenu;
 
-            _player.AmmoChanged     -= _hudPresenter.OnAmmoChanged;
-            _player.WeaponChanged   -= _hudPresenter.OnWeaponChanged;
-            _player.MaxAmmoChanged  -= _hudPresenter.OnMaxAmmoChanged;
-            _player.Died            -= OnPlayerDeath;
-            _player.HealthChanged   -= _hudPresenter.OnHealthChanged;
-            _enemySpawner.EnemyDied -= _levelSystem.AddExperience;
+            _player.AmmoChanged                 -= _hudPresenter.OnAmmoChanged;
+            _player.WeaponChanged               -= _hudPresenter.OnWeaponChanged;
+            _player.MaxAmmoChanged              -= _hudPresenter.OnMaxAmmoChanged;
+            _player.Died                        -= OnPlayerDeath;
+            _player.HealthChanged               -= _hudPresenter.OnHealthChanged;
+            _enemySpawner.ExperienceForEnemyGot -= _levelSystem.AddExperience;
+
+            _enemySpawner.EnemyDied              -= _objectiveSystem.CountEnemyDeath;
+            _objectiveSystem.ObjectivesCompleted -= CompleteLevel;
+            _objectiveSystem.EnemiesKilled       -= _hudPresenter.OnEnemiesKillChanged;
+            _objectiveSystem.TimeSurvivedChanged -= _hudPresenter.OnTimeChanged;
 
             _levelSystem.LevelChanged      -= _statsManager.LevelUp;
             _levelSystem.LevelChanged      -= _hudPresenter.OnLevelChanged;
@@ -136,10 +164,15 @@ namespace Assets.BackToSchool.Scripts.GameManagement
 
         private void PauseGame()
         {
-            Time.timeScale = 0f;
-            _isGamePaused  = true;
+            StopTime();
             _playerInput.TogglePause(_isGamePaused);
             _pausePresenter.TogglePausePanel(_isGamePaused);
+        }
+
+        private void StopTime()
+        {
+            Time.timeScale = 0f;
+            _isGamePaused  = true;
         }
 
         private void OnGamePaused()
@@ -152,19 +185,30 @@ namespace Assets.BackToSchool.Scripts.GameManagement
 
         private void ContinueGame()
         {
-            Time.timeScale = 1f;
-            _isGamePaused  = false;
+            ContinueTime();
             _playerInput.TogglePause(_isGamePaused);
             _pausePresenter.TogglePausePanel(_isGamePaused);
         }
 
-        private void EndGame() { _gameOverPresenter.ShowGameOverPanel(); }
+        private void ContinueTime()
+        {
+            Time.timeScale = 1f;
+            _isGamePaused  = false;
+        }
+
+        private void EndGame() => _gameOverPresenter.ShowGameOverPanel();
+
+        private void CompleteLevel()
+        {
+            StopTime();
+            _playerInput.TogglePause(true);
+            _completeLevelPresenter.ShowCompleteLevelPanel();
+        }
 
         private void ReturnToMenu()
         {
             if (_isGamePaused) ContinueGame();
-            _saveSystem.SavePlayerProgress(new PlayerData(_levelSystem.GetLevelNumber(), _levelSystem.GetExperience(),
-                _player.GetAmmoValue(), _player.GetActiveWeaponIndex(), _player.GetHealthValue()));
+            SaveGame();
             _gameManager.ReturnToMenu();
         }
 
@@ -172,7 +216,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         {
             if (_isGamePaused) ContinueGame();
             _saveSystem.ResetPlayerProgress();
-            _gameManager.RestartLevel(SceneManager.GetActiveScene().name);
+            _gameManager.RestartLevel(SceneManager.GetActiveScene().name, _objectiveSystem.GetObjectivesProgress().GameMode);
         }
 
         #endregion

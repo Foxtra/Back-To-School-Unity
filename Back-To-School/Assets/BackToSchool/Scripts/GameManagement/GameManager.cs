@@ -16,9 +16,9 @@ namespace Assets.BackToSchool.Scripts.GameManagement
 
         public void ExitGame() { Application.Quit(); }
 
-        public void StartGame(StartParameters parameters) => StartCoroutine(LoadGame(parameters));
-        public void ReturnToMenu()                        => SceneManager.LoadScene(SceneNames.MainMenu.ToString());
-        public void RestartLevel(string sceneName)        => StartGame(new StartParameters(true, sceneName));
+        public void StartGame(StartParameters parameters)              => StartCoroutine(LoadGame(parameters));
+        public void ReturnToMenu()                                     => SceneManager.LoadScene(SceneNames.MainMenu.ToString());
+        public void RestartLevel(string sceneName, GameModes gameMode) => StartGame(new StartParameters(true, sceneName, gameMode));
 
         public IEnumerator LoadGame(StartParameters parameters)
         {

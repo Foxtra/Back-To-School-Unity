@@ -18,10 +18,24 @@ namespace Assets.BackToSchool.Scripts.Progression
             PlayerPrefs.SetInt(SaveParams.IsSaveDataExists.ToString(), 1);
         }
 
+        public void SaveObjectiveProgress(ObjectiveParameters objectives)
+        {
+            var json = JsonConvert.SerializeObject(objectives);
+
+            PlayerPrefs.SetString(SaveParams.ObjectivesData.ToString(), json);
+            PlayerPrefs.SetInt(SaveParams.IsSaveDataExists.ToString(), 1);
+        }
+
         public PlayerData LoadPlayerProgress()
         {
             var json = PlayerPrefs.GetString(SaveParams.PlayerData.ToString());
             return JsonConvert.DeserializeObject<PlayerData>(json);
+        }
+
+        public ObjectiveParameters LoadObjectiveProgress()
+        {
+            var json = PlayerPrefs.GetString(SaveParams.ObjectivesData.ToString());
+            return JsonConvert.DeserializeObject<ObjectiveParameters>(json);
         }
 
         public void ResetPlayerProgress() => PlayerPrefs.DeleteAll();

@@ -3,6 +3,7 @@
     public enum SaveParams
     {
         PlayerData,
+        ObjectivesData,
         IsSaveDataExists
     }
 }

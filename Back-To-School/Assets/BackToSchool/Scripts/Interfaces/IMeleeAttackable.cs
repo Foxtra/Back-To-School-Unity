@@ -2,6 +2,6 @@
 {
     public interface IMeleeAttackable
     {
-        public void DoDamage(float damage);
+        public void DoDamage();
     }
 }

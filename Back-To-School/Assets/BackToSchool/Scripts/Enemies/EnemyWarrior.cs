@@ -1,25 +1,16 @@
-using System.Collections;
 using Assets.BackToSchool.Scripts.Interfaces;
-using UnityEngine;
+using Assets.BackToSchool.Scripts.Utils;
 
 
 namespace Assets.BackToSchool.Scripts.Enemies
 {
     public class EnemyWarrior : BaseEnemy, IMeleeAttackable
     {
-        [SerializeField] private float _delayBeforeDamage = 0.5f;
-        public void DoDamage(float damage) => _target.GetComponent<IDamageable>().TakeDamage(damage);
-
-        protected override void Attack()
+        public void DoDamage()
         {
-            base.Attack();
-            StartCoroutine(nameof(ShowDamageEffect));
-        }
-
-        private IEnumerator ShowDamageEffect()
-        {
-            yield return new WaitForSeconds(_delayBeforeDamage);
-            DoDamage(_enemyDamage);
+            if (SpaceOperations.CheckIfTwoObjectsClose(transform.position, _target.transform.position,
+                _agent.stoppingDistance))
+                _target.GetComponent<IDamageable>().TakeDamage(_enemyDamage);
         }
     }
 }

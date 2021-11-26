@@ -14,8 +14,6 @@ namespace Assets.BackToSchool.Scripts.Enemies
         public Action<float, int> HealthChanged;
         public Action<BaseEnemy> Died;
 
-        public CharacterStats EnemyStats;
-
         [SerializeField] protected float _startChasingDistance = 10f;
         [SerializeField] protected int _maxHealth;
         [SerializeField] protected int _enemyDamage;
@@ -46,9 +44,6 @@ namespace Assets.BackToSchool.Scripts.Enemies
                 _animator.SetTrigger(AnimationStates.GetDamage.ToString());
                 _agent.isStopped = true;
             }
-
-            if (_currentHealth <= 0 && _isDead)
-                EnemyDeath();
         }
 
         public void SetTarget(GameObject target) => _target = target;
@@ -62,9 +57,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
             _agent.isStopped = false;
         }
 
-        protected void EnemyDeath() => Died?.Invoke(this);
-
-        protected void OnDeath() => Destroy(gameObject);
+        protected void OnDeath() => Died?.Invoke(this);
 
         protected void MoveToNextPatrolPoint()
         {
@@ -82,67 +75,82 @@ namespace Assets.BackToSchool.Scripts.Enemies
             _agent    = GetComponent<NavMeshAgent>();
         }
 
-        private void Start()
+        public void Initialize(CharacterStats enemyStats)
         {
-            _currentHealth = EnemyStats.MaxHealth.GetValue();
-            _enemyDamage   = EnemyStats.Damage.GetValue();
-            _agent.speed   = EnemyStats.MoveSpeed.GetValue();
+            _isDead        = false;
+            _isBusy        = false;
+            _currentHealth = enemyStats.MaxHealth.GetValue();
+            _enemyDamage   = enemyStats.Damage.GetValue();
+            _agent.speed   = enemyStats.MoveSpeed.GetValue();
             _state         = EnemyStates.Patrolling;
+            HealthChanged?.Invoke(_currentHealth, _maxHealth);
         }
 
         private void Update()
         {
-            if (!_isBusy && !_isDead && _target)
+            if (_isBusy || _isDead || !_target)
+                return;
+
+            switch (_state)
             {
-                switch (_state)
-                {
-                    case EnemyStates.Patrolling:
-                        if (!SpaceOperations.CheckIfTwoObjectsClose(transform.position, _target.transform.position, _startChasingDistance))
-                        {
-                            if (SpaceOperations.CheckIfTwoObjectsClose(transform.position, _agent.destination,
-                                _agent.stoppingDistance))
-                                MoveToNextPatrolPoint();
-                        }
-                        else
-                        {
-                            _state = EnemyStates.Chasing;
-                            _agent.SetDestination(_target.transform.position);
-                        }
+                case EnemyStates.Patrolling:
+                    Patrolling();
+                    break;
+                case EnemyStates.Chasing:
+                    Chasing();
+                    break;
+                case EnemyStates.Attacking:
+                    Attacking();
+                    break;
+            }
+        }
 
-                        break;
-                    case EnemyStates.Chasing:
-                        if (SpaceOperations.CheckIfTwoObjectsClose(transform.position, _agent.destination,
-                            _agent.stoppingDistance))
-                        {
-                            _state = EnemyStates.Attacking;
-                            _animator.SetBool(AnimationStates.IsMoving.ToString(), false);
-                        }
-                        else
-                        {
-                            if (!SpaceOperations.CheckIfTwoObjectsClose(transform.position, _target.transform.position,
-                                _startChasingDistance))
-                                _state = EnemyStates.Patrolling;
-                            else if (_target.transform.position != _agent.destination)
-                                _agent.SetDestination(_target.transform.position);
-                        }
+        private void Patrolling()
+        {
+            if (!SpaceOperations.CheckIfTwoObjectsClose(transform.position, _target.transform.position, _startChasingDistance))
+            {
+                if (SpaceOperations.CheckIfTwoObjectsClose(transform.position, _agent.destination,
+                    _agent.stoppingDistance))
+                    MoveToNextPatrolPoint();
+            }
+            else
+            {
+                _state = EnemyStates.Chasing;
+                _agent.SetDestination(_target.transform.position);
+            }
+        }
 
-                        break;
-                    case EnemyStates.Attacking:
-                        if (!SpaceOperations.CheckIfTwoObjectsClose(transform.position, _target.transform.position,
-                            _agent.stoppingDistance))
-                        {
-                            _agent.SetDestination(_target.transform.position);
-                            _state = EnemyStates.Chasing;
-                            _animator.SetBool(AnimationStates.IsMoving.ToString(), true);
-                        }
-                        else
-                        {
-                            _isBusy = true;
-                            Attack();
-                        }
+        private void Chasing()
+        {
+            if (SpaceOperations.CheckIfTwoObjectsClose(transform.position, _agent.destination,
+                _agent.stoppingDistance))
+            {
+                _state = EnemyStates.Attacking;
+                _animator.SetBool(AnimationStates.IsMoving.ToString(), false);
+            }
+            else
+            {
+                if (!SpaceOperations.CheckIfTwoObjectsClose(transform.position, _target.transform.position,
+                    _startChasingDistance))
+                    _state = EnemyStates.Patrolling;
+                else if (_target.transform.position != _agent.destination)
+                    _agent.SetDestination(_target.transform.position);
+            }
+        }
 
-                        break;
-                }
+        private void Attacking()
+        {
+            if (!SpaceOperations.CheckIfTwoObjectsClose(transform.position, _target.transform.position,
+                _agent.stoppingDistance))
+            {
+                _agent.SetDestination(_target.transform.position);
+                _state = EnemyStates.Chasing;
+                _animator.SetBool(AnimationStates.IsMoving.ToString(), true);
+            }
+            else
+            {
+                _isBusy = true;
+                Attack();
             }
         }
     }

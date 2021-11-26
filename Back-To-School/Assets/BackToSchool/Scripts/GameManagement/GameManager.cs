@@ -27,7 +27,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
                 yield return null;
 
             var game = FindObjectOfType<Game>();
-            game.Initialize(_saveSystem, Instance, parameters);
+            game.Initialize(_saveSystem, Instance, parameters, AudioManager.Instance);
         }
 
         private void Awake()

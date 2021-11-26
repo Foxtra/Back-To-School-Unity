@@ -1,5 +1,6 @@
 ﻿using Assets.BackToSchool.Scripts.Enemies;
 using Assets.BackToSchool.Scripts.Inputs;
+using Assets.BackToSchool.Scripts.Interfaces;
 using Assets.BackToSchool.Scripts.Interfaces.Input;
 using Assets.BackToSchool.Scripts.Player;
 using Assets.BackToSchool.Scripts.Progression;
@@ -42,7 +43,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         private bool _isGamePaused;
         private bool _isPlayerDead;
 
-        public void Initialize(SaveSystem saveSystem, GameManager gameManager, StartParameters startParameters)
+        public void Initialize(SaveSystem saveSystem, GameManager gameManager, StartParameters startParameters, IAudioManager audioManager)
         {
             _saveSystem      = saveSystem;
             _gameManager     = gameManager;
@@ -67,10 +68,11 @@ namespace Assets.BackToSchool.Scripts.GameManagement
 
             _mainCamera.GetComponent<CameraFollow>().SetTarget(_player.transform);
             _enemySpawner.SetTarget(_player.gameObject);
+            _enemySpawner.SetAudioManager(audioManager);
 
             _playerInput = new PlayerInputProvider(_mainCamera);
             _inputManager.Subscribe(_playerInput);
-            _player.Initialize(_playerInput, _playerStats, _playerData);
+            _player.Initialize(_playerInput, _playerStats, _playerData, audioManager);
 
             var pauseInput = new PauseInputProvider();
             _inputManager.Subscribe(pauseInput);

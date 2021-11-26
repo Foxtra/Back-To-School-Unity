@@ -1,4 +1,5 @@
 using System.Collections;
+using Assets.BackToSchool.Scripts.Enums;
 using Assets.BackToSchool.Scripts.Interfaces;
 using UnityEngine;
 
@@ -13,6 +14,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
         protected override void Attack()
         {
             base.Attack();
+            _audioManager.Play(SoundNames.WarriorAttack);
             StartCoroutine(nameof(ShowDamageEffect));
         }
 

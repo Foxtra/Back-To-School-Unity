@@ -1,4 +1,5 @@
-﻿using Assets.BackToSchool.Scripts.Interfaces;
+﻿using Assets.BackToSchool.Scripts.Enums;
+using Assets.BackToSchool.Scripts.Interfaces;
 using Assets.BackToSchool.Scripts.Weapons;
 using UnityEngine;
 
@@ -30,6 +31,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
             if (_timer > _attackInterval)
             {
                 base.Attack();
+                _audioManager.Play(SoundNames.ShamanAttack);
                 Fire();
                 _timer = 0f;
             }

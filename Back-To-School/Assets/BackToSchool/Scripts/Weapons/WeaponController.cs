@@ -1,4 +1,5 @@
 ﻿using System;
+using Assets.BackToSchool.Scripts.Enums;
 using Assets.BackToSchool.Scripts.Interfaces;
 using Assets.BackToSchool.Scripts.Items;
 using UnityEngine;
@@ -15,6 +16,7 @@ namespace Assets.BackToSchool.Scripts.Weapons
 
         [SerializeField] private Transform _weaponPosition;
 
+        private IAudioManager _audioManager;
         private IWeapon _activeWeapon;
         private GameObject _activeWeaponObj;
         private GameObject _weaponToCreate;
@@ -22,7 +24,8 @@ namespace Assets.BackToSchool.Scripts.Weapons
 
         private bool _isReloading;
 
-        public void SetInventory(Inventory inventory) => _inventory = inventory;
+        public void SetInventory(Inventory inventory)                  => _inventory = inventory;
+        public void InitializeAudioManager(IAudioManager audioManager) => _audioManager = audioManager;
 
         public int GetAmmoValue()   => _activeWeapon.CurrentAmmo;
         public int GetWeaponIndex() => _inventory.GetCurrentWeaponNumber();
@@ -56,6 +59,7 @@ namespace Assets.BackToSchool.Scripts.Weapons
                 _activeWeapon.CurrentAmmo--;
                 AmmoChanged?.Invoke(_activeWeapon.CurrentAmmo);
                 _activeWeapon.Attack(playerDamage);
+                _audioManager.Play(SoundNames.AssaultRifleShot);
             }
             else Reload();
         }

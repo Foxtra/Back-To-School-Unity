@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Assets.BackToSchool.Scripts.Interfaces;
 using Assets.BackToSchool.Scripts.Stats;
 using Assets.BackToSchool.Scripts.Utils;
 using UnityEngine;
@@ -20,6 +21,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
         private List<BaseEnemy> _enemies = new List<BaseEnemy>();
         private GameObject _target;
+        private IAudioManager _audioManager;
         private Vector3 _enemyPos = Vector3.zero;
 
         private float _xPos;
@@ -45,6 +47,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
             foreach (var enemy in _enemies)
                 enemy.GetComponent<BaseEnemy>().SetTarget(_target);
         }
+        public void SetAudioManager(IAudioManager audioManager) => _audioManager = audioManager;
 
         private void Start() { _halfOfEnemies = _maxEnemies / 2; }
 
@@ -88,6 +91,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
             var enemy = Instantiate(baseEnemy, _enemyPos, Quaternion.identity);
             enemy.Died += ReduceEnemyCount;
             enemy.SetTarget(_target);
+            enemy.SetAudioManager(_audioManager);
             enemy.EnemyStats = new CharacterStats(_enemyDamage, _enemyMaxHealth, _enemyMoveSpeed);
 
             _enemies.Add(enemy.GetComponent<BaseEnemy>());

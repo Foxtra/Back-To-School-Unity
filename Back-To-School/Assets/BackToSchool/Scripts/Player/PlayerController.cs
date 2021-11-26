@@ -25,6 +25,7 @@ namespace Assets.BackToSchool.Scripts.Player
 
         private Animator _animator;
         private IPlayerInput _playerInput;
+        private IAudioManager _audioManager;
         private PlayerStats _playerStats;
         private Rigidbody _rigidBody;
         private SkinnedMeshRenderer[] _renderers;
@@ -33,10 +34,11 @@ namespace Assets.BackToSchool.Scripts.Player
         private float _currentHealth;
         private bool _isDead;
 
-        public void Initialize(IPlayerInput playerInput, PlayerStats playerStats, PlayerData playerData)
+        public void Initialize(IPlayerInput playerInput, PlayerStats playerStats, PlayerData playerData, IAudioManager audioManager)
         {
-            _playerStats = playerStats;
-            _playerInput = playerInput;
+            _playerStats  = playerStats;
+            _playerInput  = playerInput;
+            _audioManager = audioManager;
 
             _playerInput.Reloaded            += _weaponController.Reload;
             _weaponController.WeaponReloaded += Reload;
@@ -58,6 +60,7 @@ namespace Assets.BackToSchool.Scripts.Player
 
             _weaponController.InitializeWeapon(playerData.PlayerWeapon);
             _weaponController.InitializeAmmo(playerData.PlayerAmmo);
+            _weaponController.InitializeAudioManager(_audioManager);
         }
 
         private void Awake()
@@ -97,8 +100,10 @@ namespace Assets.BackToSchool.Scripts.Player
 
         public void Fire()
         {
-            if (!_isDead)
-                _weaponController.Shoot(_playerStats.Damage.GetValue());
+            if (_isDead)
+                return;
+
+            _weaponController.Shoot(_playerStats.Damage.GetValue());
         }
 
         public void NextWeapon(bool isNext)

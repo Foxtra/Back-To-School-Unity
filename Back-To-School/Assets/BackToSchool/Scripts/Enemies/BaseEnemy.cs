@@ -23,6 +23,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
         protected GameObject _target;
         protected Animator _animator;
         protected NavMeshAgent _agent;
+        protected IAudioManager _audioManager;
         protected EnemyStates _state;
 
         protected float _currentHealth;
@@ -51,7 +52,8 @@ namespace Assets.BackToSchool.Scripts.Enemies
                 EnemyDeath();
         }
 
-        public void SetTarget(GameObject target) => _target = target;
+        public void SetTarget(GameObject target)                => _target = target;
+        public void SetAudioManager(IAudioManager audioManager) => _audioManager = audioManager;
 
         protected void EnableEnemy()
         {

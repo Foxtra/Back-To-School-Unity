@@ -15,7 +15,8 @@ namespace Assets.BackToSchool.Scripts.Enemies
         [SerializeField] private EnemyShaman _enemyShamanPrefab;
         [SerializeField] private float _maxRangeToPlayer = 10f;
         [SerializeField] private float _spawnInterval = 1f;
-        [SerializeField] private int _maxEnemies = 6;
+        [SerializeField] private int _maxWarriorEnemies = 3;
+        [SerializeField] private int _maxShamanEnemies = 3;
 
         private List<BaseEnemy> _enemies = new List<BaseEnemy>();
         private GameObject _target;
@@ -25,7 +26,6 @@ namespace Assets.BackToSchool.Scripts.Enemies
         private float _yPos = 0f;
         private float _zPos;
         private float _timer;
-        private int _halfOfEnemies;
         private int _currentNumberOfWarriors;
         private int _currentNumberOfShamans;
         private int _enemyDamage = 2;
@@ -33,10 +33,11 @@ namespace Assets.BackToSchool.Scripts.Enemies
         private int _enemyMoveSpeed = 2;
         private int _experienceForEnemy = 20;
 
-        public void SetMaxEnemies(int maxEnemiesNumber) => _maxEnemies = maxEnemiesNumber;
-        public void SetEnemyDamage(int enemyDamage)     => _enemyDamage = enemyDamage;
-        public void SetEnemyMaxHealth(int maxHeath)     => _enemyMaxHealth = maxHeath;
-        public void SetEnemyMoveSpeed(int moveSpeed)    => _enemyMoveSpeed = moveSpeed;
+        public void SetMaxWarriorEnemies(int maxEnemiesNumber) => _maxWarriorEnemies = maxEnemiesNumber;
+        public void SetMaxShamanEnemies(int maxEnemiesNumber)  => _maxShamanEnemies = maxEnemiesNumber;
+        public void SetEnemyDamage(int enemyDamage)            => _enemyDamage = enemyDamage;
+        public void SetEnemyMaxHealth(int maxHeath)            => _enemyMaxHealth = maxHeath;
+        public void SetEnemyMoveSpeed(int moveSpeed)           => _enemyMoveSpeed = moveSpeed;
 
         public void SetTarget(GameObject target)
         {
@@ -45,12 +46,10 @@ namespace Assets.BackToSchool.Scripts.Enemies
                 enemy.GetComponent<BaseEnemy>().SetTarget(_target);
         }
 
-        private void Start() { _halfOfEnemies = _maxEnemies / 2; }
-
         private void Update()
         {
             _timer += Time.deltaTime;
-            if (_currentNumberOfWarriors + _currentNumberOfShamans >= _maxEnemies)
+            if (_currentNumberOfWarriors >= _maxWarriorEnemies && _currentNumberOfShamans >= _maxShamanEnemies)
                 return;
             if (!(_timer > _spawnInterval) || !_target)
                 return;
@@ -61,13 +60,13 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
         private void ControlEnemiesCount()
         {
-            if (_currentNumberOfWarriors < _halfOfEnemies)
+            if (_currentNumberOfWarriors < _maxWarriorEnemies)
             {
                 SpawnEnemy(_enemyWarriorPrefab);
                 _currentNumberOfWarriors++;
             }
 
-            if (_currentNumberOfShamans < _halfOfEnemies)
+            if (_currentNumberOfShamans < _maxShamanEnemies)
             {
                 SpawnEnemy(_enemyShamanPrefab);
                 _currentNumberOfShamans++;

@@ -62,6 +62,9 @@ namespace Assets.BackToSchool.Scripts.Weapons
 
         public void Reload()
         {
+            if (_isReloading)
+                return;
+
             _isReloading              = true;
             _activeWeapon.CurrentAmmo = _activeWeapon.WeaponStats.MaxAmmo.GetValue();
             WeaponReloaded?.Invoke();

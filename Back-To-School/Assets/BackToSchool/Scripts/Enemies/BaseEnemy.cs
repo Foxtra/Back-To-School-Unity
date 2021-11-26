@@ -14,8 +14,6 @@ namespace Assets.BackToSchool.Scripts.Enemies
         public Action<float, int> HealthChanged;
         public Action<BaseEnemy> Died;
 
-        public CharacterStats EnemyStats;
-
         [SerializeField] protected float _startChasingDistance = 10f;
         [SerializeField] protected int _maxHealth;
         [SerializeField] protected int _enemyDamage;
@@ -46,9 +44,6 @@ namespace Assets.BackToSchool.Scripts.Enemies
                 _animator.SetTrigger(AnimationStates.GetDamage.ToString());
                 _agent.isStopped = true;
             }
-
-            if (_currentHealth <= 0 && _isDead)
-                EnemyDeath();
         }
 
         public void SetTarget(GameObject target) => _target = target;
@@ -62,9 +57,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
             _agent.isStopped = false;
         }
 
-        protected void EnemyDeath() => Died?.Invoke(this);
-
-        protected void OnDeath() => Destroy(gameObject);
+        protected void OnDeath() => Died?.Invoke(this);
 
         protected void MoveToNextPatrolPoint()
         {
@@ -82,12 +75,15 @@ namespace Assets.BackToSchool.Scripts.Enemies
             _agent    = GetComponent<NavMeshAgent>();
         }
 
-        private void Start()
+        public void Initialize(CharacterStats enemyStats)
         {
-            _currentHealth = EnemyStats.MaxHealth.GetValue();
-            _enemyDamage   = EnemyStats.Damage.GetValue();
-            _agent.speed   = EnemyStats.MoveSpeed.GetValue();
+            _isDead        = false;
+            _isBusy        = false;
+            _currentHealth = enemyStats.MaxHealth.GetValue();
+            _enemyDamage   = enemyStats.Damage.GetValue();
+            _agent.speed   = enemyStats.MoveSpeed.GetValue();
             _state         = EnemyStates.Patrolling;
+            HealthChanged?.Invoke(_currentHealth, _maxHealth);
         }
 
         private void Update()

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Assets.BackToSchool.Scripts.Enums;
 using Assets.BackToSchool.Scripts.Stats;
 using Assets.BackToSchool.Scripts.Utils;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 
 namespace Assets.BackToSchool.Scripts.Enemies
@@ -12,18 +13,15 @@ namespace Assets.BackToSchool.Scripts.Enemies
     {
         public Action<int> EnemyDied;
 
-        [SerializeField] private Enemy _enemyPrefab;
-
-        [SerializeField] private float _minXpos = -49f;
-        [SerializeField] private float _maxXpos = 49f;
-        [SerializeField] private float _minZpos = -49f;
-        [SerializeField] private float _maxZpos = 49f;
-
-        [SerializeField] private float _spawnInterval = 1f;
+        [SerializeField] private EnemyWarrior _enemyWarriorPrefab;
+        [SerializeField] private EnemyShaman _enemyShamanPrefab;
         [SerializeField] private float _maxRangeToPlayer = 10f;
-        [SerializeField] private int _maxEnemies = 3;
+        [SerializeField] private float _spawnInterval = 1f;
+        [SerializeField] private int _maxWarriorEnemies = 3;
+        [SerializeField] private int _maxShamanEnemies = 3;
 
-        private List<Enemy> _enemies = new List<Enemy>();
+        //private List<BaseEnemy> _enemies = new List<BaseEnemy>();
+        private Dictionary<EnemyTypes, List<GameObject>> _enemyPools = new Dictionary<EnemyTypes, List<GameObject>>();
         private GameObject _target;
         private Vector3 _enemyPos = Vector3.zero;
 
@@ -31,71 +29,113 @@ namespace Assets.BackToSchool.Scripts.Enemies
         private float _yPos = 0f;
         private float _zPos;
         private float _timer;
-        private int _currentNumberOfEnemies;
+        private int _currentNumberOfWarriors;
+        private int _currentNumberOfShamans;
         private int _enemyDamage = 2;
         private int _enemyMaxHealth = 2;
         private int _enemyMoveSpeed = 2;
         private int _experienceForEnemy = 20;
 
+        public void SetMaxWarriorEnemies(int maxEnemiesNumber) => _maxWarriorEnemies = maxEnemiesNumber;
+        public void SetMaxShamanEnemies(int maxEnemiesNumber)  => _maxShamanEnemies = maxEnemiesNumber;
+        public void SetEnemyDamage(int enemyDamage)            => _enemyDamage = enemyDamage;
+        public void SetEnemyMaxHealth(int maxHeath)            => _enemyMaxHealth = maxHeath;
+        public void SetEnemyMoveSpeed(int moveSpeed)           => _enemyMoveSpeed = moveSpeed;
+
         public void SetTarget(GameObject target)
         {
             _target = target;
-            foreach (var enemy in _enemies)
-                enemy.GetComponent<Enemy>().SetTarget(_target);
-        }
-
-        public void SetMaxEnemies(int maxEnemiesNumber) => _maxEnemies = maxEnemiesNumber;
-        public void SetEnemyDamage(int enemyDamage)     => _enemyDamage = enemyDamage;
-        public void SetEnemyMaxHealth(int maxHeath)     => _enemyMaxHealth = maxHeath;
-        public void SetEnemyMoveSpeed(int moveSpeed)    => _enemyMoveSpeed = moveSpeed;
-
-        private void ReduceEnemyCount(Enemy sender)
-        {
-            _currentNumberOfEnemies--;
-            var enemyIndex = _enemies.FindIndex(e => e.Equals(sender));
-            _enemies[enemyIndex].Died -= ReduceEnemyCount;
-            _enemies.Remove(sender);
-            EnemyDied?.Invoke(_experienceForEnemy);
+            foreach (var enemy in _enemyPools.Keys.SelectMany(key => _enemyPools[key]))
+                enemy.GetComponent<BaseEnemy>().SetTarget(_target);
         }
 
         private void Update()
         {
             _timer += Time.deltaTime;
-            if (_currentNumberOfEnemies < _maxEnemies)
+            if (_currentNumberOfWarriors >= _maxWarriorEnemies && _currentNumberOfShamans >= _maxShamanEnemies)
+                return;
+            if (!(_timer > _spawnInterval) || !_target)
+                return;
+
+            ControlEnemiesCount();
+            _timer = 0f;
+        }
+
+        public void InitializeEnemyPools()
+        {
+            _enemyPools[EnemyTypes.EnemyWarrior] = FillEnemyList(_enemyWarriorPrefab, _maxWarriorEnemies);
+            _enemyPools[EnemyTypes.EnemyShaman]  = FillEnemyList(_enemyShamanPrefab, _maxShamanEnemies);
+        }
+
+        private List<GameObject> FillEnemyList(BaseEnemy prefab, int size)
+        {
+            var objectPool = new List<GameObject>();
+
+            for (var i = 0; i < size; i++)
             {
-                if (_timer > _spawnInterval && _target)
-                {
-                    _currentNumberOfEnemies++;
-                    SpawnEnemy();
-                    _timer = 0f;
-                }
+                var obj = Instantiate(prefab).gameObject;
+                obj.SetActive(false);
+                obj.GetComponent<BaseEnemy>().Died += ReduceEnemyCount;
+                objectPool.Add(obj);
+            }
+
+            return objectPool;
+        }
+
+        private GameObject GetAvailableEnemyFromPool(EnemyTypes type)
+        {
+            var enemy = _enemyPools[type].Find(enemy => !enemy.activeSelf);
+            return enemy;
+        }
+
+        private void ControlEnemiesCount()
+        {
+            if (_currentNumberOfWarriors < _maxWarriorEnemies)
+            {
+                SpawnEnemy(EnemyTypes.EnemyWarrior);
+                _currentNumberOfWarriors++;
+            }
+
+            if (_currentNumberOfShamans < _maxShamanEnemies)
+            {
+                SpawnEnemy(EnemyTypes.EnemyShaman);
+                _currentNumberOfShamans++;
             }
         }
 
-        private void SpawnEnemy()
+        private void SpawnEnemy(EnemyTypes enemyType)
         {
             do
             {
-                _xPos = Random.Range(_minXpos, _maxXpos);
-                _zPos = Random.Range(_minZpos, _maxZpos);
-
-                _enemyPos = new Vector3(_xPos, _yPos, _zPos);
+                _enemyPos = SpaceOperations.GeneratePositionOnField(Constants.MinXpos, Constants.MaxXpos, Constants.MinZpos,
+                    Constants.MaxZpos);
             }
             while (SpaceOperations.CheckIfTwoObjectsClose(_enemyPos, _target.transform.position, _maxRangeToPlayer));
 
-
-            var enemy = Instantiate(_enemyPrefab, _enemyPos, Quaternion.identity);
-            enemy.Died += ReduceEnemyCount;
+            var enemyObj = GetAvailableEnemyFromPool(enemyType);
+            enemyObj.SetActive(true);
+            enemyObj.transform.position = _enemyPos;
+            var enemy = enemyObj.GetComponent<BaseEnemy>();
             enemy.SetTarget(_target);
-            enemy.EnemyStats = new CharacterStats(_enemyDamage, _enemyMaxHealth, _enemyMoveSpeed);
-
-            _enemies.Add(enemy.GetComponent<Enemy>());
+            enemy.Initialize(new CharacterStats(_enemyDamage, _enemyMaxHealth, _enemyMoveSpeed));
         }
 
-        private void OnDestroy()
+        private void ReduceEnemyCount(BaseEnemy sender)
         {
-            foreach (var enemy in _enemies)
-                enemy.Died -= ReduceEnemyCount;
+            var type = EnemyTypes.EnemyWarrior;
+            ;
+            if (sender is EnemyWarrior)
+                _currentNumberOfWarriors--;
+
+            if (sender is EnemyShaman)
+            {
+                _currentNumberOfShamans--;
+                type = EnemyTypes.EnemyShaman;
+            }
+
+            var enemyObj = _enemyPools[type].Find(enemy => enemy.GetComponent<BaseEnemy>().Equals(sender));
+            enemyObj.SetActive(false);
+            EnemyDied?.Invoke(_experienceForEnemy);
         }
     }
 }

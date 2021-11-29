@@ -1,10 +1,11 @@
 ﻿using System;
+using Assets.BackToSchool.Scripts.Interfaces;
 using UnityEngine;
 
 
 namespace Assets.BackToSchool.Scripts.Progression
 {
-    public class LevelSystem
+    public class LevelSystem : ILevelSystem
     {
         public event Action<float> ExperienceChanged;
         public event Action<int> LevelChanged;

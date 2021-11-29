@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Assets.BackToSchool.Scripts.Enums;
+using Assets.BackToSchool.Scripts.Interfaces;
 using Assets.BackToSchool.Scripts.Stats;
 using Assets.BackToSchool.Scripts.Utils;
 using UnityEngine;
@@ -9,9 +10,9 @@ using UnityEngine;
 
 namespace Assets.BackToSchool.Scripts.Enemies
 {
-    public class EnemySpawner : MonoBehaviour
+    public class EnemySpawner : MonoBehaviour, IEnemySpawner
     {
-        public Action<int> EnemyDied;
+        public event Action<int> EnemyDied;
 
         [SerializeField] private EnemyWarrior _enemyWarriorPrefab;
         [SerializeField] private EnemyShaman _enemyShamanPrefab;
@@ -20,7 +21,6 @@ namespace Assets.BackToSchool.Scripts.Enemies
         [SerializeField] private int _maxWarriorEnemies = 3;
         [SerializeField] private int _maxShamanEnemies = 3;
 
-        //private List<BaseEnemy> _enemies = new List<BaseEnemy>();
         private Dictionary<EnemyTypes, List<GameObject>> _enemyPools = new Dictionary<EnemyTypes, List<GameObject>>();
         private GameObject _target;
         private Vector3 _enemyPos = Vector3.zero;
@@ -123,7 +123,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
         private void ReduceEnemyCount(BaseEnemy sender)
         {
             var type = EnemyTypes.EnemyWarrior;
-            ;
+
             if (sender is EnemyWarrior)
                 _currentNumberOfWarriors--;
 

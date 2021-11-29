@@ -1,5 +1,6 @@
 ﻿using Assets.BackToSchool.Scripts.Enemies;
 using Assets.BackToSchool.Scripts.Inputs;
+using Assets.BackToSchool.Scripts.Interfaces;
 using Assets.BackToSchool.Scripts.Interfaces.Input;
 using Assets.BackToSchool.Scripts.Player;
 using Assets.BackToSchool.Scripts.Progression;
@@ -13,53 +14,68 @@ namespace Assets.BackToSchool.Scripts.GameManagement
 {
     public class Game : MonoBehaviour
     {
-        [SerializeField] private HUDPresenter _hudPresenter;
-        [SerializeField] private GameOverPresenter _gameOverPresenter;
-        [SerializeField] private PausePresenter _pausePresenter;
+        private HUDPresenter _hudPresenter;
+        private GameOverPresenter _gameOverPresenter;
+        private PausePresenter _pausePresenter;
 
-        [SerializeField] private PlayerController _playerPrefab;
-        [SerializeField] private GameObject _inputManagerPrefab;
-        [SerializeField] private GameObject _enemySpawnerPrefab;
-        [SerializeField] private Camera _mainCamera;
-
-        private GameManager _gameManager;
-        private SaveSystem _saveSystem;
+        private IGameManager _gameManager;
+        private ISaveSystem _saveSystem;
         private IInputManager _inputManager;
+        private IResourceManager _resourceManager;
 
-        private StatsManager _statsManager;
-        private LevelSystem _levelSystem;
+        private IStatsManager _statsManager;
+        private ILevelSystem _levelSystem;
 
-        private EnemySpawner _enemySpawner;
+        private IEnemySpawner _enemySpawner;
 
-        private PlayerController _player;
+        private IPlayerController _player;
         private IPlayerInput _playerInput;
         private PlayerStats _playerStats;
         private PlayerData _playerData;
+
+        private Camera _mainCamera;
 
         private float _gameOverDelay = 1f;
         private bool _isGamePaused;
         private bool _isPlayerDead;
 
-        public void Initialize(SaveSystem saveSystem, GameManager gameManager, StartParameters parameters)
+        private void Awake()
         {
-            _saveSystem   = saveSystem;
-            _gameManager  = gameManager;
-            _playerStats  = new PlayerStats();
-            _statsManager = new StatsManager();
-            _playerData   = parameters.IsNewGame ? new PlayerData() : _saveSystem.LoadPlayerProgress();
-            _levelSystem  = new LevelSystem();
+            _hudPresenter      = FindObjectOfType<HUDPresenter>(); //TODO UIRoot or ResourceManager?
+            _gameOverPresenter = FindObjectOfType<GameOverPresenter>(); //TODO UIRoot or ResourceManager?
+            _gameOverPresenter.gameObject.SetActive(false);
+            _pausePresenter = FindObjectOfType<PausePresenter>(); //TODO UIRoot or ResourceManager?
+            _pausePresenter.gameObject.SetActive(false);
+        }
 
-            _player       = Instantiate(_playerPrefab, transform.position, Quaternion.identity);
-            _inputManager = Instantiate(_inputManagerPrefab, transform.position, Quaternion.identity).GetComponent<InputManager>();
-            _enemySpawner = Instantiate(_enemySpawnerPrefab, transform.position, Quaternion.identity).GetComponent<EnemySpawner>();
+        public void Initialize(ISaveSystem saveSystem, IGameManager gameManager, IResourceManager resourceManager,
+            StartParameters parameters)
+        {
+            _resourceManager = resourceManager;
+            _saveSystem      = saveSystem;
+            _gameManager     = gameManager;
+            _playerStats     = new PlayerStats();
+            _statsManager    = new StatsManager();
+            _playerData      = parameters.IsNewGame ? new PlayerData() : _saveSystem.LoadPlayerProgress();
+            _levelSystem     = new LevelSystem();
+
+            var playerPrefab = _resourceManager.GetPrefab("Player");
+            var inputManagerPrefab = _resourceManager.GetPrefab("InputManager");
+            var enemySpawnerPrefab = _resourceManager.GetPrefab("EnemySpawner");
+            var mainCamera = _resourceManager.GetPrefab("Main Camera");
+
+            _player       = Instantiate(playerPrefab, transform.position, Quaternion.identity).GetComponent<PlayerController>();
+            _inputManager = Instantiate(inputManagerPrefab, transform.position, Quaternion.identity).GetComponent<InputManager>();
+            _enemySpawner = Instantiate(enemySpawnerPrefab, transform.position, Quaternion.identity).GetComponent<EnemySpawner>();
+            _mainCamera   = Instantiate(mainCamera).GetComponent<Camera>();
 
             SubscribeEvents();
             _statsManager.Initialize(_playerStats, _playerData.PlayerLevel);
             _levelSystem.Initialize(_playerData.PlayerLevel, _playerData.PlayerExperience);
 
-            _mainCamera.GetComponent<CameraFollow>().SetTarget(_player.transform);
+            _mainCamera.GetComponent<CameraFollow>().SetTarget(playerPrefab.transform);
             _enemySpawner.InitializeEnemyPools();
-            _enemySpawner.SetTarget(_player.gameObject);
+            _enemySpawner.SetTarget(playerPrefab);
 
             _playerInput = new PlayerInputProvider(_mainCamera);
             _inputManager.Subscribe(_playerInput);

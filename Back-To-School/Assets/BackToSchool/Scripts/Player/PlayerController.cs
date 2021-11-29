@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace Assets.BackToSchool.Scripts.Player
 {
-    public class PlayerController : MonoBehaviour, IMovable, IShootable, IDamageable
+    public class PlayerController : MonoBehaviour, IPlayerController
     {
         public event Action<float> HealthChanged;
         public event Action Died;

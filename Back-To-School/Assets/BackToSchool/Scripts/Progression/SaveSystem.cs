@@ -1,4 +1,5 @@
 ﻿using Assets.BackToSchool.Scripts.Enums;
+using Assets.BackToSchool.Scripts.Interfaces;
 using Assets.BackToSchool.Scripts.Player;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -6,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.BackToSchool.Scripts.Progression
 {
-    public class SaveSystem
+    public class SaveSystem : ISaveSystem
     {
         public bool IsSaveDataExists() => PlayerPrefs.GetInt(SaveParams.IsSaveDataExists.ToString()) == 1;
 

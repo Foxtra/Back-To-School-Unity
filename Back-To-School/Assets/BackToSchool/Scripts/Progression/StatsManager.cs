@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Assets.BackToSchool.Scripts.Interfaces;
 using Assets.BackToSchool.Scripts.Stats;
 
 
 namespace Assets.BackToSchool.Scripts.Progression
 {
-    public class StatsManager
+    public class StatsManager : IStatsManager
     {
         public event Action<int> MaxHealthChanged;
         public event Action<int> ArmorChanged;
@@ -15,16 +16,17 @@ namespace Assets.BackToSchool.Scripts.Progression
         private PlayerStats _playerStats;
         private Dictionary<string, int[]> _playerProgression = new Dictionary<string, int[]>
         {
-            ["Armor"]       = new[] { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-            ["Damage"]      = new[] { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-            ["MaxHealth"]   = new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 10 },
-            ["MoveSpeed"]   = new[] { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+            ["Armor"]     = new[] { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+            ["Damage"]    = new[] { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+            ["MaxHealth"] = new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 10 },
+            ["MoveSpeed"] = new[] { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
         };
 
         public void Initialize(PlayerStats playerStats, int initialLevel)
         {
             _playerStats = playerStats;
-            for (var i = 0; i <= initialLevel; i++) { LevelUp(i); }
+            for (var i = 0; i <= initialLevel; i++)
+                LevelUp(i);
         }
 
         public void LevelUp(int level)

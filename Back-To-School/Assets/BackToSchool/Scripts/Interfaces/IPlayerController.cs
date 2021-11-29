@@ -2,6 +2,7 @@
 using Assets.BackToSchool.Scripts.Interfaces.Input;
 using Assets.BackToSchool.Scripts.Player;
 using Assets.BackToSchool.Scripts.Stats;
+using UnityEngine;
 
 
 namespace Assets.BackToSchool.Scripts.Interfaces
@@ -13,6 +14,8 @@ namespace Assets.BackToSchool.Scripts.Interfaces
         event Action<int> AmmoChanged;
         event Action<int> WeaponChanged;
         event Action<int> MaxAmmoChanged;
+
+        GameObject gameObject { get; }
 
         void  Initialize(IPlayerInput playerInput, PlayerStats playerStats, PlayerData playerData);
         void  Reload();

@@ -73,9 +73,9 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             _statsManager.Initialize(_playerStats, _playerData.PlayerLevel);
             _levelSystem.Initialize(_playerData.PlayerLevel, _playerData.PlayerExperience);
 
-            _mainCamera.GetComponent<CameraFollow>().SetTarget(playerPrefab.transform);
+            _mainCamera.GetComponent<CameraFollow>().SetTarget(_player.gameObject.transform);
             _enemySpawner.InitializeEnemyPools();
-            _enemySpawner.SetTarget(playerPrefab);
+            _enemySpawner.SetTarget(_player.gameObject);
 
             _playerInput = new PlayerInputProvider(_mainCamera);
             _inputManager.Subscribe(_playerInput);

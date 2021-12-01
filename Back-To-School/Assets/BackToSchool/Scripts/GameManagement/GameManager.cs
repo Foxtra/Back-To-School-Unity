@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using Assets.BackToSchool.Scripts.Enums;
+﻿using Assets.BackToSchool.Scripts.Enums;
 using Assets.BackToSchool.Scripts.Interfaces;
 using Assets.BackToSchool.Scripts.Progression;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -19,9 +19,9 @@ namespace Assets.BackToSchool.Scripts.GameManagement
 
         public void ExitGame() { Application.Quit(); }
 
-        public void StartGame(StartParameters parameters) => StartCoroutine(LoadGame(parameters));
-        public void ReturnToMenu()                        => StartCoroutine(LoadMenu());
-        public void RestartLevel(string sceneName)        => StartGame(new StartParameters(true, sceneName));
+        public async void StartGame(StartParameters parameters) => await LoadGame(parameters);
+        public async void ReturnToMenu()                        => await LoadMenu();
+        public       void RestartLevel(string sceneName)        => StartGame(new StartParameters(true, sceneName));
 
         public void InitializeMenu() => Instantiate(_resourceManager.GetPrefab("MainMenu"));
 
@@ -33,19 +33,12 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             game.Initialize(_saveSystem, this, _resourceManager, _startParameters);
         }
 
-        public IEnumerator LoadMenu()
-        {
-            var asyncOp = SceneManager.LoadSceneAsync(SceneNames.MainMenu.ToString());
-            while (!asyncOp.isDone)
-                yield return null;
-        }
+        public async UniTask LoadMenu() => await SceneManager.LoadSceneAsync(SceneNames.MainMenu.ToString());
 
-        public IEnumerator LoadGame(StartParameters parameters)
+        public async UniTask LoadGame(StartParameters parameters)
         {
             _startParameters = parameters;
-            var asyncOp = SceneManager.LoadSceneAsync(parameters.NextScene);
-            while (!asyncOp.isDone)
-                yield return null;
+            await SceneManager.LoadSceneAsync(parameters.NextScene);
         }
 
         private void Awake()

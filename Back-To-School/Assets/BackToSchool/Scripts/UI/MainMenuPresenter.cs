@@ -17,7 +17,7 @@ namespace Assets.BackToSchool.Scripts.UI
         [SerializeField] private Button _exitGameButton;
 
         public void ShowContinueButton(bool isShown) => _continueGameButton.gameObject.SetActive(isShown);
-        public void SetRoot(RectTransform canvas)    => transform.parent = canvas;
+        public void SetRoot(RectTransform canvas)    => transform.SetParent(canvas, false);
         public void ShowView()                       => gameObject.SetActive(true);
         public void HideView()                       => gameObject.SetActive(false);
 

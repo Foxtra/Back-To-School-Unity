@@ -5,6 +5,7 @@ using Assets.BackToSchool.Scripts.Interfaces.Core;
 using Assets.BackToSchool.Scripts.Interfaces.Input;
 using Assets.BackToSchool.Scripts.Interfaces.UI;
 using Assets.BackToSchool.Scripts.Models;
+using Assets.BackToSchool.Scripts.Parameters;
 using Assets.BackToSchool.Scripts.Progression;
 using Assets.BackToSchool.Scripts.UI;
 using Cysharp.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         private ISystemResourceManager _systemResourceManager;
         private ISaveSystem _saveSystem;
         private IViewFactory _viewFactory;
-        private BaseModel _currentModel;
+        private IModel _currentModel;
         private Camera _mainCamera;
         private StartParameters _startParameters;
         public static GameManager Instance { get; private set; }

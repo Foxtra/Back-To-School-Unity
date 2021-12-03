@@ -25,7 +25,7 @@ namespace Assets.BackToSchool.Scripts.UI
         private int _ammoValue;
         private int _maxAmmoValue;
 
-        public void SetRoot(RectTransform canvas) => transform.parent = canvas;
+        public void SetRoot(RectTransform canvas) => transform.SetParent(canvas, false);
         public void ShowView()                    => gameObject.SetActive(true);
         public void HideView()                    => gameObject.SetActive(false);
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Assets.BackToSchool.Scripts.Enums;
 using Assets.BackToSchool.Scripts.Interfaces.Game;
+using Assets.BackToSchool.Scripts.Parameters;
 using Assets.BackToSchool.Scripts.Stats;
 using Assets.BackToSchool.Scripts.Utils;
 using UnityEngine;
@@ -22,7 +23,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
         [SerializeField] private int _maxShamanEnemies = 3;
 
         private Dictionary<EEnemyTypes, List<GameObject>> _enemyPools = new Dictionary<EEnemyTypes, List<GameObject>>();
-        private GameObject _target;
+        private Transform _target;
         private Vector3 _enemyPos = Vector3.zero;
 
         private float _xPos;
@@ -42,7 +43,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
         public void SetEnemyMaxHealth(int maxHeath)            => _enemyMaxHealth = maxHeath;
         public void SetEnemyMoveSpeed(int moveSpeed)           => _enemyMoveSpeed = moveSpeed;
 
-        public void SetTarget(GameObject target)
+        public void SetTarget(Transform target)
         {
             _target = target;
             foreach (var enemy in _enemyPools.Keys.SelectMany(key => _enemyPools[key]))

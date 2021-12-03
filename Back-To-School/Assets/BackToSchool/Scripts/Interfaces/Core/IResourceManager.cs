@@ -11,9 +11,12 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Core
 {
     public interface IResourceManager
     {
-        public Camera            CreateCamera(EGame type);
-        public IUIRoot           CreateUIRoot(Camera worldSpaceCamera);
+        public Camera CreateCamera(EGame type);
+
+        public IUIRoot CreateUIRoot(Camera worldSpaceCamera);
+
         public IPlayerController CreatePlayer(IPlayerInput playerInput, PlayerStats playerStats, PlayerData playerData);
-        public IEnemySpawner     CreateEnemySpawner();
+
+        public IEnemySpawner CreateEnemySpawner();
     }
 }

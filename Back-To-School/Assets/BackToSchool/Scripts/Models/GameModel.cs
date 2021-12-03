@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-using Assets.BackToSchool.Scripts.Enums;
-using Assets.BackToSchool.Scripts.GameManagement;
+﻿using Assets.BackToSchool.Scripts.Enums;
 using Assets.BackToSchool.Scripts.Inputs;
 using Assets.BackToSchool.Scripts.Interfaces;
 using Assets.BackToSchool.Scripts.Interfaces.Components;
@@ -8,9 +6,11 @@ using Assets.BackToSchool.Scripts.Interfaces.Core;
 using Assets.BackToSchool.Scripts.Interfaces.Game;
 using Assets.BackToSchool.Scripts.Interfaces.Input;
 using Assets.BackToSchool.Scripts.Interfaces.UI;
+using Assets.BackToSchool.Scripts.Parameters;
 using Assets.BackToSchool.Scripts.Player;
 using Assets.BackToSchool.Scripts.Progression;
 using Assets.BackToSchool.Scripts.Stats;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -62,18 +62,18 @@ namespace Assets.BackToSchool.Scripts.Models
             _enemySpawner    = _resourceManager.CreateEnemySpawner();
             _playerData      = parameters.IsNewGame ? new PlayerData() : _saveSystem.LoadPlayerProgress();
 
+            _playerInput = new PlayerInputProvider(_mainCamera);
+            _inputManager.Subscribe(_playerInput);
+
+            _player = _resourceManager.CreatePlayer(_playerInput, _playerStats, _playerData);
+
             SubscribeEvents();
             _statsManager.Initialize(_playerStats, _playerData.PlayerLevel);
             _levelSystem.Initialize(_playerData.PlayerLevel, _playerData.PlayerExperience);
 
             _mainCamera.GetComponent<CameraFollow>().SetTarget(_player.gameObject.transform);
             _enemySpawner.InitializeEnemyPools();
-            _enemySpawner.SetTarget(_player.gameObject);
-
-            _playerInput = new PlayerInputProvider(_mainCamera);
-            _inputManager.Subscribe(_playerInput);
-
-            _player = _resourceManager.CreatePlayer(_playerInput, _playerStats, _playerData);
+            _enemySpawner.SetTarget(_player.gameObject.transform);
 
             var pauseInput = new PauseInputProvider();
             _inputManager.Subscribe(pauseInput);
@@ -138,11 +138,12 @@ namespace Assets.BackToSchool.Scripts.Models
 
         #region GameHandlers
 
-        private void OnPlayerDeath()
+        private async void OnPlayerDeath()
         {
             _isPlayerDead = true;
             _enemySpawner.SetTarget(null);
-            Task.Delay(_gameOverDelay).ContinueWith(t => EndGame());
+            await UniTask.Delay(_gameOverDelay);
+            EndGame();
         }
 
         private void PauseGame()

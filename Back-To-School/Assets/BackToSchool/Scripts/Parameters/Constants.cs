@@ -1,4 +1,4 @@
-﻿namespace Assets.BackToSchool.Scripts
+﻿namespace Assets.BackToSchool.Scripts.Parameters
 {
     public static class Constants
     {

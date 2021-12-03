@@ -1,10 +1,10 @@
 ﻿using System;
-using UnityEngine;
+using Assets.BackToSchool.Scripts.Interfaces.Components;
 
 
 namespace Assets.BackToSchool.Scripts.Interfaces.Game
 {
-    public interface IEnemySpawner
+    public interface IEnemySpawner : ITargetable
     {
         public event Action<int> EnemyDied;
         void SetMaxWarriorEnemies(int maxEnemiesNumber);
@@ -12,7 +12,6 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Game
         void SetEnemyDamage(int enemyDamage);
         void SetEnemyMaxHealth(int maxHeath);
         void SetEnemyMoveSpeed(int moveSpeed);
-        void SetTarget(GameObject target);
         void InitializeEnemyPools();
     }
 }

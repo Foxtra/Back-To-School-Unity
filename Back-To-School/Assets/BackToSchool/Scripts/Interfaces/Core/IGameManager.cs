@@ -1,4 +1,4 @@
-﻿using Assets.BackToSchool.Scripts.GameManagement;
+﻿using Assets.BackToSchool.Scripts.Parameters;
 using Cysharp.Threading.Tasks;
 
 

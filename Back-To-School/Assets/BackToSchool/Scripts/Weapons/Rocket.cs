@@ -1,4 +1,4 @@
-﻿using Assets.BackToSchool.Scripts.Interfaces;
+﻿using Assets.BackToSchool.Scripts.Interfaces.Components;
 using UnityEngine;
 
 
@@ -54,7 +54,8 @@ namespace Assets.BackToSchool.Scripts.Weapons
             projectileMesh.enabled = false;
             targetHit              = true;
             inFlightAudioSource.Stop();
-            foreach (var col in GetComponents<Collider>()) { col.enabled = false; }
+            foreach (var col in GetComponents<Collider>())
+                col.enabled = false;
 
             disableOnHit.Stop();
 

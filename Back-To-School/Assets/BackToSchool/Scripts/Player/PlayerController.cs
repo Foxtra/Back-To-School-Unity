@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using Assets.BackToSchool.Scripts.Enums;
-using Assets.BackToSchool.Scripts.Interfaces;
+using Assets.BackToSchool.Scripts.Interfaces.Game;
 using Assets.BackToSchool.Scripts.Interfaces.Input;
 using Assets.BackToSchool.Scripts.Items;
 using Assets.BackToSchool.Scripts.Stats;
@@ -90,7 +90,7 @@ namespace Assets.BackToSchool.Scripts.Player
         public void Reload()
         {
             if (!_isDead)
-                _animator.SetTrigger(AnimationStates.Reload.ToString());
+                _animator.SetTrigger(EAnimations.Reload.ToString());
         }
 
         public void ReloadFinished() => _weaponController.ReloadComplete();
@@ -130,7 +130,7 @@ namespace Assets.BackToSchool.Scripts.Player
 
             if (_currentHealth <= 0 && !_isDead)
             {
-                _animator.SetTrigger(AnimationStates.Die.ToString());
+                _animator.SetTrigger(EAnimations.Die.ToString());
                 _isDead = true;
                 Died?.Invoke();
             }
@@ -163,12 +163,12 @@ namespace Assets.BackToSchool.Scripts.Player
         {
             if (!_isDead)
             {
-                _animator.SetBool(AnimationStates.IsMoving.ToString(), true);
+                _animator.SetBool(EAnimations.IsMoving.ToString(), true);
                 _rigidBody.MovePosition(transform.position + direction * _playerStats.MoveSpeed.GetValue() * Time.fixedDeltaTime);
             }
         }
 
-        public void Stop() => _animator.SetBool(AnimationStates.IsMoving.ToString(), false);
+        public void Stop() => _animator.SetBool(EAnimations.IsMoving.ToString(), false);
 
         public void Rotate(Vector3 pointToRotate)
         {

@@ -1,4 +1,4 @@
-﻿using Assets.BackToSchool.Scripts.Interfaces;
+﻿using Assets.BackToSchool.Scripts.Interfaces.Components;
 using UnityEngine;
 
 

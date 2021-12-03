@@ -1,6 +1,6 @@
 ﻿using System;
 using Assets.BackToSchool.Scripts.Enums;
-using Assets.BackToSchool.Scripts.Interfaces;
+using Assets.BackToSchool.Scripts.Interfaces.Components;
 using Assets.BackToSchool.Scripts.Stats;
 using Assets.BackToSchool.Scripts.Utils;
 using UnityEngine;
@@ -21,7 +21,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
         protected GameObject _target;
         protected Animator _animator;
         protected NavMeshAgent _agent;
-        protected EnemyStates _state;
+        protected EStates _state;
 
         protected float _currentHealth;
         protected bool _isBusy;
@@ -35,13 +35,13 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
             if (_currentHealth <= 0 && !_isDead)
             {
-                _animator.SetTrigger(AnimationStates.Die.ToString());
+                _animator.SetTrigger(EAnimations.Die.ToString());
                 _isDead          = true;
                 _agent.isStopped = true;
             }
             else if (_currentHealth > 0)
             {
-                _animator.SetTrigger(AnimationStates.GetDamage.ToString());
+                _animator.SetTrigger(EAnimations.GetDamage.ToString());
                 _agent.isStopped = true;
             }
         }
@@ -61,13 +61,13 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
         protected void MoveToNextPatrolPoint()
         {
-            _animator.SetBool(AnimationStates.IsMoving.ToString(), true);
+            _animator.SetBool(EAnimations.IsMoving.ToString(), true);
             var newDestination = SpaceOperations.GeneratePositionOnField(Constants.MinXpos, Constants.MaxXpos, Constants.MinZpos,
                 Constants.MaxZpos);
             _agent.SetDestination(newDestination);
         }
 
-        protected virtual void Attack() => _animator.SetTrigger(AnimationStates.Attack.ToString());
+        protected virtual void Attack() => _animator.SetTrigger(EAnimations.Attack.ToString());
 
         private void Awake()
         {
@@ -82,7 +82,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
             _currentHealth = enemyStats.MaxHealth.GetValue();
             _enemyDamage   = enemyStats.Damage.GetValue();
             _agent.speed   = enemyStats.MoveSpeed.GetValue();
-            _state         = EnemyStates.Patrolling;
+            _state         = EStates.Patrolling;
             HealthChanged?.Invoke(_currentHealth, _maxHealth);
         }
 
@@ -93,13 +93,13 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
             switch (_state)
             {
-                case EnemyStates.Patrolling:
+                case EStates.Patrolling:
                     Patrolling();
                     break;
-                case EnemyStates.Chasing:
+                case EStates.Chasing:
                     Chasing();
                     break;
-                case EnemyStates.Attacking:
+                case EStates.Attacking:
                     Attacking();
                     break;
             }
@@ -115,7 +115,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
             }
             else
             {
-                _state = EnemyStates.Chasing;
+                _state = EStates.Chasing;
                 _agent.SetDestination(_target.transform.position);
             }
         }
@@ -125,14 +125,14 @@ namespace Assets.BackToSchool.Scripts.Enemies
             if (SpaceOperations.CheckIfTwoObjectsClose(transform.position, _agent.destination,
                 _agent.stoppingDistance))
             {
-                _state = EnemyStates.Attacking;
-                _animator.SetBool(AnimationStates.IsMoving.ToString(), false);
+                _state = EStates.Attacking;
+                _animator.SetBool(EAnimations.IsMoving.ToString(), false);
             }
             else
             {
                 if (!SpaceOperations.CheckIfTwoObjectsClose(transform.position, _target.transform.position,
                     _startChasingDistance))
-                    _state = EnemyStates.Patrolling;
+                    _state = EStates.Patrolling;
                 else if (_target.transform.position != _agent.destination)
                     _agent.SetDestination(_target.transform.position);
             }
@@ -144,8 +144,8 @@ namespace Assets.BackToSchool.Scripts.Enemies
                 _agent.stoppingDistance))
             {
                 _agent.SetDestination(_target.transform.position);
-                _state = EnemyStates.Chasing;
-                _animator.SetBool(AnimationStates.IsMoving.ToString(), true);
+                _state = EStates.Chasing;
+                _animator.SetBool(EAnimations.IsMoving.ToString(), true);
             }
             else
             {

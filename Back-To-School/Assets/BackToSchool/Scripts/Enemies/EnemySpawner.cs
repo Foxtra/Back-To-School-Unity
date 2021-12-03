@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Assets.BackToSchool.Scripts.Enums;
-using Assets.BackToSchool.Scripts.Interfaces;
+using Assets.BackToSchool.Scripts.Interfaces.Game;
 using Assets.BackToSchool.Scripts.Stats;
 using Assets.BackToSchool.Scripts.Utils;
 using UnityEngine;
@@ -21,7 +21,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
         [SerializeField] private int _maxWarriorEnemies = 3;
         [SerializeField] private int _maxShamanEnemies = 3;
 
-        private Dictionary<EnemyTypes, List<GameObject>> _enemyPools = new Dictionary<EnemyTypes, List<GameObject>>();
+        private Dictionary<EEnemyTypes, List<GameObject>> _enemyPools = new Dictionary<EEnemyTypes, List<GameObject>>();
         private GameObject _target;
         private Vector3 _enemyPos = Vector3.zero;
 
@@ -63,8 +63,8 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
         public void InitializeEnemyPools()
         {
-            _enemyPools[EnemyTypes.EnemyWarrior] = FillEnemyList(_enemyWarriorPrefab, _maxWarriorEnemies);
-            _enemyPools[EnemyTypes.EnemyShaman]  = FillEnemyList(_enemyShamanPrefab, _maxShamanEnemies);
+            _enemyPools[EEnemyTypes.EnemyWarrior] = FillEnemyList(_enemyWarriorPrefab, _maxWarriorEnemies);
+            _enemyPools[EEnemyTypes.EnemyShaman]  = FillEnemyList(_enemyShamanPrefab, _maxShamanEnemies);
         }
 
         private List<GameObject> FillEnemyList(BaseEnemy prefab, int size)
@@ -82,7 +82,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
             return objectPool;
         }
 
-        private GameObject GetAvailableEnemyFromPool(EnemyTypes type)
+        private GameObject GetAvailableEnemyFromPool(EEnemyTypes type)
         {
             var enemy = _enemyPools[type].Find(enemy => !enemy.activeSelf);
             return enemy;
@@ -92,18 +92,18 @@ namespace Assets.BackToSchool.Scripts.Enemies
         {
             if (_currentNumberOfWarriors < _maxWarriorEnemies)
             {
-                SpawnEnemy(EnemyTypes.EnemyWarrior);
+                SpawnEnemy(EEnemyTypes.EnemyWarrior);
                 _currentNumberOfWarriors++;
             }
 
             if (_currentNumberOfShamans < _maxShamanEnemies)
             {
-                SpawnEnemy(EnemyTypes.EnemyShaman);
+                SpawnEnemy(EEnemyTypes.EnemyShaman);
                 _currentNumberOfShamans++;
             }
         }
 
-        private void SpawnEnemy(EnemyTypes enemyType)
+        private void SpawnEnemy(EEnemyTypes enemyType)
         {
             do
             {
@@ -122,7 +122,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
         private void ReduceEnemyCount(BaseEnemy sender)
         {
-            var type = EnemyTypes.EnemyWarrior;
+            var type = EEnemyTypes.EnemyWarrior;
 
             if (sender is EnemyWarrior)
                 _currentNumberOfWarriors--;
@@ -130,7 +130,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
             if (sender is EnemyShaman)
             {
                 _currentNumberOfShamans--;
-                type = EnemyTypes.EnemyShaman;
+                type = EEnemyTypes.EnemyShaman;
             }
 
             var enemyObj = _enemyPools[type].Find(enemy => enemy.GetComponent<BaseEnemy>().Equals(sender));

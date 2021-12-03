@@ -1,7 +1,7 @@
 ﻿using Assets.BackToSchool.Scripts.Enums;
-using Assets.BackToSchool.Scripts.GameManagement;
 using Assets.BackToSchool.Scripts.Interfaces.Core;
 using Assets.BackToSchool.Scripts.Interfaces.UI;
+using Assets.BackToSchool.Scripts.Parameters;
 
 
 namespace Assets.BackToSchool.Scripts.Models

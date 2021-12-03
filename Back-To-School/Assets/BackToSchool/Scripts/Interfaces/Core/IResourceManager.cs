@@ -13,6 +13,8 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Core
     {
         public Camera CreateCamera(EGame type);
 
+        public IInputManager CreateInputManager();
+
         public IUIRoot CreateUIRoot(Camera worldSpaceCamera);
 
         public IPlayerController CreatePlayer(IPlayerInput playerInput, PlayerStats playerStats, PlayerData playerData);

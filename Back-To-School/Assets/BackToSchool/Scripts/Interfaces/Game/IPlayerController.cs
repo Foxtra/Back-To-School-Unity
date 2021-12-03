@@ -22,5 +22,6 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Game
         int   GetAmmoValue();
         int   GetActiveWeaponIndex();
         void  SetHealthValue(float health);
+        void  UpdateHUD();
     }
 }

@@ -77,6 +77,8 @@ namespace Assets.BackToSchool.Scripts.Models
             var pauseInput = new PauseInputProvider();
             _inputManager.Subscribe(pauseInput);
             pauseInput.Cancelled += OnGamePaused;
+
+            _player.UpdateHUD();
         }
 
         private void SubscribeEvents()
@@ -86,13 +88,13 @@ namespace Assets.BackToSchool.Scripts.Models
             _pausePresenter.Continued    += ContinueGame;
             _pausePresenter.MenuReturned += ReturnToMenu;
 
-            _player.AmmoChanged     += _hudPresenter.OnAmmoChanged;
-            _player.WeaponChanged   += _hudPresenter.OnWeaponChanged;
-            _player.MaxAmmoChanged  += _hudPresenter.OnMaxAmmoChanged;
-            _player.Died            += OnPlayerDeath;
-            _player.HealthChanged   += _hudPresenter.OnHealthChanged;
-            _enemySpawner.EnemyDied += _levelSystem.AddExperience;
+            _player.AmmoChanged    += _hudPresenter.OnAmmoChanged;
+            _player.WeaponChanged  += _hudPresenter.OnWeaponChanged;
+            _player.MaxAmmoChanged += _hudPresenter.OnMaxAmmoChanged;
+            _player.Died           += OnPlayerDeath;
+            _player.HealthChanged  += _hudPresenter.OnHealthChanged;
 
+            _enemySpawner.EnemyDied        += _levelSystem.AddExperience;
             _levelSystem.LevelChanged      += _statsManager.LevelUp;
             _levelSystem.LevelChanged      += _hudPresenter.OnLevelChanged;
             _levelSystem.ExperienceChanged += _hudPresenter.OnExpChanged;

@@ -12,6 +12,8 @@ namespace Assets.BackToSchool.Scripts.Parameters
         public static float MinZpos = -49f;
         public static float MaxZpos = 49f;
 
+        public static float RayCastLength = 100f;
+
         public static int GameOverDelay = 1000;
 
         public static int PlayerDamageTime = 100;
@@ -33,7 +35,7 @@ namespace Assets.BackToSchool.Scripts.Parameters
         public static int InitialReloadSpeed = 1;
 
         public static int RifleInitialFireRate = 1;
-        public static int RifleInitialMaxAmmo = 1;
+        public static int RifleInitialMaxAmmo = 10;
         public static int RifleInitialReloadSpeed = 1;
 
         public static int InitialArmor = 0;

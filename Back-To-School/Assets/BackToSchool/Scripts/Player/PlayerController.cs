@@ -1,6 +1,7 @@
 ﻿using System;
 using Assets.BackToSchool.Scripts.Enums;
 using Assets.BackToSchool.Scripts.Extensions;
+using Assets.BackToSchool.Scripts.Interfaces.Components;
 using Assets.BackToSchool.Scripts.Interfaces.Game;
 using Assets.BackToSchool.Scripts.Interfaces.Input;
 using Assets.BackToSchool.Scripts.Items;
@@ -21,14 +22,13 @@ namespace Assets.BackToSchool.Scripts.Player
         public event Action<int> WeaponChanged;
         public event Action<int> MaxAmmoChanged;
 
-        public Inventory Inventory;
-
         private Animator _animator;
         private IPlayerInput _playerInput;
+        private Inventory _inventory;
         private PlayerStats _playerStats;
         private Rigidbody _rigidBody;
         private SkinnedMeshRenderer[] _renderers;
-        private WeaponController _weaponController;
+        private IWeaponController _weaponController;
 
         private float _currentHealth;
         private bool _isDead;
@@ -54,10 +54,15 @@ namespace Assets.BackToSchool.Scripts.Player
                 _currentHealth = playerData.PlayerHealth;
             else
                 _currentHealth = _playerStats.MaxHealth.GetValue();
-            HealthChanged?.Invoke(_currentHealth);
 
             _weaponController.InitializeWeapon(playerData.PlayerWeapon);
             _weaponController.InitializeAmmo(playerData.PlayerAmmo);
+        }
+
+        public void UpdateHUD()
+        {
+            HealthChanged?.Invoke(_currentHealth);
+            _weaponController.UpdateHUD();
         }
 
         private void Awake()
@@ -66,8 +71,8 @@ namespace Assets.BackToSchool.Scripts.Player
             _animator         = GetComponent<Animator>();
             _renderers        = GetComponentsInChildren<SkinnedMeshRenderer>();
             _weaponController = GetComponent<WeaponController>();
-            Inventory         = GetComponent<Inventory>();
-            _weaponController.SetInventory(Inventory);
+            _inventory        = GetComponent<Inventory>();
+            _weaponController.SetInventory(_inventory);
         }
 
         private void OnDestroy()
@@ -161,24 +166,24 @@ namespace Assets.BackToSchool.Scripts.Player
 
         public void Move(Vector3 direction)
         {
-            if (!_isDead)
-            {
-                _animator.SetBool(EAnimations.IsMoving.ToStringCached(), true);
-                _rigidBody.MovePosition(transform.position + direction * _playerStats.MoveSpeed.GetValue() * Time.fixedDeltaTime);
-            }
+            if (_isDead)
+                return;
+
+            _animator.SetBool(EAnimations.IsMoving.ToStringCached(), true);
+            _rigidBody.MovePosition(transform.position + direction * _playerStats.MoveSpeed.GetValue() * Time.fixedDeltaTime);
         }
 
         public void Stop() => _animator.SetBool(EAnimations.IsMoving.ToStringCached(), false);
 
         public void Rotate(Vector3 pointToRotate)
         {
-            if (!_isDead)
-            {
-                var targetPosition = new Vector3(pointToRotate.x,
-                    transform.position.y,
-                    pointToRotate.z);
-                transform.LookAt(targetPosition);
-            }
+            if (_isDead)
+                return;
+
+            var targetPosition = new Vector3(pointToRotate.x,
+                transform.position.y,
+                pointToRotate.z);
+            transform.LookAt(targetPosition);
         }
 
         #endregion

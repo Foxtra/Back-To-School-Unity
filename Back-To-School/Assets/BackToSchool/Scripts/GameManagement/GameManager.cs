@@ -1,6 +1,5 @@
 ﻿using Assets.BackToSchool.Scripts.Enums;
 using Assets.BackToSchool.Scripts.Extensions;
-using Assets.BackToSchool.Scripts.Inputs;
 using Assets.BackToSchool.Scripts.Interfaces.Core;
 using Assets.BackToSchool.Scripts.Interfaces.Input;
 using Assets.BackToSchool.Scripts.Interfaces.UI;
@@ -60,12 +59,12 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             _saveSystem            = new SaveSystem();
             _resourceManager       = new ResourceManager();
             _systemResourceManager = new ResourceManager();
-            _inputManager          = new InputManager();
         }
 
         private void InitializeScene(EScenes scene)
         {
-            _mainCamera = _resourceManager.CreateCamera(scene == EScenes.MainMenu ? EGame.MenuCamera : EGame.PlayerCamera);
+            _inputManager = _resourceManager.CreateInputManager();
+            _mainCamera   = _resourceManager.CreateCamera(scene == EScenes.MainMenu ? EGame.MenuCamera : EGame.PlayerCamera);
             var uiRoot = _resourceManager.CreateUIRoot(_mainCamera);
 
             _viewFactory = new ViewFactory(_systemResourceManager, uiRoot);

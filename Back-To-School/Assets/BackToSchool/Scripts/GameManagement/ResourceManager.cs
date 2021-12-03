@@ -23,6 +23,12 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             return result;
         }
 
+        public IInputManager CreateInputManager()
+        {
+            var result = CreatePrefabInstance<IInputManager, EGame>(EGame.InputManager);
+            return result;
+        }
+
         public IUIRoot CreateUIRoot(Camera worldSpaceCamera)
         {
             var result = CreatePrefabInstance<UIRoot, EViews>(EViews.UIRoot);

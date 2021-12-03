@@ -1,6 +1,6 @@
 ﻿namespace Assets.BackToSchool.Scripts.Enums
 {
-    public enum EAnimations
+    public enum EAnimTriggers
     {
         IsMoving,
         Reload,

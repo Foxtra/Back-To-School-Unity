@@ -94,8 +94,13 @@ namespace Assets.BackToSchool.Scripts.Player
 
         public void Reload()
         {
-            if (!_isDead)
-                _animator.SetTrigger(EAnimations.Reload.ToStringCached());
+            if (_isDead)
+                return;
+
+            _animator.SetTrigger(EAnimTriggers.Reload.ToStringCached());
+            var animTime = Array.Find(_animator.runtimeAnimatorController.animationClips,
+                clip => clip.name == EPlayerAnimNames.Reload.ToStringCached()).length;
+            WaitWhileReloading(Mathf.RoundToInt(animTime * 1000f));
         }
 
         public void ReloadFinished() => _weaponController.ReloadComplete();
@@ -135,7 +140,7 @@ namespace Assets.BackToSchool.Scripts.Player
 
             if (_currentHealth <= 0 && !_isDead)
             {
-                _animator.SetTrigger(EAnimations.Die.ToStringCached());
+                _animator.SetTrigger(EAnimTriggers.Die.ToStringCached());
                 _isDead = true;
                 Died?.Invoke();
             }
@@ -148,6 +153,12 @@ namespace Assets.BackToSchool.Scripts.Player
             ChangeColor(Color.red);
             await UniTask.Delay(Constants.PlayerDamageTime);
             ChangeColor(Color.white);
+        }
+
+        private async void WaitWhileReloading(int milSec)
+        {
+            await UniTask.Delay(milSec);
+            ReloadFinished();
         }
 
         private void ChangeColor(Color color)
@@ -169,11 +180,11 @@ namespace Assets.BackToSchool.Scripts.Player
             if (_isDead)
                 return;
 
-            _animator.SetBool(EAnimations.IsMoving.ToStringCached(), true);
+            _animator.SetBool(EAnimTriggers.IsMoving.ToStringCached(), true);
             _rigidBody.MovePosition(transform.position + direction * _playerStats.MoveSpeed.GetValue() * Time.fixedDeltaTime);
         }
 
-        public void Stop() => _animator.SetBool(EAnimations.IsMoving.ToStringCached(), false);
+        public void Stop() => _animator.SetBool(EAnimTriggers.IsMoving.ToStringCached(), false);
 
         public void Rotate(Vector3 pointToRotate)
         {

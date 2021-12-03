@@ -5,6 +5,7 @@ using Assets.BackToSchool.Scripts.Interfaces.Game;
 using Assets.BackToSchool.Scripts.Parameters;
 using Assets.BackToSchool.Scripts.Stats;
 using Assets.BackToSchool.Scripts.Utils;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -29,6 +30,18 @@ namespace Assets.BackToSchool.Scripts.Enemies
         protected bool _isBusy;
         protected bool _isDead;
 
+        public void Initialize(CharacterStats enemyStats)
+        {
+            _isDead        = false;
+            _isBusy        = false;
+            _currentHealth = enemyStats.MaxHealth.GetValue();
+            _maxHealth     = enemyStats.MaxHealth.GetValue();
+            _enemyDamage   = enemyStats.Damage.GetValue();
+            _agent.speed   = enemyStats.MoveSpeed.GetValue();
+            _state         = EEnemyStates.Patrolling;
+            HealthChanged?.Invoke(_currentHealth, _maxHealth);
+        }
+
         public void TakeDamage(float damage)
         {
             _currentHealth -= damage;
@@ -37,13 +50,25 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
             if (_currentHealth <= 0 && !_isDead)
             {
-                _animator.SetTrigger(EAnimations.Die.ToStringCached());
+                _animator.SetTrigger(EAnimTriggers.Die.ToStringCached());
+
+                var animTime = Array.Find(_animator.runtimeAnimatorController.animationClips,
+                    clip => clip.name == EEnemyAnimNames.Die.ToStringCached()).length;
+                WaitWhileBusy(Mathf.RoundToInt(animTime * 1000f));
+
                 _isDead          = true;
                 _agent.isStopped = true;
             }
             else if (_currentHealth > 0)
             {
-                _animator.SetTrigger(EAnimations.GetDamage.ToStringCached());
+                _animator.SetTrigger(EAnimTriggers.GetDamage.ToStringCached());
+
+                var targetClipName = this is EnemyWarrior ? EEnemyAnimNames.GetHit.ToStringCached() : EEnemyAnimNames.Hit.ToStringCached();
+
+                var animTime = Array.Find(_animator.runtimeAnimatorController.animationClips,
+                    clip => clip.name == targetClipName).length;
+                WaitWhileBusy(Mathf.RoundToInt(animTime * 1000f));
+
                 _agent.isStopped = true;
             }
         }
@@ -53,23 +78,35 @@ namespace Assets.BackToSchool.Scripts.Enemies
         protected void EnableEnemy()
         {
             if (_isDead) return;
-            if (_target == null) return;
-            transform.LookAt(_target.transform.position);
+            if (_target == null)
+                _state = EEnemyStates.Patrolling;
+            else
+                transform.LookAt(_target.transform.position);
+
             _isBusy          = false;
             _agent.isStopped = false;
         }
 
-        protected void OnDeath() => Died?.Invoke(this);
+        protected void EnemyDeath() => Died?.Invoke(this);
 
         protected void MoveToNextPatrolPoint()
         {
-            _animator.SetBool(EAnimations.IsMoving.ToStringCached(), true);
+            _animator.SetBool(EAnimTriggers.IsMoving.ToStringCached(), true);
             var newDestination = SpaceOperations.GeneratePositionOnField(Constants.MinXpos, Constants.MaxXpos, Constants.MinZpos,
                 Constants.MaxZpos);
             _agent.SetDestination(newDestination);
         }
 
-        protected virtual void Attack() => _animator.SetTrigger(EAnimations.Attack.ToStringCached());
+        protected virtual void Attack()
+        {
+            _animator.SetTrigger(EAnimTriggers.Attack.ToStringCached());
+
+            var targetClipName = this is EnemyWarrior ? EEnemyAnimNames.Attack01.ToStringCached() : EEnemyAnimNames.Spell.ToStringCached();
+
+            var animTime = Array.Find(_animator.runtimeAnimatorController.animationClips,
+                clip => clip.name == targetClipName).length;
+            WaitWhileBusy(Mathf.RoundToInt(animTime * 1000f));
+        }
 
         private void Awake()
         {
@@ -77,15 +114,13 @@ namespace Assets.BackToSchool.Scripts.Enemies
             _agent    = GetComponent<NavMeshAgent>();
         }
 
-        public void Initialize(CharacterStats enemyStats)
+        private async void WaitWhileBusy(int milSec)
         {
-            _isDead        = false;
-            _isBusy        = false;
-            _currentHealth = enemyStats.MaxHealth.GetValue();
-            _enemyDamage   = enemyStats.Damage.GetValue();
-            _agent.speed   = enemyStats.MoveSpeed.GetValue();
-            _state         = EEnemyStates.Patrolling;
-            HealthChanged?.Invoke(_currentHealth, _maxHealth);
+            await UniTask.Delay(milSec);
+            if (_isDead)
+                EnemyDeath();
+            else
+                EnableEnemy();
         }
 
         private void Update()
@@ -128,7 +163,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
                 _agent.stoppingDistance))
             {
                 _state = EEnemyStates.Attacking;
-                _animator.SetBool(EAnimations.IsMoving.ToStringCached(), false);
+                _animator.SetBool(EAnimTriggers.IsMoving.ToStringCached(), false);
             }
             else
             {
@@ -147,7 +182,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
             {
                 _agent.SetDestination(_target.position);
                 _state = EEnemyStates.Chasing;
-                _animator.SetBool(EAnimations.IsMoving.ToStringCached(), true);
+                _animator.SetBool(EAnimTriggers.IsMoving.ToStringCached(), true);
             }
             else
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using Assets.BackToSchool.Scripts.Interfaces.Components;
+using Assets.BackToSchool.Scripts.Parameters;
 using UnityEngine;
 
 
@@ -11,7 +12,7 @@ namespace Assets.BackToSchool.Scripts.Progression
         public event Action<int> LevelChanged;
         public event Action ProgressChanged;
 
-        private static readonly int[] _experiencePerLevel = { 100, 120, 140, 160, 180, 200, 220, 250, 300, 400 };
+        private static readonly int[] _experiencePerLevel = Constants.ExperienceToLevelUpPerLevel;
 
         private int _level;
         private int _experience;

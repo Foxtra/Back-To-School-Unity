@@ -1,6 +1,6 @@
 ﻿namespace Assets.BackToSchool.Scripts.Enums
 {
-    public enum EStates
+    public enum EEnemyStates
     {
         Patrolling,
         Chasing,

@@ -1,4 +1,5 @@
 ﻿using Assets.BackToSchool.Scripts.Interfaces.Components;
+using Assets.BackToSchool.Scripts.Parameters;
 using UnityEngine;
 
 
@@ -7,7 +8,6 @@ namespace Assets.BackToSchool.Scripts.Weapons
     public class Rocket : MonoBehaviour
     {
         // --- Config ---
-        public float speed = 100;
         public LayerMask collisionLayerMask;
 
         // --- Explosion VFX ---
@@ -37,7 +37,7 @@ namespace Assets.BackToSchool.Scripts.Weapons
             if (targetHit) return;
 
             // --- moves the game object in the forward direction at the defined speed ---
-            transform.position += transform.forward * (speed * Time.deltaTime);
+            transform.position += transform.forward * (Constants.RocketSpeed * Time.deltaTime);
         }
 
         /// <summary>

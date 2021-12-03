@@ -1,4 +1,5 @@
 ﻿using Assets.BackToSchool.Scripts.Interfaces.Components;
+using Assets.BackToSchool.Scripts.Parameters;
 using UnityEngine;
 
 
@@ -6,8 +7,6 @@ namespace Assets.BackToSchool.Scripts.Weapons
 {
     public abstract class BaseBullet : MonoBehaviour
     {
-        [SerializeField] protected float _lifeTime = 4f;
-
         protected Rigidbody _rigidbody;
 
         protected float _bulletDamage;
@@ -16,7 +15,7 @@ namespace Assets.BackToSchool.Scripts.Weapons
 
         public virtual void Launch(float force)
         {
-            Destroy(gameObject, _lifeTime);
+            Destroy(gameObject, Constants.BulletLifeTime);
             _rigidbody = GetComponentInChildren<Rigidbody>();
 
             var impulse = transform.up * _rigidbody.mass * force;

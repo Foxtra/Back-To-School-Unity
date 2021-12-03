@@ -17,10 +17,6 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
         [SerializeField] private EnemyWarrior _enemyWarriorPrefab;
         [SerializeField] private EnemyShaman _enemyShamanPrefab;
-        [SerializeField] private float _maxRangeToPlayer = 10f;
-        [SerializeField] private float _spawnInterval = 1f;
-        [SerializeField] private int _maxWarriorEnemies = 3;
-        [SerializeField] private int _maxShamanEnemies = 3;
 
         private Dictionary<EEnemyTypes, List<GameObject>> _enemyPools = new Dictionary<EEnemyTypes, List<GameObject>>();
         private Transform _target;
@@ -30,12 +26,16 @@ namespace Assets.BackToSchool.Scripts.Enemies
         private float _yPos = 0f;
         private float _zPos;
         private float _timer;
+        private float _maxRangeToPlayer;
+        private float _spawnInterval;
         private int _currentNumberOfWarriors;
         private int _currentNumberOfShamans;
-        private int _enemyDamage = 2;
-        private int _enemyMaxHealth = 2;
-        private int _enemyMoveSpeed = 2;
-        private int _experienceForEnemy = 20;
+        private int _maxWarriorEnemies;
+        private int _maxShamanEnemies;
+        private int _enemyDamage;
+        private int _enemyMaxHealth;
+        private int _enemyMoveSpeed;
+        private int _experienceForEnemy;
 
         public void SetMaxWarriorEnemies(int maxEnemiesNumber) => _maxWarriorEnemies = maxEnemiesNumber;
         public void SetMaxShamanEnemies(int maxEnemiesNumber)  => _maxShamanEnemies = maxEnemiesNumber;
@@ -48,6 +48,18 @@ namespace Assets.BackToSchool.Scripts.Enemies
             _target = target;
             foreach (var enemy in _enemyPools.Keys.SelectMany(key => _enemyPools[key]))
                 enemy.GetComponent<BaseEnemy>().SetTarget(_target);
+        }
+
+        private void Awake()
+        {
+            _maxRangeToPlayer   = Constants.MaxRangeToPlayer;
+            _spawnInterval      = Constants.SpawnInterval;
+            _maxWarriorEnemies  = Constants.MaxWarriorEnemies;
+            _maxShamanEnemies   = Constants.MaxShamanEnemies;
+            _enemyDamage        = Constants.EnemyDamage;
+            _enemyMaxHealth     = Constants.EnemyMaxHealth;
+            _enemyMoveSpeed     = Constants.EnemyMoveSpeed;
+            _experienceForEnemy = Constants.ExperienceForEnemy;
         }
 
         private void Update()

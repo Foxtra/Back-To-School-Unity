@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Collections;
 using Assets.BackToSchool.Scripts.Enums;
 using Assets.BackToSchool.Scripts.Extensions;
 using Assets.BackToSchool.Scripts.Interfaces.Game;
 using Assets.BackToSchool.Scripts.Interfaces.Input;
 using Assets.BackToSchool.Scripts.Items;
+using Assets.BackToSchool.Scripts.Parameters;
 using Assets.BackToSchool.Scripts.Stats;
 using Assets.BackToSchool.Scripts.Weapons;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 
@@ -21,8 +22,6 @@ namespace Assets.BackToSchool.Scripts.Player
         public event Action<int> MaxAmmoChanged;
 
         public Inventory Inventory;
-
-        [SerializeField] private float _damageTime = 0.1f;
 
         private Animator _animator;
         private IPlayerInput _playerInput;
@@ -136,13 +135,13 @@ namespace Assets.BackToSchool.Scripts.Player
                 Died?.Invoke();
             }
             else if (_currentHealth > 0)
-                StartCoroutine(nameof(ShowDamageEffect));
+                ShowDamageEffect();
         }
 
-        private IEnumerator ShowDamageEffect()
+        private async void ShowDamageEffect()
         {
             ChangeColor(Color.red);
-            yield return new WaitForSeconds(_damageTime);
+            await UniTask.Delay(Constants.PlayerDamageTime);
             ChangeColor(Color.white);
         }
 

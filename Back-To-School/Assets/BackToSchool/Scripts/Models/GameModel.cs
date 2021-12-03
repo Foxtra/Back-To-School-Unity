@@ -40,7 +40,6 @@ namespace Assets.BackToSchool.Scripts.Models
 
         private Camera _mainCamera;
 
-        private int _gameOverDelay = 1;
         private bool _isGamePaused;
         private bool _isPlayerDead;
 
@@ -142,7 +141,7 @@ namespace Assets.BackToSchool.Scripts.Models
         {
             _isPlayerDead = true;
             _enemySpawner.SetTarget(null);
-            await UniTask.Delay(_gameOverDelay);
+            await UniTask.Delay(Constants.GameOverDelay);
             EndGame();
         }
 

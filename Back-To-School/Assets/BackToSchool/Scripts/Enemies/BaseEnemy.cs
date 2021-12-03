@@ -23,7 +23,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
         protected Transform _target;
         protected Animator _animator;
         protected NavMeshAgent _agent;
-        protected EStates _state;
+        protected EEnemyStates _state;
 
         protected float _currentHealth;
         protected bool _isBusy;
@@ -84,7 +84,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
             _currentHealth = enemyStats.MaxHealth.GetValue();
             _enemyDamage   = enemyStats.Damage.GetValue();
             _agent.speed   = enemyStats.MoveSpeed.GetValue();
-            _state         = EStates.Patrolling;
+            _state         = EEnemyStates.Patrolling;
             HealthChanged?.Invoke(_currentHealth, _maxHealth);
         }
 
@@ -95,13 +95,13 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
             switch (_state)
             {
-                case EStates.Patrolling:
+                case EEnemyStates.Patrolling:
                     Patrolling();
                     break;
-                case EStates.Chasing:
+                case EEnemyStates.Chasing:
                     Chasing();
                     break;
-                case EStates.Attacking:
+                case EEnemyStates.Attacking:
                     Attacking();
                     break;
             }
@@ -117,7 +117,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
             }
             else
             {
-                _state = EStates.Chasing;
+                _state = EEnemyStates.Chasing;
                 _agent.SetDestination(_target.position);
             }
         }
@@ -127,14 +127,14 @@ namespace Assets.BackToSchool.Scripts.Enemies
             if (SpaceOperations.CheckIfTwoObjectsClose(transform.position, _agent.destination,
                 _agent.stoppingDistance))
             {
-                _state = EStates.Attacking;
+                _state = EEnemyStates.Attacking;
                 _animator.SetBool(EAnimations.IsMoving.ToStringCached(), false);
             }
             else
             {
                 if (!SpaceOperations.CheckIfTwoObjectsClose(transform.position, _target.position,
                     _startChasingDistance))
-                    _state = EStates.Patrolling;
+                    _state = EEnemyStates.Patrolling;
                 else if (_target.position != _agent.destination)
                     _agent.SetDestination(_target.position);
             }
@@ -146,7 +146,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
                 _agent.stoppingDistance))
             {
                 _agent.SetDestination(_target.position);
-                _state = EStates.Chasing;
+                _state = EEnemyStates.Chasing;
                 _animator.SetBool(EAnimations.IsMoving.ToStringCached(), true);
             }
             else

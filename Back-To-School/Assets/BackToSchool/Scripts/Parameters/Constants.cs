@@ -29,6 +29,7 @@ namespace Assets.BackToSchool.Scripts.Parameters
         public static int MaxShamanEnemies = 3;
         public static float MaxRangeToPlayer = 10f;
         public static float SpawnInterval = 1f;
+        public static float ShamanAttackInterval = 2f;
 
         public static int InitialFireRate = 1;
         public static int InitialMaxAmmo = 1;

@@ -108,7 +108,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
             WaitWhileBusy(Mathf.RoundToInt(animTime * 1000f));
         }
 
-        private void Awake()
+        protected virtual void Awake()
         {
             _animator = GetComponent<Animator>();
             _agent    = GetComponent<NavMeshAgent>();

@@ -1,4 +1,5 @@
-﻿using Assets.BackToSchool.Scripts.Interfaces;
+﻿using Assets.BackToSchool.Scripts.Interfaces.Components;
+using Assets.BackToSchool.Scripts.Parameters;
 using Assets.BackToSchool.Scripts.Weapons;
 using UnityEngine;
 
@@ -10,10 +11,10 @@ namespace Assets.BackToSchool.Scripts.Enemies
         [SerializeField] private Transform _shootingPosition;
         [SerializeField] private FireBall _bulletPrefab;
         [SerializeField] private float _bulletForce;
-        [SerializeField] private float _attackInterval = 2f;
 
         private FireBall _bullet;
         private float _timer;
+        private float _attackInterval = Constants.ShamanAttackInterval;
 
         public void Fire()
         {

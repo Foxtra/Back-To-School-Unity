@@ -1291,7 +1291,7 @@ GameObject:
   - component: {fileID: 456820808014327438}
   m_Layer: 0
   m_Name: EnemyShaman
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1368,7 +1368,6 @@ MonoBehaviour:
   _shootingPosition: {fileID: 2168245207203370739}
   _bulletPrefab: {fileID: -1428721391650805572, guid: 7ad132e693e2a7a47a390bd134db9b0a, type: 3}
   _bulletForce: 4
-  _attackInterval: 3
 --- !u!195 &456820808014327438
 NavMeshAgent:
   m_ObjectHideFlags: 0

@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using Assets.BackToSchool.Scripts.Interfaces.UI;
+using UnityEngine;
 using UnityEngine.UI;
 
 
 namespace Assets.BackToSchool.Scripts.UI
 {
-    public class HUDPresenter : MonoBehaviour
+    public class HUDPresenter : MonoBehaviour, IHUDPresenter
     {
         [SerializeField] private Text _ammoText;
         [SerializeField] private Text _levelText;
@@ -24,6 +25,10 @@ namespace Assets.BackToSchool.Scripts.UI
         private int _ammoValue;
         private int _maxAmmoValue;
 
+        public void SetRoot(RectTransform canvas) => transform.SetParent(canvas, false);
+        public void ShowView()                    => gameObject.SetActive(true);
+        public void HideView()                    => gameObject.SetActive(false);
+
         public void OnHealthChanged(float newCurrentHealth)
         {
             _currentHealth     = newCurrentHealth;
@@ -38,10 +43,7 @@ namespace Assets.BackToSchool.Scripts.UI
             UpdateHealthBar();
         }
 
-        public void OnWeaponChanged(int weaponNumber)
-        {
-            _currentWeaponIcon.sprite = _weaponIcons[weaponNumber];
-        }
+        public void OnWeaponChanged(int weaponNumber) { _currentWeaponIcon.sprite = _weaponIcons[weaponNumber]; }
 
         public void OnAmmoChanged(int newAmmoValue)
         {
@@ -55,8 +57,7 @@ namespace Assets.BackToSchool.Scripts.UI
             UpdateAmmoText();
         }
 
-        public void OnLevelChanged(int newLevel) => UpdateLevelText(newLevel);
-
+        public void OnLevelChanged(int newLevel)       => UpdateLevelText(newLevel);
         public void OnExpChanged(float newSliderValue) => UpdateLevelBar(newSliderValue);
 
         public void OnArmorChanged(int newValue)     => UpdateArmorText(newValue);

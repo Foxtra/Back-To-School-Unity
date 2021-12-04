@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Assets.BackToSchool.Scripts.Enums;
+using Assets.BackToSchool.Scripts.Interfaces.Game;
+using Assets.BackToSchool.Scripts.Parameters;
 using Assets.BackToSchool.Scripts.Stats;
 using Assets.BackToSchool.Scripts.Utils;
 using UnityEngine;
@@ -9,32 +11,31 @@ using UnityEngine;
 
 namespace Assets.BackToSchool.Scripts.Enemies
 {
-    public class EnemySpawner : MonoBehaviour
+    public class EnemySpawner : MonoBehaviour, IEnemySpawner
     {
-        public Action<int> EnemyDied;
+        public event Action<int> EnemyDied;
 
         [SerializeField] private EnemyWarrior _enemyWarriorPrefab;
         [SerializeField] private EnemyShaman _enemyShamanPrefab;
-        [SerializeField] private float _maxRangeToPlayer = 10f;
-        [SerializeField] private float _spawnInterval = 1f;
-        [SerializeField] private int _maxWarriorEnemies = 3;
-        [SerializeField] private int _maxShamanEnemies = 3;
 
-        //private List<BaseEnemy> _enemies = new List<BaseEnemy>();
-        private Dictionary<EnemyTypes, List<GameObject>> _enemyPools = new Dictionary<EnemyTypes, List<GameObject>>();
-        private GameObject _target;
+        private Dictionary<EEnemyTypes, List<GameObject>> _enemyPools = new Dictionary<EEnemyTypes, List<GameObject>>();
+        private Transform _target;
         private Vector3 _enemyPos = Vector3.zero;
 
         private float _xPos;
         private float _yPos = 0f;
         private float _zPos;
         private float _timer;
+        private float _maxRangeToPlayer;
+        private float _spawnInterval;
         private int _currentNumberOfWarriors;
         private int _currentNumberOfShamans;
-        private int _enemyDamage = 2;
-        private int _enemyMaxHealth = 2;
-        private int _enemyMoveSpeed = 2;
-        private int _experienceForEnemy = 20;
+        private int _maxWarriorEnemies;
+        private int _maxShamanEnemies;
+        private int _enemyDamage;
+        private int _enemyMaxHealth;
+        private int _enemyMoveSpeed;
+        private int _experienceForEnemy;
 
         public void SetMaxWarriorEnemies(int maxEnemiesNumber) => _maxWarriorEnemies = maxEnemiesNumber;
         public void SetMaxShamanEnemies(int maxEnemiesNumber)  => _maxShamanEnemies = maxEnemiesNumber;
@@ -42,11 +43,23 @@ namespace Assets.BackToSchool.Scripts.Enemies
         public void SetEnemyMaxHealth(int maxHeath)            => _enemyMaxHealth = maxHeath;
         public void SetEnemyMoveSpeed(int moveSpeed)           => _enemyMoveSpeed = moveSpeed;
 
-        public void SetTarget(GameObject target)
+        public void SetTarget(Transform target)
         {
             _target = target;
             foreach (var enemy in _enemyPools.Keys.SelectMany(key => _enemyPools[key]))
                 enemy.GetComponent<BaseEnemy>().SetTarget(_target);
+        }
+
+        private void Awake()
+        {
+            _maxRangeToPlayer   = Constants.MaxRangeToPlayer;
+            _spawnInterval      = Constants.SpawnInterval;
+            _maxWarriorEnemies  = Constants.MaxWarriorEnemies;
+            _maxShamanEnemies   = Constants.MaxShamanEnemies;
+            _enemyDamage        = Constants.EnemyDamage;
+            _enemyMaxHealth     = Constants.EnemyMaxHealth;
+            _enemyMoveSpeed     = Constants.EnemyMoveSpeed;
+            _experienceForEnemy = Constants.ExperienceForEnemy;
         }
 
         private void Update()
@@ -63,8 +76,8 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
         public void InitializeEnemyPools()
         {
-            _enemyPools[EnemyTypes.EnemyWarrior] = FillEnemyList(_enemyWarriorPrefab, _maxWarriorEnemies);
-            _enemyPools[EnemyTypes.EnemyShaman]  = FillEnemyList(_enemyShamanPrefab, _maxShamanEnemies);
+            _enemyPools[EEnemyTypes.EnemyWarrior] = FillEnemyList(_enemyWarriorPrefab, _maxWarriorEnemies);
+            _enemyPools[EEnemyTypes.EnemyShaman]  = FillEnemyList(_enemyShamanPrefab, _maxShamanEnemies);
         }
 
         private List<GameObject> FillEnemyList(BaseEnemy prefab, int size)
@@ -82,7 +95,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
             return objectPool;
         }
 
-        private GameObject GetAvailableEnemyFromPool(EnemyTypes type)
+        private GameObject GetAvailableEnemyFromPool(EEnemyTypes type)
         {
             var enemy = _enemyPools[type].Find(enemy => !enemy.activeSelf);
             return enemy;
@@ -92,18 +105,18 @@ namespace Assets.BackToSchool.Scripts.Enemies
         {
             if (_currentNumberOfWarriors < _maxWarriorEnemies)
             {
-                SpawnEnemy(EnemyTypes.EnemyWarrior);
+                SpawnEnemy(EEnemyTypes.EnemyWarrior);
                 _currentNumberOfWarriors++;
             }
 
             if (_currentNumberOfShamans < _maxShamanEnemies)
             {
-                SpawnEnemy(EnemyTypes.EnemyShaman);
+                SpawnEnemy(EEnemyTypes.EnemyShaman);
                 _currentNumberOfShamans++;
             }
         }
 
-        private void SpawnEnemy(EnemyTypes enemyType)
+        private void SpawnEnemy(EEnemyTypes enemyType)
         {
             do
             {
@@ -122,15 +135,15 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
         private void ReduceEnemyCount(BaseEnemy sender)
         {
-            var type = EnemyTypes.EnemyWarrior;
-            ;
+            var type = EEnemyTypes.EnemyWarrior;
+
             if (sender is EnemyWarrior)
                 _currentNumberOfWarriors--;
 
             if (sender is EnemyShaman)
             {
                 _currentNumberOfShamans--;
-                type = EnemyTypes.EnemyShaman;
+                type = EEnemyTypes.EnemyShaman;
             }
 
             var enemyObj = _enemyPools[type].Find(enemy => enemy.GetComponent<BaseEnemy>().Equals(sender));

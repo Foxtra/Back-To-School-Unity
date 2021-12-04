@@ -1,12 +1,12 @@
 ﻿using System;
-using Assets.BackToSchool.Scripts.Interfaces;
+using Assets.BackToSchool.Scripts.Interfaces.Components;
 using Assets.BackToSchool.Scripts.Items;
 using UnityEngine;
 
 
 namespace Assets.BackToSchool.Scripts.Weapons
 {
-    public class WeaponController : MonoBehaviour
+    public class WeaponController : MonoBehaviour, IWeaponController
     {
         public event Action<int> AmmoChanged;
         public event Action<int> MaxAmmoChanged;
@@ -23,6 +23,13 @@ namespace Assets.BackToSchool.Scripts.Weapons
         private bool _isReloading;
 
         public void SetInventory(Inventory inventory) => _inventory = inventory;
+
+        public void UpdateHUD()
+        {
+            AmmoChanged?.Invoke(_activeWeapon.CurrentAmmo);
+            MaxAmmoChanged?.Invoke(_activeWeapon.WeaponStats.MaxAmmo.GetValue());
+            WeaponChanged?.Invoke(_inventory.GetCurrentWeaponNumber());
+        }
 
         public int GetAmmoValue()   => _activeWeapon.CurrentAmmo;
         public int GetWeaponIndex() => _inventory.GetCurrentWeaponNumber();

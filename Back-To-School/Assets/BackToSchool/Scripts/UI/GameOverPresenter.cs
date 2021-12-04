@@ -14,9 +14,11 @@ namespace Assets.BackToSchool.Scripts.UI
 
         private void Awake() { _gameOverRestartButton.onClick.AddListener(Restart); }
 
-        private void Restart()                     => Restarted?.Invoke();
-        public  void SetRoot(RectTransform canvas) => transform.SetParent(canvas, false);
-        public  void ShowView()                    => gameObject.SetActive(true);
-        public  void HideView()                    => gameObject.SetActive(false);
+        private void Restart() => Restarted?.Invoke();
+
+        public void SetRoot(RectTransform canvas) => transform.SetParent(canvas, false);
+
+        public void ShowView() => gameObject.SetActive(true);
+        public void HideView() => gameObject.SetActive(false);
     }
 }

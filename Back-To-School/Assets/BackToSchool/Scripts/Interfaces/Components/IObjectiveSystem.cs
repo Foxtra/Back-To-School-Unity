@@ -17,6 +17,6 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Components
 
         public void CountEnemyDeath(BaseEnemy sender);
 
-        public void CountTimePassed(float time);
+        public void CountTimePassed();
     }
 }

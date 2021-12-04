@@ -3,6 +3,7 @@ using Assets.BackToSchool.Scripts.Enemies;
 using Assets.BackToSchool.Scripts.Enums;
 using Assets.BackToSchool.Scripts.Interfaces.Components;
 using Assets.BackToSchool.Scripts.Parameters;
+using Cysharp.Threading.Tasks;
 
 
 namespace Assets.BackToSchool.Scripts.Progression
@@ -16,13 +17,16 @@ namespace Assets.BackToSchool.Scripts.Progression
         private ObjectiveParameters _currentObjectives;
 
         private float _timePassed;
-        private float _lastTimeInvoked;
-        private float _timerInvokeInterval = 1f;
+        private int _timerInvokeInterval = Constants.TimerInvokeInterval;
         private int _warriorEnemiesKilled;
         private int _shamanEnemiesKilled;
         private bool _isObjectivesCompleted;
 
-        public void Initialize(ObjectiveParameters parameters) => _currentObjectives = parameters;
+        public void Initialize(ObjectiveParameters parameters)
+        {
+            _currentObjectives = parameters;
+            CountTimePassed();
+        }
 
         public ObjectiveParameters GetObjectivesProgress()
         {
@@ -47,12 +51,13 @@ namespace Assets.BackToSchool.Scripts.Progression
             CheckKilledEnemies();
         }
 
-        public void CountTimePassed(float time)
+        public async void CountTimePassed()
         {
             if (_currentObjectives.GameMode != EGameModes.SurviveTime)
                 return;
 
-            _timePassed += time;
+            await UniTask.Delay(_timerInvokeInterval);
+            _timePassed += 1f;
             CheckPassedTime();
         }
 
@@ -61,14 +66,13 @@ namespace Assets.BackToSchool.Scripts.Progression
             if (_currentObjectives == null && _isObjectivesCompleted)
                 return;
 
-            if (Math.Abs(_lastTimeInvoked - _timePassed) > _timerInvokeInterval)
-            {
-                TimeSurvivedChanged?.Invoke(_currentObjectives.TimeToSurvive - _timePassed);
-                _lastTimeInvoked = _timePassed;
-            }
+            TimeSurvivedChanged?.Invoke(_currentObjectives.TimeToSurvive - _timePassed);
 
             if (_timePassed < _currentObjectives.TimeToSurvive)
+            {
+                CountTimePassed();
                 return;
+            }
 
             _isObjectivesCompleted = true;
             ObjectivesCompleted?.Invoke();

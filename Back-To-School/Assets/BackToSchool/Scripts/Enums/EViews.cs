@@ -2,6 +2,7 @@
 {
     public enum EViews
     {
+        CompleteLevel,
         GameOver,
         HUD,
         MainMenu,

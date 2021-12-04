@@ -15,6 +15,7 @@ namespace Assets.BackToSchool.Scripts.Parameters
         public static float RayCastLength = 100f;
 
         public static int GameOverDelay = 1000;
+        public static int TimerInvokeInterval = 1000;
 
         public static int PlayerDamageTime = 100;
 

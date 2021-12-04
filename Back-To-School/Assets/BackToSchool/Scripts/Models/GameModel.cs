@@ -10,7 +10,6 @@ using Assets.BackToSchool.Scripts.Parameters;
 using Assets.BackToSchool.Scripts.Player;
 using Assets.BackToSchool.Scripts.Progression;
 using Assets.BackToSchool.Scripts.Stats;
-using Assets.BackToSchool.Scripts.UI;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -23,7 +22,7 @@ namespace Assets.BackToSchool.Scripts.Models
         private IHUDPresenter _hudPresenter;
         private IGameOverPresenter _gameOverPresenter;
         private IPausePresenter _pausePresenter;
-        private CompleteLevelPresenter _completeLevelPresenter;
+        private ICompleteLevelPresenter _completeLevelPresenter;
 
         private IGameManager _gameManager;
         private ISaveSystem _saveSystem;
@@ -49,9 +48,10 @@ namespace Assets.BackToSchool.Scripts.Models
         public GameModel(ISaveSystem saveSystem, IGameManager gameManager, IResourceManager resourceManager,
             IInputManager inputManager, IViewFactory viewFactory, Camera playerCamera, StartParameters parameters)
         {
-            _hudPresenter      = viewFactory.CreateView<IHUDPresenter, EViews>(EViews.HUD);
-            _gameOverPresenter = viewFactory.CreateView<IGameOverPresenter, EViews>(EViews.GameOver);
-            _pausePresenter    = viewFactory.CreateView<IPausePresenter, EViews>(EViews.Pause);
+            _hudPresenter           = viewFactory.CreateView<IHUDPresenter, EViews>(EViews.HUD);
+            _gameOverPresenter      = viewFactory.CreateView<IGameOverPresenter, EViews>(EViews.GameOver);
+            _pausePresenter         = viewFactory.CreateView<IPausePresenter, EViews>(EViews.Pause);
+            _completeLevelPresenter = viewFactory.CreateView<ICompleteLevelPresenter, EViews>(EViews.CompleteLevel);
 
             _saveSystem      = saveSystem;
             _gameManager     = gameManager;
@@ -211,7 +211,7 @@ namespace Assets.BackToSchool.Scripts.Models
         {
             StopTime();
             _playerInput.TogglePause(true);
-            _completeLevelPresenter.ShowCompleteLevelPanel();
+            _completeLevelPresenter.ShowView();
         }
 
         private void ReturnToMenu()

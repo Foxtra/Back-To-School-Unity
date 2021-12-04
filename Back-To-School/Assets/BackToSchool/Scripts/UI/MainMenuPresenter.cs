@@ -14,7 +14,8 @@ namespace Assets.BackToSchool.Scripts.UI
         public event Action<EGameModes> KillEnemiesModeTriggered;
         public event Action<EGameModes> SurviveModeTriggered;
 
-        [SerializeField] private GameObject _modeScreenSelection;
+        [SerializeField] private GameObject _mainView;
+        [SerializeField] private GameObject _modeSelectionView;
 
         [SerializeField] private Button _startGameButton;
         [SerializeField] private Button _continueGameButton;
@@ -50,8 +51,8 @@ namespace Assets.BackToSchool.Scripts.UI
 
         private void StartGame()
         {
-            gameObject.SetActive(false);
-            _modeScreenSelection.SetActive(true);
+            _mainView.SetActive(false);
+            _modeSelectionView.SetActive(true);
         }
 
         private void ContinueGame()           => ContinueTriggered?.Invoke();
@@ -60,8 +61,8 @@ namespace Assets.BackToSchool.Scripts.UI
 
         private void BackToMainMenu()
         {
-            _modeScreenSelection.SetActive(false);
-            gameObject.SetActive(true);
+            _modeSelectionView.SetActive(false);
+            _mainView.SetActive(true);
         }
     }
 }

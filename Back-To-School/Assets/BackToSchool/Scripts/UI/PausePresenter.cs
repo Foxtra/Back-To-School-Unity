@@ -17,9 +17,11 @@ namespace Assets.BackToSchool.Scripts.UI
         [SerializeField] private Button _returnToMenuButton;
 
         public void TogglePausePanel(bool isPausePanelShowed) => gameObject.SetActive(isPausePanelShowed);
-        public void SetRoot(RectTransform canvas)             => transform.SetParent(canvas, false);
-        public void ShowView()                                => gameObject.SetActive(true);
-        public void HideView()                                => gameObject.SetActive(false);
+
+        public void SetRoot(RectTransform canvas) => transform.SetParent(canvas, false);
+
+        public void ShowView() => gameObject.SetActive(true);
+        public void HideView() => gameObject.SetActive(false);
 
         private void Awake()
         {

@@ -5,9 +5,9 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Components
 {
     public interface IWeapon
     {
-        WeaponStats WeaponStats { get; set; }
-        int CurrentAmmo { get; set; }
-        void Attack(float damage);
-        void ReloadFinished();
+        public WeaponStats WeaponStats { get; set; }
+        public int CurrentAmmo { get; set; }
+        public void Attack(float damage);
+        public void ReloadFinished();
     }
 }

@@ -5,9 +5,9 @@ namespace Assets.BackToSchool.Scripts.Interfaces.UI
 {
     public interface IMainMenuPresenter : IView
     {
-        event Action ExitTriggered;
-        event Action StartTriggered;
-        event Action ContinueTriggered;
-        void ShowContinueButton(bool isShown);
+        public event Action ExitTriggered;
+        public event Action StartTriggered;
+        public event Action ContinueTriggered;
+        public void ShowContinueButton(bool isShown);
     }
 }

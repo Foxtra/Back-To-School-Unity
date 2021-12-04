@@ -13,7 +13,8 @@ namespace Assets.BackToSchool.Scripts.Enemies
 {
     public class EnemySpawner : MonoBehaviour, IEnemySpawner
     {
-        public event Action<int> EnemyDied;
+        public event Action<BaseEnemy> EnemyDied;
+        public event Action<int> ExperienceForEnemyGot;
 
         [SerializeField] private EnemyWarrior _enemyWarriorPrefab;
         [SerializeField] private EnemyShaman _enemyShamanPrefab;
@@ -148,7 +149,8 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
             var enemyObj = _enemyPools[type].Find(enemy => enemy.GetComponent<BaseEnemy>().Equals(sender));
             enemyObj.SetActive(false);
-            EnemyDied?.Invoke(_experienceForEnemy);
+            ExperienceForEnemyGot?.Invoke(_experienceForEnemy);
+            EnemyDied?.Invoke(sender);
         }
     }
 }

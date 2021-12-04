@@ -1,4 +1,5 @@
-﻿using Assets.BackToSchool.Scripts.Parameters;
+﻿using Assets.BackToSchool.Scripts.Enums;
+using Assets.BackToSchool.Scripts.Parameters;
 using Cysharp.Threading.Tasks;
 
 
@@ -6,12 +7,18 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Core
 {
     public interface IGameManager
     {
-        bool    IsSaveDataExists();
-        void    ExitGame();
-        void    StartGame(StartParameters parameters);
-        void    ReturnToMenu();
-        void    RestartLevel(string sceneName);
-        UniTask LoadMenu();
-        UniTask LoadGame(StartParameters parameters);
+        public bool IsSaveDataExists();
+
+        public void ExitGame();
+
+        public void StartGame(StartParameters parameters);
+
+        public void ReturnToMenu();
+
+        public void RestartLevel(string sceneName, EGameModes gameMode);
+
+        public UniTask LoadMenu();
+
+        public UniTask LoadGame(StartParameters parameters);
     }
 }

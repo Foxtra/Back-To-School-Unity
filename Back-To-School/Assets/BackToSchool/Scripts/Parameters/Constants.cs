@@ -56,5 +56,9 @@ namespace Assets.BackToSchool.Scripts.Parameters
 
         public static float CameraSmoothSpeed = 0.125f;
         public static Vector3 PlayerCameraOffset = new Vector3(0, 15, 0);
+
+        public static float TimeToSurvive = 120f;
+        public static int WarriorEnemiesToKill = 2;
+        public static int ShamanEnemiesToKill = 2;
     }
 }

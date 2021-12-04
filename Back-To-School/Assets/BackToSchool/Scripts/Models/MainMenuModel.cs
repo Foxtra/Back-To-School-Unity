@@ -26,7 +26,7 @@ namespace Assets.BackToSchool.Scripts.Models
 
         private void ExitGame() => _gameManager.ExitGame();
 
-        private void StartGame(GameModes mode) => _gameManager.StartGame(new StartParameters(true, mode));
+        private void StartGame(EGameModes mode) => _gameManager.StartGame(new StartParameters(true, mode));
 
         public override void Dispose()
         {

@@ -31,8 +31,10 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         public void ExitGame() { Application.Quit(); }
 
         public async void StartGame(StartParameters parameters) => await LoadGame(parameters);
-        public async void ReturnToMenu()                        => await LoadMenu();
-        public       void RestartLevel(string sceneName)        => StartGame(new StartParameters(true, sceneName, gameMode));
+
+        public async void ReturnToMenu() => await LoadMenu();
+
+        public void RestartLevel(string sceneName, EGameModes gameMode) => StartGame(new StartParameters(true, sceneName, gameMode));
 
         public async UniTask LoadMenu()
         {

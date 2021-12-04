@@ -11,7 +11,7 @@ namespace Assets.BackToSchool.Scripts.Weapons
 
         protected float _bulletDamage;
 
-        public void SetDamage(float damage) { _bulletDamage = damage; }
+        public void SetDamage(float damage) => _bulletDamage = damage;
 
         public virtual void Launch(float force)
         {

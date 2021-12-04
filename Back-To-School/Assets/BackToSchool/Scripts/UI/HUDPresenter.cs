@@ -1,7 +1,7 @@
 ﻿using System;
 using Assets.BackToSchool.Scripts.Enums;
-using Assets.BackToSchool.Scripts.Progression;
-﻿using Assets.BackToSchool.Scripts.Interfaces.UI;
+using Assets.BackToSchool.Scripts.Interfaces.UI;
+using Assets.BackToSchool.Scripts.Parameters;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -70,13 +70,13 @@ namespace Assets.BackToSchool.Scripts.UI
         {
             switch (initializeParams.GameMode)
             {
-                case GameModes.KillEnemies:
+                case EGameModes.KillEnemies:
                     _TimeObjectives.SetActive(false);
                     _KillObjectives.SetActive(true);
                     OnEnemiesKillChanged(initializeParams.WarriorEnemiesToKill - initializeParams.WarriorEnemiesKilled,
                         initializeParams.ShamanEnemiesToKill - initializeParams.ShamanEnemiesKilled);
                     break;
-                case GameModes.SurviveTime:
+                case EGameModes.SurviveTime:
                     _KillObjectives.SetActive(false);
                     _TimeObjectives.SetActive(true);
                     OnTimeChanged(initializeParams.TimeToSurvive - initializeParams.SurvivedTime);

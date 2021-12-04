@@ -1,6 +1,7 @@
 ﻿using Assets.BackToSchool.Scripts.Enums;
 using Assets.BackToSchool.Scripts.Extensions;
 using Assets.BackToSchool.Scripts.Interfaces.Core;
+using Assets.BackToSchool.Scripts.Parameters;
 using Assets.BackToSchool.Scripts.Player;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -24,8 +25,8 @@ namespace Assets.BackToSchool.Scripts.Progression
         {
             var json = JsonConvert.SerializeObject(objectives);
 
-            PlayerPrefs.SetString(SaveParams.ObjectivesData.ToString(), json);
-            PlayerPrefs.SetInt(SaveParams.IsSaveDataExists.ToString(), 1);
+            PlayerPrefs.SetString(ESaveParams.ObjectivesData.ToString(), json);
+            PlayerPrefs.SetInt(ESaveParams.IsSaveDataExists.ToString(), 1);
         }
 
         public PlayerData LoadPlayerProgress()
@@ -36,7 +37,7 @@ namespace Assets.BackToSchool.Scripts.Progression
 
         public ObjectiveParameters LoadObjectiveProgress()
         {
-            var json = PlayerPrefs.GetString(SaveParams.ObjectivesData.ToString());
+            var json = PlayerPrefs.GetString(ESaveParams.ObjectivesData.ToString());
             return JsonConvert.DeserializeObject<ObjectiveParameters>(json);
         }
 

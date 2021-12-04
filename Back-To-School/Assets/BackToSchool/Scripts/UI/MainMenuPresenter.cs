@@ -11,8 +11,8 @@ namespace Assets.BackToSchool.Scripts.UI
     {
         public event Action ExitTriggered;
         public event Action ContinueTriggered;
-        public event Action<GameModes> KillEnemiesModeTriggered;
-        public event Action<GameModes> SurviveModeTriggered;
+        public event Action<EGameModes> KillEnemiesModeTriggered;
+        public event Action<EGameModes> SurviveModeTriggered;
 
         [SerializeField] private GameObject _modeScreenSelection;
 
@@ -55,8 +55,8 @@ namespace Assets.BackToSchool.Scripts.UI
         }
 
         private void ContinueGame()           => ContinueTriggered?.Invoke();
-        private void StartGameInKillMode()    => KillEnemiesModeTriggered?.Invoke(GameModes.KillEnemies);
-        private void StartGameInSurviveMode() => SurviveModeTriggered?.Invoke(GameModes.SurviveTime);
+        private void StartGameInKillMode()    => KillEnemiesModeTriggered?.Invoke(EGameModes.KillEnemies);
+        private void StartGameInSurviveMode() => SurviveModeTriggered?.Invoke(EGameModes.SurviveTime);
 
         private void BackToMainMenu()
         {

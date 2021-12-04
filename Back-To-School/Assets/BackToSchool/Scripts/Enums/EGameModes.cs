@@ -1,6 +1,6 @@
 ﻿namespace Assets.BackToSchool.Scripts.Enums
 {
-    public enum GameModes
+    public enum EGameModes
     {
         KillEnemies,
         SurviveTime

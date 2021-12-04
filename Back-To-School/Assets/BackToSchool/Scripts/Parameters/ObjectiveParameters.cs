@@ -1,26 +1,26 @@
 ﻿using Assets.BackToSchool.Scripts.Enums;
 
 
-namespace Assets.BackToSchool.Scripts.Progression
+namespace Assets.BackToSchool.Scripts.Parameters
 {
     public class ObjectiveParameters
     {
-        public ObjectiveParameters(GameModes mode)
+        public ObjectiveParameters(EGameModes mode)
         {
             GameMode = mode;
             switch (GameMode)
             {
-                case GameModes.SurviveTime:
+                case EGameModes.SurviveTime:
                     TimeToSurvive = Constants.TimeToSurvive;
                     break;
-                case GameModes.KillEnemies:
+                case EGameModes.KillEnemies:
                     WarriorEnemiesToKill = Constants.WarriorEnemiesToKill;
                     ShamanEnemiesToKill  = Constants.ShamanEnemiesToKill;
                     break;
             }
         }
 
-        public GameModes GameMode { get; set; }
+        public EGameModes GameMode { get; set; }
         public float TimeToSurvive { get; set; }
         public float SurvivedTime { get; set; }
         public int WarriorEnemiesToKill { get; set; }

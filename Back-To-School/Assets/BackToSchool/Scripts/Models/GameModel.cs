@@ -10,6 +10,7 @@ using Assets.BackToSchool.Scripts.Parameters;
 using Assets.BackToSchool.Scripts.Player;
 using Assets.BackToSchool.Scripts.Progression;
 using Assets.BackToSchool.Scripts.Stats;
+using Assets.BackToSchool.Scripts.UI;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -31,7 +32,7 @@ namespace Assets.BackToSchool.Scripts.Models
 
         private IStatsManager _statsManager;
         private ILevelSystem _levelSystem;
-        private ObjectiveSystem _objectiveSystem;
+        private IObjectiveSystem _objectiveSystem;
 
         private IEnemySpawner _enemySpawner;
 
@@ -68,9 +69,9 @@ namespace Assets.BackToSchool.Scripts.Models
 
             _player = _resourceManager.CreatePlayer(_playerInput, _playerStats, _playerData);
 
-             _objectiveSystem = new ObjectiveSystem();
-            var objectives = startParameters.IsNewGame
-                ? new ObjectiveParameters(startParameters.GameMode)
+            _objectiveSystem = new ObjectiveSystem();
+            var objectives = parameters.IsNewGame
+                ? new ObjectiveParameters(parameters.GameMode)
                 : _saveSystem.LoadObjectiveProgress();
 
             SubscribeEvents();
@@ -90,12 +91,6 @@ namespace Assets.BackToSchool.Scripts.Models
             _player.UpdateHUD();
         }
 
-        private void Update()
-        {
-            if (_objectiveSystem != null)
-                _objectiveSystem.CountTimePassed(Time.deltaTime);
-        }
-
         private void SubscribeEvents()
         {
             _gameOverPresenter.Restarted += RestartGame;
@@ -106,22 +101,22 @@ namespace Assets.BackToSchool.Scripts.Models
             _completeLevelPresenter.MenuReturned += ReturnToMenu;
             _completeLevelPresenter.Restarted    += RestartGame;
 
-            _player.AmmoChanged                 += _hudPresenter.OnAmmoChanged;
-            _player.WeaponChanged               += _hudPresenter.OnWeaponChanged;
-            _player.MaxAmmoChanged              += _hudPresenter.OnMaxAmmoChanged;
-            _player.Died                        += OnPlayerDeath;
-            _player.HealthChanged               += _hudPresenter.OnHealthChanged;
+            _player.AmmoChanged    += _hudPresenter.OnAmmoChanged;
+            _player.WeaponChanged  += _hudPresenter.OnWeaponChanged;
+            _player.MaxAmmoChanged += _hudPresenter.OnMaxAmmoChanged;
+            _player.Died           += OnPlayerDeath;
+            _player.HealthChanged  += _hudPresenter.OnHealthChanged;
 
             _enemySpawner.EnemyDied              += _objectiveSystem.CountEnemyDeath;
             _objectiveSystem.ObjectivesCompleted += CompleteLevel;
             _objectiveSystem.EnemiesKilled       += _hudPresenter.OnEnemiesKillChanged;
             _objectiveSystem.TimeSurvivedChanged += _hudPresenter.OnTimeChanged;
 
-            _enemySpawner.EnemyDied        += _levelSystem.AddExperience;
-            _levelSystem.LevelChanged      += _statsManager.LevelUp;
-            _levelSystem.LevelChanged      += _hudPresenter.OnLevelChanged;
-            _levelSystem.ExperienceChanged += _hudPresenter.OnExpChanged;
-            _levelSystem.ProgressChanged   += SaveGame;
+            _enemySpawner.ExperienceForEnemyGot += _levelSystem.AddExperience;
+            _levelSystem.LevelChanged           += _statsManager.LevelUp;
+            _levelSystem.LevelChanged           += _hudPresenter.OnLevelChanged;
+            _levelSystem.ExperienceChanged      += _hudPresenter.OnExpChanged;
+            _levelSystem.ProgressChanged        += SaveGame;
 
             _statsManager.ArmorChanged     += _hudPresenter.OnArmorChanged;
             _statsManager.DamageChanged    += _hudPresenter.OnDamageChanged;

@@ -1,11 +1,13 @@
 ﻿using System;
 using Assets.BackToSchool.Scripts.Enemies;
 using Assets.BackToSchool.Scripts.Enums;
+using Assets.BackToSchool.Scripts.Interfaces.Components;
+using Assets.BackToSchool.Scripts.Parameters;
 
 
 namespace Assets.BackToSchool.Scripts.Progression
 {
-    public class ObjectiveSystem
+    public class ObjectiveSystem : IObjectiveSystem
     {
         public event Action ObjectivesCompleted;
         public event Action<float> TimeSurvivedChanged;
@@ -32,7 +34,7 @@ namespace Assets.BackToSchool.Scripts.Progression
 
         public void CountEnemyDeath(BaseEnemy sender)
         {
-            if (_currentObjectives.GameMode != GameModes.KillEnemies)
+            if (_currentObjectives.GameMode != EGameModes.KillEnemies)
                 return;
 
             if (sender is EnemyWarrior)
@@ -47,7 +49,7 @@ namespace Assets.BackToSchool.Scripts.Progression
 
         public void CountTimePassed(float time)
         {
-            if (_currentObjectives.GameMode != GameModes.SurviveTime)
+            if (_currentObjectives.GameMode != EGameModes.SurviveTime)
                 return;
 
             _timePassed += time;

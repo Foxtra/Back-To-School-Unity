@@ -1,16 +1,21 @@
-using Assets.BackToSchool.Scripts.Interfaces;
-using Assets.BackToSchool.Scripts.Utils;
+using Assets.BackToSchool.Scripts.Interfaces.Components;
+using UnityEngine;
 
 
 namespace Assets.BackToSchool.Scripts.Enemies
 {
     public class EnemyWarrior : BaseEnemy, IMeleeAttackable
     {
-        public void DoDamage()
+        [SerializeField] private EnemyMelee _enemyMeleeWeapon;
+
+        public void DoDamage() => _target.GetComponent<IDamageable>().TakeDamage(_enemyDamage);
+
+        protected override void Awake()
         {
-            if (SpaceOperations.CheckIfTwoObjectsClose(transform.position, _target.transform.position,
-                _agent.stoppingDistance))
-                _target.GetComponent<IDamageable>().TakeDamage(_enemyDamage);
+            base.Awake();
+            _enemyMeleeWeapon.PlayerDamaged += DoDamage;
         }
+
+        private void OnDestroy() => _enemyMeleeWeapon.PlayerDamaged -= DoDamage;
     }
 }

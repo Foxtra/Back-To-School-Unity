@@ -1,11 +1,12 @@
 ﻿using System;
+using Assets.BackToSchool.Scripts.Interfaces.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
 
 namespace Assets.BackToSchool.Scripts.UI
 {
-    public class PausePresenter : MonoBehaviour
+    public class PausePresenter : MonoBehaviour, IPausePresenter
     {
         public event Action Restarted;
         public event Action Continued;
@@ -16,6 +17,9 @@ namespace Assets.BackToSchool.Scripts.UI
         [SerializeField] private Button _returnToMenuButton;
 
         public void TogglePausePanel(bool isPausePanelShowed) => gameObject.SetActive(isPausePanelShowed);
+        public void SetRoot(RectTransform canvas)             => transform.SetParent(canvas, false);
+        public void ShowView()                                => gameObject.SetActive(true);
+        public void HideView()                                => gameObject.SetActive(false);
 
         private void Awake()
         {

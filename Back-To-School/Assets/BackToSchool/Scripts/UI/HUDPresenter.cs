@@ -1,13 +1,14 @@
 ﻿using System;
 using Assets.BackToSchool.Scripts.Enums;
 using Assets.BackToSchool.Scripts.Progression;
+﻿using Assets.BackToSchool.Scripts.Interfaces.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
 
 namespace Assets.BackToSchool.Scripts.UI
 {
-    public class HUDPresenter : MonoBehaviour
+    public class HUDPresenter : MonoBehaviour, IHUDPresenter
     {
         [SerializeField] private GameObject _KillObjectives;
         [SerializeField] private GameObject _TimeObjectives;
@@ -32,6 +33,10 @@ namespace Assets.BackToSchool.Scripts.UI
         private int _maxHealth;
         private int _ammoValue;
         private int _maxAmmoValue;
+
+        public void SetRoot(RectTransform canvas) => transform.SetParent(canvas, false);
+        public void ShowView()                    => gameObject.SetActive(true);
+        public void HideView()                    => gameObject.SetActive(false);
 
         public void OnHealthChanged(float newCurrentHealth)
         {

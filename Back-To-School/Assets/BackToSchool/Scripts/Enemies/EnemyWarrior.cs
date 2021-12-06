@@ -1,6 +1,6 @@
 using System.Collections;
 using Assets.BackToSchool.Scripts.Enums;
-using Assets.BackToSchool.Scripts.Interfaces;
+using Assets.BackToSchool.Scripts.Interfaces.Components;
 using UnityEngine;
 
 
@@ -8,20 +8,15 @@ namespace Assets.BackToSchool.Scripts.Enemies
 {
     public class EnemyWarrior : BaseEnemy, IMeleeAttackable
     {
-        [SerializeField] private float _delayBeforeDamage = 0.5f;
-        public void DoDamage(float damage) => _target.GetComponent<IDamageable>().TakeDamage(damage);
+        [SerializeField] private EnemyMelee _enemyMeleeWeapon;
 
-        protected override void Attack()
+        protected override void Awake()
         {
-            base.Attack();
+            base.Awake();
             _audioManager.Play(SoundNames.WarriorAttack);
-            StartCoroutine(nameof(ShowDamageEffect));
+            _enemyMeleeWeapon.PlayerDamaged += DoDamage;
         }
 
-        private IEnumerator ShowDamageEffect()
-        {
-            yield return new WaitForSeconds(_delayBeforeDamage);
-            DoDamage(_enemyDamage);
-        }
+        private void OnDestroy() => _enemyMeleeWeapon.PlayerDamaged -= DoDamage;
     }
 }

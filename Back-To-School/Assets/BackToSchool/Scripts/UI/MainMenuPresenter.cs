@@ -1,19 +1,21 @@
 ﻿using System;
 using Assets.BackToSchool.Scripts.Enums;
+using Assets.BackToSchool.Scripts.Interfaces.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
 
 namespace Assets.BackToSchool.Scripts.UI
 {
-    public class MainMenuPresenter : MonoBehaviour
+    public class MainMenuPresenter : MonoBehaviour, IMainMenuPresenter
     {
         public event Action ExitTriggered;
         public event Action ContinueTriggered;
-        public event Action<GameModes> KillEnemiesModeTriggered;
-        public event Action<GameModes> SurviveModeTriggered;
+        public event Action<EGameModes> KillEnemiesModeTriggered;
+        public event Action<EGameModes> SurviveModeTriggered;
 
-        [SerializeField] private GameObject _modeScreenSelection;
+        [SerializeField] private GameObject _mainView;
+        [SerializeField] private GameObject _modeSelectionView;
 
         [SerializeField] private Button _startGameButton;
         [SerializeField] private Button _continueGameButton;
@@ -23,6 +25,9 @@ namespace Assets.BackToSchool.Scripts.UI
         [SerializeField] private Button _backToMenuButton;
 
         public void ShowContinueButton(bool isShown) => _continueGameButton.gameObject.SetActive(isShown);
+        public void SetRoot(RectTransform canvas)    => transform.SetParent(canvas, false);
+        public void ShowView()                       => gameObject.SetActive(true);
+        public void HideView()                       => gameObject.SetActive(false);
 
         private void Start()
         {
@@ -46,18 +51,18 @@ namespace Assets.BackToSchool.Scripts.UI
 
         private void StartGame()
         {
-            gameObject.SetActive(false);
-            _modeScreenSelection.SetActive(true);
+            _mainView.SetActive(false);
+            _modeSelectionView.SetActive(true);
         }
 
         private void ContinueGame()           => ContinueTriggered?.Invoke();
-        private void StartGameInKillMode()    => KillEnemiesModeTriggered?.Invoke(GameModes.KillEnemies);
-        private void StartGameInSurviveMode() => SurviveModeTriggered?.Invoke(GameModes.SurviveTime);
+        private void StartGameInKillMode()    => KillEnemiesModeTriggered?.Invoke(EGameModes.KillEnemies);
+        private void StartGameInSurviveMode() => SurviveModeTriggered?.Invoke(EGameModes.SurviveTime);
 
         private void BackToMainMenu()
         {
-            _modeScreenSelection.SetActive(false);
-            gameObject.SetActive(true);
+            _modeSelectionView.SetActive(false);
+            _mainView.SetActive(true);
         }
     }
 }

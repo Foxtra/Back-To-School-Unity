@@ -1,4 +1,5 @@
-﻿using Assets.BackToSchool.Scripts.Interfaces;
+﻿using Assets.BackToSchool.Scripts.Interfaces.Components;
+using Assets.BackToSchool.Scripts.Parameters;
 using Assets.BackToSchool.Scripts.Stats;
 using UnityEngine;
 
@@ -13,7 +14,8 @@ namespace Assets.BackToSchool.Scripts.Weapons
 
         private Bullet _bullet;
 
-        public AssaultRifle() => WeaponStats = new WeaponStats(1, 10, 1);
+        public AssaultRifle() => WeaponStats = new WeaponStats(Constants.RifleInitialFireRate, Constants.RifleInitialMaxAmmo,
+            Constants.RifleInitialReloadSpeed);
 
         public WeaponStats WeaponStats { get; set; }
         public int CurrentAmmo { get; set; }

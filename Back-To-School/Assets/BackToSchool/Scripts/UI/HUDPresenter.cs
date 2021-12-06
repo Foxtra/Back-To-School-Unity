@@ -1,13 +1,14 @@
 ﻿using System;
 using Assets.BackToSchool.Scripts.Enums;
-using Assets.BackToSchool.Scripts.Progression;
+using Assets.BackToSchool.Scripts.Interfaces.UI;
+using Assets.BackToSchool.Scripts.Parameters;
 using UnityEngine;
 using UnityEngine.UI;
 
 
 namespace Assets.BackToSchool.Scripts.UI
 {
-    public class HUDPresenter : MonoBehaviour
+    public class HUDPresenter : MonoBehaviour, IHUDPresenter
     {
         [SerializeField] private GameObject _KillObjectives;
         [SerializeField] private GameObject _TimeObjectives;
@@ -32,6 +33,11 @@ namespace Assets.BackToSchool.Scripts.UI
         private int _maxHealth;
         private int _ammoValue;
         private int _maxAmmoValue;
+
+        public void SetRoot(RectTransform canvas) => transform.SetParent(canvas, false);
+
+        public void ShowView() => gameObject.SetActive(true);
+        public void HideView() => gameObject.SetActive(false);
 
         public void OnHealthChanged(float newCurrentHealth)
         {
@@ -65,13 +71,13 @@ namespace Assets.BackToSchool.Scripts.UI
         {
             switch (initializeParams.GameMode)
             {
-                case GameModes.KillEnemies:
+                case EGameModes.KillEnemies:
                     _TimeObjectives.SetActive(false);
                     _KillObjectives.SetActive(true);
                     OnEnemiesKillChanged(initializeParams.WarriorEnemiesToKill - initializeParams.WarriorEnemiesKilled,
                         initializeParams.ShamanEnemiesToKill - initializeParams.ShamanEnemiesKilled);
                     break;
-                case GameModes.SurviveTime:
+                case EGameModes.SurviveTime:
                     _KillObjectives.SetActive(false);
                     _TimeObjectives.SetActive(true);
                     OnTimeChanged(initializeParams.TimeToSurvive - initializeParams.SurvivedTime);

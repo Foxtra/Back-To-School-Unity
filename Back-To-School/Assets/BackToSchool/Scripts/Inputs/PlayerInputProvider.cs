@@ -1,5 +1,8 @@
 ﻿using System;
+using Assets.BackToSchool.Scripts.Enums;
+using Assets.BackToSchool.Scripts.Extensions;
 using Assets.BackToSchool.Scripts.Interfaces.Input;
+using Assets.BackToSchool.Scripts.Parameters;
 using UnityEngine;
 
 
@@ -18,9 +21,9 @@ namespace Assets.BackToSchool.Scripts.Inputs
         private RaycastHit _previousHit;
         private RaycastHit _hit;
         private Ray _ray;
-        private LayerMask _layerMask = LayerMask.GetMask("Ground");
+        private LayerMask _layerMask = LayerMask.GetMask(ELayers.Ground.ToStringCached());
 
-        private float _rayCastLength = 100f;
+        private float _rayCastLength = Constants.RayCastLength;
 
         public PlayerInputProvider(Camera mainCamera) => _mainCamera = mainCamera;
 
@@ -28,40 +31,40 @@ namespace Assets.BackToSchool.Scripts.Inputs
 
         public override void DirectionChangeInvoked(Vector3 direction)
         {
-            if (!_isPaused)
-            {
-                if (direction != Vector3.zero)
-                    Moved?.Invoke(direction);
-                else
-                    Stopped?.Invoke();
-            }
+            if (_isPaused)
+                return;
+
+            if (direction != Vector3.zero)
+                Moved?.Invoke(direction);
+            else
+                Stopped?.Invoke();
         }
 
         public override void ScrollInvoked(float scrollValue)
         {
-            if (!_isPaused)
-            {
-                if (scrollValue > 0)
-                    WeaponChanged?.Invoke(true);
-                else if (scrollValue < 0)
-                    WeaponChanged?.Invoke(false);
-            }
+            if (_isPaused)
+                return;
+
+            if (scrollValue > 0)
+                WeaponChanged?.Invoke(true);
+            else if (scrollValue < 0)
+                WeaponChanged?.Invoke(false);
         }
 
         public override void ReloadInvoked() => Reloaded?.Invoke();
 
         public override void RotateInvoked(Vector3 mousePosition)
         {
-            if (!_isPaused)
-            {
-                _ray = _mainCamera.ScreenPointToRay(mousePosition);
+            if (_isPaused)
+                return;
 
-                if (!Physics.Raycast(_ray, out _hit, _rayCastLength, _layerMask)) return;
-                if (_previousHit.Equals(_hit)) return;
+            _ray = _mainCamera.ScreenPointToRay(mousePosition);
 
-                _previousHit = _hit;
-                Rotated?.Invoke(_hit.point);
-            }
+            if (!Physics.Raycast(_ray, out _hit, _rayCastLength, _layerMask)) return;
+            if (_previousHit.Equals(_hit)) return;
+
+            _previousHit = _hit;
+            Rotated?.Invoke(_hit.point);
         }
     }
 }

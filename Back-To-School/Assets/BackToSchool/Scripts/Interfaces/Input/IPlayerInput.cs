@@ -6,11 +6,11 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Input
 {
     public interface IPlayerInput : IRawInputProvider, IInputProvider
     {
-        event Action<Vector3> Moved;
-        event Action<Vector3> Rotated;
-        event Action Stopped;
-        event Action Fired;
-        event Action Reloaded;
-        event Action<bool> WeaponChanged;
+        public event Action<Vector3> Moved;
+        public event Action<Vector3> Rotated;
+        public event Action Stopped;
+        public event Action Fired;
+        public event Action Reloaded;
+        public event Action<bool> WeaponChanged;
     }
 }

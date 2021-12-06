@@ -1,6 +1,7 @@
 ﻿using System;
 using Assets.BackToSchool.Scripts.Enums;
 using Assets.BackToSchool.Scripts.Extensions;
+using Assets.BackToSchool.Scripts.Interfaces.Core;
 using Assets.BackToSchool.Scripts.Interfaces.Game;
 using Assets.BackToSchool.Scripts.Parameters;
 using Assets.BackToSchool.Scripts.Stats;
@@ -75,7 +76,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
         }
 
         public void SetAudioManager(IAudioManager audioManager) => _audioManager = audioManager;
-        public void SetTarget(Transform target) => _target = target;
+        public void SetTarget(Transform target)                 => _target = target;
 
         protected void EnableEnemy()
         {

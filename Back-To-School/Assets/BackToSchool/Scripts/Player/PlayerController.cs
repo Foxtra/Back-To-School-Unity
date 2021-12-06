@@ -2,6 +2,7 @@
 using Assets.BackToSchool.Scripts.Enums;
 using Assets.BackToSchool.Scripts.Extensions;
 using Assets.BackToSchool.Scripts.Interfaces.Components;
+using Assets.BackToSchool.Scripts.Interfaces.Core;
 using Assets.BackToSchool.Scripts.Interfaces.Game;
 using Assets.BackToSchool.Scripts.Interfaces.Input;
 using Assets.BackToSchool.Scripts.Items;

@@ -1,5 +1,6 @@
 ﻿using Assets.BackToSchool.Scripts.Enums;
 using Assets.BackToSchool.Scripts.Inputs;
+using Assets.BackToSchool.Scripts.Interfaces;
 using Assets.BackToSchool.Scripts.Interfaces.Components;
 using Assets.BackToSchool.Scripts.Interfaces.Core;
 using Assets.BackToSchool.Scripts.Interfaces.Game;
@@ -45,7 +46,8 @@ namespace Assets.BackToSchool.Scripts.Models
         private bool _isPlayerDead;
 
         public GameModel(ISaveSystem saveSystem, IGameManager gameManager, IResourceManager resourceManager,
-            IInputManager inputManager, IViewFactory viewFactory, Camera playerCamera, IAudioManager audioManager, StartParameters parameters)
+            IInputManager inputManager, IViewFactory viewFactory, Camera playerCamera, IAudioManager audioManager,
+            StartParameters parameters)
         {
             _hudPresenter           = viewFactory.CreateView<IHUDPresenter, EViews>(EViews.HUD);
             _gameOverPresenter      = viewFactory.CreateView<IGameOverPresenter, EViews>(EViews.GameOver);
@@ -66,7 +68,7 @@ namespace Assets.BackToSchool.Scripts.Models
             _playerInput = new PlayerInputProvider(_mainCamera);
             _inputManager.Subscribe(_playerInput);
 
-            _player = _resourceManager.CreatePlayer(_playerInput, _playerStats, _playerData, audioManager);
+            _player = _resourceManager.CreatePlayer(_playerInput, audioManager, _playerStats, _playerData);
 
             _objectiveSystem = new ObjectiveSystem();
             var objectives = parameters.IsNewGame

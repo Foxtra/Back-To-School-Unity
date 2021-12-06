@@ -1,4 +1,5 @@
 ﻿using System;
+using Assets.BackToSchool.Scripts.Interfaces.Core;
 using Assets.BackToSchool.Scripts.Items;
 
 
@@ -21,6 +22,7 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Components
         public void Reload();
         public void ReloadComplete();
         public void InitializeAmmo(int ammo);
+        public void InitializeAudioManager(IAudioManager audioManager);
         public void InitializeWeapon(int weaponIndex);
         public void UpdateHUD();
     }

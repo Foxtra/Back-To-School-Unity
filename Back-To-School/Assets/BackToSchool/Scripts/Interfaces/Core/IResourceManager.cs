@@ -17,7 +17,8 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Core
 
         public IUIRoot CreateUIRoot(Camera worldSpaceCamera);
 
-        public IPlayerController CreatePlayer(IPlayerInput playerInput, PlayerStats playerStats, PlayerData playerData);
+        public IPlayerController CreatePlayer(IPlayerInput playerInput, IAudioManager audioManager, PlayerStats playerStats,
+            PlayerData playerData);
 
         public IEnemySpawner CreateEnemySpawner();
     }

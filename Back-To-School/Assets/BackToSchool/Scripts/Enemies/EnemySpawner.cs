@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Assets.BackToSchool.Scripts.Enums;
+using Assets.BackToSchool.Scripts.Interfaces.Core;
 using Assets.BackToSchool.Scripts.Interfaces.Game;
 using Assets.BackToSchool.Scripts.Parameters;
 using Assets.BackToSchool.Scripts.Stats;
@@ -18,7 +19,6 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
         [SerializeField] private EnemyWarrior _enemyWarriorPrefab;
         [SerializeField] private EnemyShaman _enemyShamanPrefab;
-
 
         private IAudioManager _audioManager;
         private Dictionary<EEnemyTypes, List<GameObject>> _enemyPools = new Dictionary<EEnemyTypes, List<GameObject>>();
@@ -52,6 +52,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
             foreach (var enemy in _enemyPools.Keys.SelectMany(key => _enemyPools[key]))
                 enemy.GetComponent<BaseEnemy>().SetTarget(_target);
         }
+
         public void SetAudioManager(IAudioManager audioManager) => _audioManager = audioManager;
 
         private void Awake()
@@ -135,7 +136,6 @@ namespace Assets.BackToSchool.Scripts.Enemies
             var enemy = enemyObj.GetComponent<BaseEnemy>();
             enemy.SetTarget(_target);
             enemy.SetAudioManager(_audioManager);
-            enemy.EnemyStats = new CharacterStats(_enemyDamage, _enemyMaxHealth, _enemyMoveSpeed);
             enemy.Initialize(new CharacterStats(_enemyDamage, _enemyMaxHealth, _enemyMoveSpeed));
         }
 

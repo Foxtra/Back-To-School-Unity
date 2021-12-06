@@ -1,6 +1,6 @@
 ﻿using System;
 using Assets.BackToSchool.Scripts.Enums;
-using Assets.BackToSchool.Scripts.Interfaces;
+using Assets.BackToSchool.Scripts.Interfaces.Core;
 using Assets.BackToSchool.Scripts.Sounds;
 using UnityEngine;
 

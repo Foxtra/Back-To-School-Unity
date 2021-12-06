@@ -1,6 +1,7 @@
 ﻿using System;
 using Assets.BackToSchool.Scripts.Enemies;
 using Assets.BackToSchool.Scripts.Interfaces.Components;
+using Assets.BackToSchool.Scripts.Interfaces.Core;
 
 
 namespace Assets.BackToSchool.Scripts.Interfaces.Game
@@ -14,6 +15,7 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Game
         public void SetEnemyDamage(int enemyDamage);
         public void SetEnemyMaxHealth(int maxHeath);
         public void SetEnemyMoveSpeed(int moveSpeed);
+        public void SetAudioManager(IAudioManager audioManager);
         public void InitializeEnemyPools();
     }
 }

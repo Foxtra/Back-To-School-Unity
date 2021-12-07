@@ -20,5 +20,7 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Core
         public IPlayerController CreatePlayer(IPlayerInput playerInput, PlayerStats playerStats, PlayerData playerData);
 
         public IEnemySpawner CreateEnemySpawner();
+
+        public IBaseEnemy CreateEnemy(EEnemyTypes enemyType);
     }
 }

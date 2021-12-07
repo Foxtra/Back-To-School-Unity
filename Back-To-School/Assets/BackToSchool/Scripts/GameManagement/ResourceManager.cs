@@ -49,6 +49,22 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             return result;
         }
 
+        public IBaseEnemy CreateEnemy(EEnemyTypes enemyType)
+        {
+            IBaseEnemy result;
+            switch (enemyType)
+            {
+                case EEnemyTypes.EnemyWarrior:
+                    result = CreatePrefabInstance<EnemyWarrior, EGame>(EGame.EnemyWarrior);
+                    return result;
+                case EEnemyTypes.EnemyShaman:
+                    result = CreatePrefabInstance<EnemyShaman, EGame>(EGame.EnemyShaman);
+                    return result;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(enemyType), enemyType, null);
+            }
+        }
+
         public T GetPrefab<T, E>(E item)
             where T : Object
             where E : Enum

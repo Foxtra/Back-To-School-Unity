@@ -14,8 +14,8 @@ namespace Assets.BackToSchool.Scripts.Enemies
 {
     public abstract class BaseEnemy : MonoBehaviour, IBaseEnemy
     {
-        public Action<float, int> HealthChanged;
-        public Action<BaseEnemy> Died;
+        public event Action<float, int> HealthChanged;
+        public event Action<BaseEnemy> Died;
 
         protected float _startChasingDistance;
         protected int _maxHealth;

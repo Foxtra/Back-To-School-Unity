@@ -81,8 +81,7 @@ namespace Assets.BackToSchool.Scripts.Models
             _hudPresenter.InitializeObjectives(objectives);
 
             _mainCamera.GetComponent<CameraFollow>().SetTarget(_player.gameObject.transform);
-            _enemySpawner.InitializeEnemyPools();
-            _enemySpawner.SetTarget(_player.gameObject.transform);
+            _enemySpawner.Initialize(_player.gameObject.transform, resourceManager);
 
             var pauseInput = new PauseInputProvider();
             _inputManager.Subscribe(pauseInput);

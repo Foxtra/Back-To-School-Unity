@@ -33,16 +33,11 @@ namespace Assets.BackToSchool.Scripts.Enemies
         private int _currentNumberOfShamans;
         private int _maxWarriorEnemies;
         private int _maxShamanEnemies;
-        private int _enemyDamage;
-        private int _enemyMaxHealth;
         private int _enemyMoveSpeed;
         private int _experienceForEnemy;
 
         public void SetMaxWarriorEnemies(int maxEnemiesNumber) => _maxWarriorEnemies = maxEnemiesNumber;
         public void SetMaxShamanEnemies(int maxEnemiesNumber)  => _maxShamanEnemies = maxEnemiesNumber;
-        public void SetEnemyDamage(int enemyDamage)            => _enemyDamage = enemyDamage;
-        public void SetEnemyMaxHealth(int maxHeath)            => _enemyMaxHealth = maxHeath;
-        public void SetEnemyMoveSpeed(int moveSpeed)           => _enemyMoveSpeed = moveSpeed;
 
         public void SetTarget(Transform target)
         {
@@ -57,8 +52,6 @@ namespace Assets.BackToSchool.Scripts.Enemies
             _spawnInterval      = Constants.SpawnInterval;
             _maxWarriorEnemies  = Constants.MaxWarriorEnemies;
             _maxShamanEnemies   = Constants.MaxShamanEnemies;
-            _enemyDamage        = Constants.EnemyDamage;
-            _enemyMaxHealth     = Constants.EnemyMaxHealth;
             _enemyMoveSpeed     = Constants.EnemyMoveSpeed;
             _experienceForEnemy = Constants.ExperienceForEnemy;
         }
@@ -131,7 +124,15 @@ namespace Assets.BackToSchool.Scripts.Enemies
             enemyObj.transform.position = _enemyPos;
             var enemy = enemyObj.GetComponent<BaseEnemy>();
             enemy.SetTarget(_target);
-            enemy.Initialize(new CharacterStats(_enemyDamage, _enemyMaxHealth, _enemyMoveSpeed));
+            switch (enemyType)
+            {
+                case EEnemyTypes.EnemyWarrior:
+                    enemy.Initialize(new CharacterStats(Constants.EnemyWarriorDamage, Constants.EnemyWarriorMaxHealth, _enemyMoveSpeed));
+                    break;
+                case EEnemyTypes.EnemyShaman:
+                    enemy.Initialize(new CharacterStats(Constants.EnemyShamanDamage, Constants.EnemyShamanMaxHealth, _enemyMoveSpeed));
+                    break;
+            }
         }
 
         private void ReduceEnemyCount(BaseEnemy sender)

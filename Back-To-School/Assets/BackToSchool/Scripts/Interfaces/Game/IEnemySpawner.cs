@@ -11,9 +11,6 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Game
         public event Action<int> ExperienceForEnemyGot;
         public void SetMaxWarriorEnemies(int maxEnemiesNumber);
         public void SetMaxShamanEnemies(int maxEnemiesNumber);
-        public void SetEnemyDamage(int enemyDamage);
-        public void SetEnemyMaxHealth(int maxHeath);
-        public void SetEnemyMoveSpeed(int moveSpeed);
         public void InitializeEnemyPools();
     }
 }

@@ -22,8 +22,6 @@ namespace Assets.BackToSchool.Scripts.Parameters
         public static float BulletLifeTime = 4f;
         public static float RocketSpeed = 100f;
 
-        public static int EnemyDamage = 2;
-        public static int EnemyMaxHealth = 2;
         public static int EnemyMoveSpeed = 2;
         public static int ExperienceForEnemy = 20;
         public static int MaxWarriorEnemies = 3;
@@ -31,6 +29,12 @@ namespace Assets.BackToSchool.Scripts.Parameters
         public static float MaxRangeToPlayer = 10f;
         public static float SpawnInterval = 1f;
         public static float ShamanAttackInterval = 2f;
+        public static float EnemyStartChasingDistance = 15f;
+        public static int EnemyWarriorMaxHealth = 2;
+        public static int EnemyShamanMaxHealth = 1;
+        public static int EnemyWarriorDamage = 2;
+        public static int EnemyShamanDamage = 3;
+        public static int EnemyFireBallForce = 4;
 
         public static int InitialFireRate = 1;
         public static int InitialMaxAmmo = 1;
@@ -61,5 +65,7 @@ namespace Assets.BackToSchool.Scripts.Parameters
         public static float TimeToSurvive = 120f;
         public static int WarriorEnemiesToKill = 2;
         public static int ShamanEnemiesToKill = 2;
+
+        public static float MillisecondsMultiplier = 1000f;
     }
 }

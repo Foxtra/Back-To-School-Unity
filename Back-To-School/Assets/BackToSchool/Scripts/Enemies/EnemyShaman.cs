@@ -1,4 +1,7 @@
-﻿using Assets.BackToSchool.Scripts.Interfaces.Components;
+﻿using System;
+using Assets.BackToSchool.Scripts.Enums;
+using Assets.BackToSchool.Scripts.Extensions;
+using Assets.BackToSchool.Scripts.Interfaces.Components;
 using Assets.BackToSchool.Scripts.Parameters;
 using Assets.BackToSchool.Scripts.Weapons;
 using UnityEngine;
@@ -10,11 +13,11 @@ namespace Assets.BackToSchool.Scripts.Enemies
     {
         [SerializeField] private Transform _shootingPosition;
         [SerializeField] private FireBall _bulletPrefab;
-        [SerializeField] private float _bulletForce;
 
         private FireBall _bullet;
         private float _timer;
         private float _attackInterval = Constants.ShamanAttackInterval;
+        private float _bulletForce = Constants.EnemyFireBallForce;
 
         public void Fire()
         {
@@ -26,11 +29,32 @@ namespace Assets.BackToSchool.Scripts.Enemies
             _bullet.Launch(_bulletForce);
         }
 
+        public override void TakeDamage(float damage)
+        {
+            base.TakeDamage(damage);
+            if (_currentHealth > 0)
+            {
+                _animator.SetTrigger(EAnimTriggers.GetDamage.ToStringCached());
+
+                var targetClipName = EEnemyAnimNames.Hit.ToStringCached();
+
+                var animTime = Array.Find(_animator.runtimeAnimatorController.animationClips,
+                    clip => clip.name == targetClipName).length;
+                WaitWhileBusy(Mathf.RoundToInt(animTime * Constants.MillisecondsMultiplier));
+
+                _agent.isStopped = true;
+            }
+        }
+
         protected override void Attack()
         {
             if (_timer > _attackInterval)
             {
                 base.Attack();
+                var targetClipName = EEnemyAnimNames.Spell.ToStringCached();
+                var animTime = Array.Find(_animator.runtimeAnimatorController.animationClips,
+                    clip => clip.name == targetClipName).length;
+                WaitWhileBusy(Mathf.RoundToInt(animTime * Constants.MillisecondsMultiplier));
                 Fire();
                 _timer = 0f;
             }
@@ -38,6 +62,6 @@ namespace Assets.BackToSchool.Scripts.Enemies
                 EnableEnemy();
         }
 
-        private void FixedUpdate() { _timer += Time.fixedDeltaTime; }
+        private void FixedUpdate() => _timer += Time.fixedDeltaTime;
     }
 }

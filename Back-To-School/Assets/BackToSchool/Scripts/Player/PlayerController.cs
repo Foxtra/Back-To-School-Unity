@@ -2,6 +2,7 @@
 using Assets.BackToSchool.Scripts.Enums;
 using Assets.BackToSchool.Scripts.Extensions;
 using Assets.BackToSchool.Scripts.Interfaces.Components;
+using Assets.BackToSchool.Scripts.Interfaces.Core;
 using Assets.BackToSchool.Scripts.Interfaces.Game;
 using Assets.BackToSchool.Scripts.Interfaces.Input;
 using Assets.BackToSchool.Scripts.Items;
@@ -22,9 +23,11 @@ namespace Assets.BackToSchool.Scripts.Player
         public event Action<int> WeaponChanged;
         public event Action<int> MaxAmmoChanged;
 
+        public Transform Transform => gameObject.transform;
+
         private Animator _animator;
         private IPlayerInput _playerInput;
-        private Inventory _inventory;
+        private WeaponList _weaponList;
         private PlayerStats _playerStats;
         private Rigidbody _rigidBody;
         private SkinnedMeshRenderer[] _renderers;
@@ -33,12 +36,12 @@ namespace Assets.BackToSchool.Scripts.Player
         private float _currentHealth;
         private bool _isDead;
 
-        public void Initialize(IPlayerInput playerInput, PlayerStats playerStats, PlayerData playerData)
+        public void Initialize(IPlayerInput playerInput, IResourceManager resourceManager, PlayerStats playerStats, PlayerData playerData)
         {
             _playerStats = playerStats;
             _playerInput = playerInput;
 
-            _playerInput.Reloaded            += _weaponController.Reload;
+            _playerInput.Reloaded            += _weaponController.StartReloading;
             _weaponController.WeaponReloaded += Reload;
             _playerInput.Fired               += Fire;
             _playerInput.Stopped             += Stop;
@@ -55,14 +58,7 @@ namespace Assets.BackToSchool.Scripts.Player
             else
                 _currentHealth = _playerStats.MaxHealth.GetValue();
 
-            _weaponController.InitializeWeapon(playerData.PlayerWeapon);
-            _weaponController.InitializeAmmo(playerData.PlayerAmmo);
-        }
-
-        public void UpdateHUD()
-        {
-            HealthChanged?.Invoke(_currentHealth);
-            _weaponController.UpdateHUD();
+            _weaponController.Initialize(_weaponList, resourceManager, playerData.PlayerAmmo, playerData.PlayerWeapon);
         }
 
         private void Awake()
@@ -71,13 +67,20 @@ namespace Assets.BackToSchool.Scripts.Player
             _animator         = GetComponent<Animator>();
             _renderers        = GetComponentsInChildren<SkinnedMeshRenderer>();
             _weaponController = GetComponent<WeaponController>();
-            _inventory        = GetComponent<Inventory>();
-            _weaponController.SetInventory(_inventory);
+            _weaponList       = GetComponent<WeaponList>();
+        }
+
+        private void Start()
+        {
+            HealthChanged?.Invoke(_currentHealth);
+            AmmoChanged?.Invoke(_weaponController.GetAmmoValue());
+            WeaponChanged?.Invoke(_weaponController.GetWeaponIndex());
+            MaxAmmoChanged?.Invoke(_weaponController.GetMaxAmmoValue());
         }
 
         private void OnDestroy()
         {
-            _playerInput.Reloaded            -= _weaponController.Reload;
+            _playerInput.Reloaded            -= _weaponController.StartReloading;
             _weaponController.WeaponReloaded -= Reload;
             _playerInput.Fired               -= Fire;
             _playerInput.Stopped             -= Stop;
@@ -100,10 +103,8 @@ namespace Assets.BackToSchool.Scripts.Player
             _animator.SetTrigger(EAnimTriggers.Reload.ToStringCached());
             var animTime = Array.Find(_animator.runtimeAnimatorController.animationClips,
                 clip => clip.name == EPlayerAnimNames.Reload.ToStringCached()).length;
-            WaitWhileReloading(Mathf.RoundToInt(animTime * 1000f));
+            _weaponController.FinishReloading(Mathf.RoundToInt(animTime * Constants.Time.MillisecondsMultiplier));
         }
-
-        public void ReloadFinished() => _weaponController.ReloadComplete();
 
         public void Fire()
         {
@@ -151,14 +152,8 @@ namespace Assets.BackToSchool.Scripts.Player
         private async void ShowDamageEffect()
         {
             ChangeColor(Color.red);
-            await UniTask.Delay(Constants.PlayerDamageTime);
+            await UniTask.Delay(Constants.PlayerStats.PlayerDamageTime);
             ChangeColor(Color.white);
-        }
-
-        private async void WaitWhileReloading(int milSec)
-        {
-            await UniTask.Delay(milSec);
-            ReloadFinished();
         }
 
         private void ChangeColor(Color color)

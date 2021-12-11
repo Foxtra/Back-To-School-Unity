@@ -7,21 +7,19 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Game
 {
     public interface IPlayerController : IMovable, IShootable, IDamageable
     {
-        event Action<float> HealthChanged;
-        event Action Died;
-        event Action<int> AmmoChanged;
-        event Action<int> WeaponChanged;
-        event Action<int> MaxAmmoChanged;
+        public event Action<float> HealthChanged;
+        public event Action Died;
+        public event Action<int> AmmoChanged;
+        public event Action<int> WeaponChanged;
+        public event Action<int> MaxAmmoChanged;
 
-        GameObject gameObject { get; }
+        public Transform Transform { get; }
 
-        void  Reload();
-        void  ReloadFinished();
-        void  NextWeapon(bool isNext);
-        float GetHealthValue();
-        int   GetAmmoValue();
-        int   GetActiveWeaponIndex();
-        void  SetHealthValue(float health);
-        void  UpdateHUD();
+        public void  Reload();
+        public void  NextWeapon(bool isNext);
+        public float GetHealthValue();
+        public int   GetAmmoValue();
+        public int   GetActiveWeaponIndex();
+        public void  SetHealthValue(float health);
     }
 }

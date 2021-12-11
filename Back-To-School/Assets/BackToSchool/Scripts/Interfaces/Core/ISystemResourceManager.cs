@@ -11,7 +11,8 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Core
             where T : Object
             where E : Enum;
 
-        public T          CreatePrefabInstance<T, E>(E item) where E : Enum;
+        public T CreatePrefabInstance<T, E>(E item) where E : Enum;
+
         public GameObject CreatePrefabInstance<E>(E item) where E : Enum;
     }
 }

@@ -10,7 +10,7 @@ namespace Assets.BackToSchool.Scripts.Stats
         public PlayerStats(int armor, int damage, int maxHealth, int moveSpeed) : base(damage,
             maxHealth, moveSpeed) => Armor = new Stat(armor);
 
-        public PlayerStats() : this(Constants.InitialArmor, Constants.InitialDamage, Constants.InitialMaxHealth,
-            Constants.InitialMoveSpeed) { }
+        public PlayerStats() : this(Constants.PlayerStats.InitialArmor, Constants.PlayerStats.InitialDamage,
+            Constants.PlayerStats.InitialMaxHealth, Constants.PlayerStats.InitialMoveSpeed) { }
     }
 }

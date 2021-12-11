@@ -5,19 +5,19 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Components
 {
     public interface ILevelSystem
     {
-        event Action<float> ExperienceChanged;
-        event Action<int> LevelChanged;
-        event Action ProgressChanged;
+        public event Action<float> ExperienceChanged;
+        public event Action<int> LevelChanged;
+        public event Action ProgressChanged;
 
-        void  Initialize(int level, int experience);
-        void  AddExperience(int amount);
-        void  SetLevelNumber(int newLevel);
-        void  SetExperience(int experience);
-        int   GetLevelNumber();
-        float GetExperienceNormalized();
-        int   GetExperience();
-        int   GetExperienceToNextLevel(int level);
-        bool  IsMaxLevel();
-        bool  IsMaxLevel(int level);
+        public void  Initialize(int level, int experience);
+        public void  AddExperience(int amount);
+        public void  SetLevelNumber(int newLevel);
+        public void  SetExperience(int experience);
+        public int   GetLevelNumber();
+        public float GetExperienceNormalized();
+        public int   GetExperience();
+        public int   GetExperienceToNextLevel(int level);
+        public bool  IsMaxLevel();
+        public bool  IsMaxLevel(int level);
     }
 }

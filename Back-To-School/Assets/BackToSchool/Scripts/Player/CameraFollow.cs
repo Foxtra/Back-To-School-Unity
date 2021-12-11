@@ -6,8 +6,8 @@ namespace Assets.BackToSchool.Scripts.Player
 {
     public class CameraFollow : MonoBehaviour
     {
-        private Vector3 _offset = Constants.PlayerCameraOffset;
-        private float _smoothSpeed = Constants.CameraSmoothSpeed;
+        private Vector3 _offset = Constants.Camera.PlayerCameraOffset;
+        private float _smoothSpeed = Constants.Camera.CameraSmoothSpeed;
 
         private Transform _target;
         private Vector3 _velocity = Vector3.zero;

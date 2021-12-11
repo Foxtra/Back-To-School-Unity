@@ -2,6 +2,6 @@
 {
     public interface IInputProvider
     {
-        void TogglePause(bool isPaused);
+        public void TogglePause(bool isPaused);
     }
 }

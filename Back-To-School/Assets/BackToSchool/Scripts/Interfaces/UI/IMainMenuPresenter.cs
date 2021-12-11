@@ -1,13 +1,15 @@
 ﻿using System;
+using Assets.BackToSchool.Scripts.Enums;
 
 
 namespace Assets.BackToSchool.Scripts.Interfaces.UI
 {
     public interface IMainMenuPresenter : IView
     {
-        event Action ExitTriggered;
-        event Action StartTriggered;
-        event Action ContinueTriggered;
-        void ShowContinueButton(bool isShown);
+        public event Action ExitTriggered;
+        public event Action ContinueTriggered;
+        public event Action<EGameModes> KillEnemiesModeTriggered;
+        public event Action<EGameModes> SurviveModeTriggered;
+        public void ShowContinueButton(bool isShown);
     }
 }

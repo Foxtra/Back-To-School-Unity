@@ -28,17 +28,20 @@ namespace Assets.BackToSchool.Scripts.GameManagement
 
         public bool IsSaveDataExists() => _saveSystem != null && _saveSystem.IsSaveDataExists();
 
-        public void ExitGame() { Application.Quit(); }
+        public void ExitGame() => Application.Quit();
 
-        public async void StartGame(StartParameters parameters) => await LoadGame(parameters);
-        public async void ReturnToMenu()                        => await LoadMenu();
-        public       void RestartLevel(string sceneName)        => StartGame(new StartParameters(true, sceneName));
+        public async UniTask StartGame(StartParameters parameters) => await LoadGame(parameters);
+
+        public async UniTask ReturnToMenu() => await LoadMenu();
+
+        public async UniTask RestartLevel(string sceneName, EGameModes gameMode) =>
+            await StartGame(new StartParameters(true, sceneName, gameMode));
 
         public async UniTask LoadMenu()
         {
             _currentModel?.Dispose();
             await SceneManager.LoadSceneAsync(EScenes.MainMenu.ToStringCached());
-            InitializeScene(EScenes.MainMenu);
+            InitializeScene(EGame.MenuCamera);
             _currentModel = new MainMenuModel(this, _viewFactory);
         }
 
@@ -47,7 +50,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             _currentModel?.Dispose();
             _startParameters = parameters;
             await SceneManager.LoadSceneAsync(parameters.NextScene);
-            InitializeScene(EScenes.MainScene);
+            InitializeScene(EGame.PlayerCamera);
 
             if (_startParameters == null)
                 _startParameters = new StartParameters(true);
@@ -61,10 +64,10 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             _systemResourceManager = new ResourceManager();
         }
 
-        private void InitializeScene(EScenes scene)
+        private void InitializeScene(EGame cameraType)
         {
             _inputManager = _resourceManager.CreateInputManager();
-            _mainCamera   = _resourceManager.CreateCamera(scene == EScenes.MainMenu ? EGame.MenuCamera : EGame.PlayerCamera);
+            _mainCamera   = _resourceManager.CreateCamera(cameraType);
             var uiRoot = _resourceManager.CreateUIRoot(_mainCamera);
 
             _viewFactory = new ViewFactory(_systemResourceManager, uiRoot);

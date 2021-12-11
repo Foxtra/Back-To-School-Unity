@@ -6,12 +6,12 @@ namespace Assets.BackToSchool.Scripts.Interfaces
 {
     public interface IStatsManager
     {
-        event Action<int> MaxHealthChanged;
-        event Action<int> ArmorChanged;
-        event Action<int> DamageChanged;
-        event Action<int> MoveSpeedChanged;
+        public event Action<int> MaxHealthChanged;
+        public event Action<int> ArmorChanged;
+        public event Action<int> DamageChanged;
+        public event Action<int> MoveSpeedChanged;
 
-        void Initialize(PlayerStats playerStats, int initialLevel);
-        void LevelUp(int level);
+        public void Initialize(PlayerStats playerStats, int initialLevel);
+        public void LevelUp(int level);
     }
 }

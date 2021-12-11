@@ -1415,10 +1415,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d66961a183132445b2af4448a9c2748, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Inventory: {fileID: 7906788901430182298}
-  WeaponController: {fileID: 1830545486662167517}
-  _damageTime: 0.1
-  _delayBeforeDamage: 0.5
 --- !u!114 &1830545486662167517
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1441,12 +1437,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 7202607282731717208}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: abae7d98f487fec4aab9e3eb40255887, type: 3}
+  m_Script: {fileID: 11500000, guid: 8d4acf46666cf174383dacb12cbf3dd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _weapons:
-  - {fileID: 7202607282731717208, guid: d619f56d06c4e2246a6fe780960bc8b2, type: 3}
-  - {fileID: 2982277176133668307, guid: 9ddad8ed5a221f041938c032c3c16d60, type: 3}
 --- !u!1 &7202607282731717210
 GameObject:
   m_ObjectHideFlags: 0

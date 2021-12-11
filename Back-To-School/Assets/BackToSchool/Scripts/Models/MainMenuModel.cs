@@ -6,7 +6,7 @@ using Assets.BackToSchool.Scripts.Parameters;
 
 namespace Assets.BackToSchool.Scripts.Models
 {
-    public class MainMenuModel : BaseModel
+    public class MainMenuModel : Model
     {
         private IMainMenuPresenter _mainMenuPresenter;
         private IGameManager _gameManager;
@@ -16,9 +16,9 @@ namespace Assets.BackToSchool.Scripts.Models
             _gameManager                         =  gameManager;
             _mainMenuPresenter                   =  viewFactory.CreateView<IMainMenuPresenter, EViews>(EViews.MainMenu);
             _mainMenuPresenter.ExitTriggered     += ExitGame;
-            _mainMenuPresenter.StartTriggered    += StartGame;
+            _mainMenuPresenter.KillEnemiesModeTriggered += StartGame;
+            _mainMenuPresenter.SurviveModeTriggered     += StartGame;
             _mainMenuPresenter.ContinueTriggered += ContinueGame;
-
             _mainMenuPresenter.ShowContinueButton(_gameManager.IsSaveDataExists());
         }
 
@@ -26,13 +26,14 @@ namespace Assets.BackToSchool.Scripts.Models
 
         private void ExitGame() => _gameManager.ExitGame();
 
-        private void StartGame() => _gameManager.StartGame(new StartParameters(true));
+        private void StartGame(EGameModes mode) => _gameManager.StartGame(new StartParameters(true, mode));
 
         public override void Dispose()
         {
-            _mainMenuPresenter.ExitTriggered     -= ExitGame;
-            _mainMenuPresenter.StartTriggered    -= StartGame;
-            _mainMenuPresenter.ContinueTriggered -= ContinueGame;
+            _mainMenuPresenter.ExitTriggered            -= ExitGame;
+            _mainMenuPresenter.KillEnemiesModeTriggered -= StartGame;
+            _mainMenuPresenter.SurviveModeTriggered     -= StartGame;
+            _mainMenuPresenter.ContinueTriggered        -= ContinueGame;
         }
     }
 }

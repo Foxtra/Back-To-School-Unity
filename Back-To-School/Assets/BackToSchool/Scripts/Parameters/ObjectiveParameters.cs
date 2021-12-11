@@ -11,11 +11,11 @@ namespace Assets.BackToSchool.Scripts.Parameters
             switch (GameMode)
             {
                 case EGameModes.SurviveTime:
-                    TimeToSurvive = Constants.TimeToSurvive;
+                    TimeToSurvive = Constants.Objectives.TimeToSurvive;
                     break;
                 case EGameModes.KillEnemies:
-                    WarriorEnemiesToKill = Constants.WarriorEnemiesToKill;
-                    ShamanEnemiesToKill  = Constants.ShamanEnemiesToKill;
+                    WarriorEnemiesToKill = Constants.Objectives.WarriorEnemiesToKill;
+                    ShamanEnemiesToKill  = Constants.Objectives.ShamanEnemiesToKill;
                     break;
             }
         }

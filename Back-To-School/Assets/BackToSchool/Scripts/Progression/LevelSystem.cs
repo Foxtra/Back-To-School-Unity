@@ -12,7 +12,7 @@ namespace Assets.BackToSchool.Scripts.Progression
         public event Action<int> LevelChanged;
         public event Action ProgressChanged;
 
-        private static readonly int[] _experiencePerLevel = Constants.ExperienceToLevelUpPerLevel;
+        private static readonly int[] _experiencePerLevel = Constants.PlayerStats.ExperienceToLevelUpPerLevel;
 
         private int _level;
         private int _experience;

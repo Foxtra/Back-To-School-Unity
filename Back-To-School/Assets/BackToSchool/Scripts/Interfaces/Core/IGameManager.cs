@@ -11,11 +11,11 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Core
 
         public void ExitGame();
 
-        public void StartGame(StartParameters parameters);
+        public UniTask StartGame(StartParameters parameters);
 
-        public void ReturnToMenu();
+        public UniTask ReturnToMenu();
 
-        public void RestartLevel(string sceneName, EGameModes gameMode);
+        public UniTask RestartLevel(string sceneName, EGameModes gameMode);
 
         public UniTask LoadMenu();
 

@@ -17,7 +17,7 @@ using UnityEngine.SceneManagement;
 
 namespace Assets.BackToSchool.Scripts.Models
 {
-    public class GameModel : BaseModel
+    public class GameModel : Model
     {
         private IHUDPresenter _hudPresenter;
         private IGameOverPresenter _gameOverPresenter;
@@ -27,6 +27,7 @@ namespace Assets.BackToSchool.Scripts.Models
         private IGameManager _gameManager;
         private ISaveSystem _saveSystem;
         private IInputManager _inputManager;
+        private PauseInputProvider _pauseInput;
         private IResourceManager _resourceManager;
 
         private IStatsManager _statsManager;
@@ -43,7 +44,6 @@ namespace Assets.BackToSchool.Scripts.Models
         private Camera _mainCamera;
 
         private bool _isGamePaused;
-        private bool _isPlayerDead;
 
         public GameModel(ISaveSystem saveSystem, IGameManager gameManager, IResourceManager resourceManager,
             IInputManager inputManager, IViewFactory viewFactory, Camera playerCamera, IAudioManager audioManager,
@@ -68,7 +68,7 @@ namespace Assets.BackToSchool.Scripts.Models
             _playerInput = new PlayerInputProvider(_mainCamera);
             _inputManager.Subscribe(_playerInput);
 
-            _player = _resourceManager.CreatePlayer(_playerInput, audioManager, _playerStats, _playerData);
+            _player = _resourceManager.CreatePlayer(_playerInput, _resourceManager, audioManager, _playerStats, _playerData);
 
             _objectiveSystem = new ObjectiveSystem();
             var objectives = parameters.IsNewGame
@@ -83,16 +83,12 @@ namespace Assets.BackToSchool.Scripts.Models
 
             _playerInput = new PlayerInputProvider(_mainCamera);
             _inputManager.Subscribe(_playerInput);
-            _mainCamera.GetComponent<CameraFollow>().SetTarget(_player.gameObject.transform);
-            _enemySpawner.InitializeEnemyPools();
-            _enemySpawner.SetTarget(_player.gameObject.transform);
-            _enemySpawner.SetAudioManager(audioManager);
+            _enemySpawner.Initialize(_player.Transform, resourceManager, audioManager);
+            _mainCamera.GetComponent<CameraFollow>().SetTarget(_player.Transform);
 
-            var pauseInput = new PauseInputProvider();
-            _inputManager.Subscribe(pauseInput);
-            pauseInput.Cancelled += OnGamePaused;
-
-            _player.UpdateHUD();
+            _pauseInput = new PauseInputProvider();
+            _inputManager.Subscribe(_pauseInput);
+            _pauseInput.Cancelled += OnGamePaused;
         }
 
         private void SubscribeEvents()
@@ -163,15 +159,17 @@ namespace Assets.BackToSchool.Scripts.Models
             _statsManager.DamageChanged    -= _hudPresenter.OnDamageChanged;
             _statsManager.MaxHealthChanged -= _hudPresenter.OnMaxHealthChanged;
             _statsManager.MoveSpeedChanged -= _hudPresenter.OnMoveSpeedChanged;
+
+            _inputManager.Unsubscribe(_playerInput);
+            _inputManager.Unsubscribe(_pauseInput);
         }
 
         #region GameHandlers
 
         private async void OnPlayerDeath()
         {
-            _isPlayerDead = true;
             _enemySpawner.SetTarget(null);
-            await UniTask.Delay(Constants.GameOverDelay);
+            await UniTask.Delay(Constants.Time.GameOverDelay);
             EndGame();
         }
 
@@ -209,13 +207,13 @@ namespace Assets.BackToSchool.Scripts.Models
             _isGamePaused  = false;
         }
 
-        private void EndGame() => _gameOverPresenter.ShowView();
+        private void EndGame() => _gameOverPresenter.Enable();
 
         private void CompleteLevel()
         {
             StopTime();
             _playerInput.TogglePause(true);
-            _completeLevelPresenter.ShowView();
+            _completeLevelPresenter.Enable();
         }
 
         private void ReturnToMenu()

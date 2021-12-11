@@ -28,7 +28,7 @@ namespace Assets.BackToSchool.Scripts.Inputs
 
         private void CheckCancel()
         {
-            if (!Input.GetButtonDown("Cancel"))
+            if (!UnityEngine.Input.GetButtonDown("Cancel"))
                 return;
             foreach (var provider in _providers)
                 provider.CancelInvoked();
@@ -36,7 +36,7 @@ namespace Assets.BackToSchool.Scripts.Inputs
 
         private void CheckReload()
         {
-            if (!Input.GetButtonDown("Reload"))
+            if (!UnityEngine.Input.GetButtonDown("Reload"))
                 return;
             foreach (var provider in _providers)
                 provider.ReloadInvoked();
@@ -44,7 +44,7 @@ namespace Assets.BackToSchool.Scripts.Inputs
 
         private void CheckFire()
         {
-            if (!Input.GetButtonDown("Fire1"))
+            if (!UnityEngine.Input.GetButtonDown("Fire1"))
                 return;
             foreach (var provider in _providers)
                 provider.FireInvoked();
@@ -52,7 +52,7 @@ namespace Assets.BackToSchool.Scripts.Inputs
 
         private void CheckRotation()
         {
-            _mousePosition = Input.mousePosition;
+            _mousePosition = UnityEngine.Input.mousePosition;
 
             foreach (var provider in _providers)
                 provider.RotateInvoked(_mousePosition);
@@ -60,8 +60,8 @@ namespace Assets.BackToSchool.Scripts.Inputs
 
         private void CheckDirection()
         {
-            _direction.x = Input.GetAxisRaw("Horizontal");
-            _direction.z = Input.GetAxisRaw("Vertical");
+            _direction.x = UnityEngine.Input.GetAxisRaw("Horizontal");
+            _direction.z = UnityEngine.Input.GetAxisRaw("Vertical");
 
             foreach (var provider in _providers)
                 provider.DirectionChangeInvoked(_direction);
@@ -69,7 +69,7 @@ namespace Assets.BackToSchool.Scripts.Inputs
 
         private void CheckMouseScroll()
         {
-            var scroll = Input.GetAxis("Mouse ScrollWheel");
+            var scroll = UnityEngine.Input.GetAxis("Mouse ScrollWheel");
             foreach (var provider in _providers)
                 provider.ScrollInvoked(scroll);
         }

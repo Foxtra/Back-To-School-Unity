@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace Assets.BackToSchool.Scripts.Weapons
 {
-    public class FireBall : BaseBullet
+    public class FireBall : Bullet
     {
         public override void Launch(float force)
         {
-            Destroy(gameObject, Constants.BulletLifeTime);
+            Destroy(gameObject, Constants.WeaponStats.BulletLifeTime);
             _rigidbody = GetComponentInChildren<Rigidbody>();
 
             var impulse = transform.forward * _rigidbody.mass * force;

@@ -16,6 +16,7 @@ namespace Assets.BackToSchool.Scripts.Stats
             ReloadSpeed = new Stat(reloadSpeed);
         }
 
-        public WeaponStats() : this(Constants.InitialFireRate, Constants.InitialMaxAmmo, Constants.InitialReloadSpeed) { }
+        public WeaponStats() : this(Constants.WeaponStats.InitialFireRate, Constants.WeaponStats.InitialMaxAmmo,
+            Constants.WeaponStats.InitialReloadSpeed) { }
     }
 }

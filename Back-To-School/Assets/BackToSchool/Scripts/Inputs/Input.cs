@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Assets.BackToSchool.Scripts.Inputs
 {
-    public class BaseInput : IRawInputProvider, IInputProvider
+    public class Input : IRawInputProvider, IInputProvider
     {
         protected bool _isPaused;
 

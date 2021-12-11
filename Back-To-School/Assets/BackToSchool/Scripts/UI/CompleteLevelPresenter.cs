@@ -6,18 +6,13 @@ using UnityEngine.UI;
 
 namespace Assets.BackToSchool.Scripts.UI
 {
-    public class CompleteLevelPresenter : MonoBehaviour, ICompleteLevelPresenter
+    public class CompleteLevelPresenter : View, ICompleteLevelPresenter
     {
         public event Action Restarted;
         public event Action MenuReturned;
 
         [SerializeField] private Button _levelRestartButton;
         [SerializeField] private Button _returnToMenuButton;
-
-        public void SetRoot(RectTransform canvas) => transform.SetParent(canvas, false);
-
-        public void ShowView() => gameObject.SetActive(true);
-        public void HideView() => gameObject.SetActive(false);
 
         private void Awake()
         {

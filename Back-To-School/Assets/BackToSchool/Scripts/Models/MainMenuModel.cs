@@ -6,7 +6,7 @@ using Assets.BackToSchool.Scripts.Parameters;
 
 namespace Assets.BackToSchool.Scripts.Models
 {
-    public class MainMenuModel : BaseModel
+    public class MainMenuModel : Model
     {
         private IMainMenuPresenter _mainMenuPresenter;
         private IGameManager _gameManager;

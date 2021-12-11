@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Assets.BackToSchool.Scripts.Inputs
 {
-    public class PlayerInputProvider : BaseInput, IPlayerInput
+    public class PlayerInputProvider : Input, IPlayerInput
     {
         public event Action<Vector3> Moved;
         public event Action<Vector3> Rotated;
@@ -23,7 +23,7 @@ namespace Assets.BackToSchool.Scripts.Inputs
         private Ray _ray;
         private LayerMask _layerMask = LayerMask.GetMask(ELayers.Ground.ToStringCached());
 
-        private float _rayCastLength = Constants.RayCastLength;
+        private float _rayCastLength = Constants.Camera.RayCastLength;
 
         public PlayerInputProvider(Camera mainCamera) => _mainCamera = mainCamera;
 

@@ -52318,11 +52318,4 @@ AnimationClip:
     script: {fileID: 0}
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
-  m_Events:
-  - time: 2.6666667
-    functionName: ReloadFinished
-    data: 
-    objectReferenceParameter: {fileID: 11500000, guid: b9ddb9f56fe066448b2fcc551d3f4bd8, type: 3}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
+  m_Events: []

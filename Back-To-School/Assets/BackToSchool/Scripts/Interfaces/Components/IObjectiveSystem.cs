@@ -15,8 +15,6 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Components
 
         public ObjectiveParameters GetObjectivesProgress();
 
-        public void CountEnemyDeath(BaseEnemy sender);
-
-        public void CountTimePassed();
+        public void CountEnemyDeath(Enemy sender);
     }
 }

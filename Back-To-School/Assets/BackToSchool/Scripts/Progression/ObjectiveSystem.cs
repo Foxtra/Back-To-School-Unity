@@ -17,7 +17,7 @@ namespace Assets.BackToSchool.Scripts.Progression
         private ObjectiveParameters _currentObjectives;
 
         private float _timePassed;
-        private int _timerInvokeInterval = Constants.TimerInvokeInterval;
+        private int _timerInvokeInterval = Constants.Time.TimerInvokeInterval;
         private int _warriorEnemiesKilled;
         private int _shamanEnemiesKilled;
         private bool _isObjectivesCompleted;
@@ -36,7 +36,7 @@ namespace Assets.BackToSchool.Scripts.Progression
             return _currentObjectives;
         }
 
-        public void CountEnemyDeath(BaseEnemy sender)
+        public void CountEnemyDeath(Enemy sender)
         {
             if (_currentObjectives.GameMode != EGameModes.KillEnemies)
                 return;
@@ -51,7 +51,7 @@ namespace Assets.BackToSchool.Scripts.Progression
             CheckKilledEnemies();
         }
 
-        public async void CountTimePassed()
+        private async void CountTimePassed()
         {
             if (_currentObjectives.GameMode != EGameModes.SurviveTime)
                 return;

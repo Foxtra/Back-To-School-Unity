@@ -43,7 +43,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
             _state           = EEnemyStates.Patrolling;
             _resourceManager = resourceManager;
 
-            _startChasingDistance = Constants.EnemyStartChasingDistance;
+            _startChasingDistance = Constants.EnemyStats.EnemyStartChasingDistance;
             HealthChanged?.Invoke(_currentHealth, _maxHealth);
         }
 
@@ -59,7 +59,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
                 var animTime = Array.Find(_animator.runtimeAnimatorController.animationClips,
                     clip => clip.name == EEnemyAnimNames.Die.ToStringCached()).length;
-                WaitWhileBusy(Mathf.RoundToInt(animTime * Constants.MillisecondsMultiplier));
+                WaitWhileBusy(Mathf.RoundToInt(animTime * Constants.Time.MillisecondsMultiplier));
 
                 _isDead          = true;
                 _agent.isStopped = true;
@@ -85,8 +85,8 @@ namespace Assets.BackToSchool.Scripts.Enemies
         protected void MoveToNextPatrolPoint()
         {
             _animator.SetBool(EAnimTriggers.IsMoving.ToStringCached(), true);
-            var newDestination = SpaceOperations.GeneratePositionOnField(Constants.MinXpos, Constants.MaxXpos, Constants.MinZpos,
-                Constants.MaxZpos);
+            var newDestination = SpaceOperations.GeneratePositionOnField(Constants.EnemySpawn.MinXpos, Constants.EnemySpawn.MaxXpos,
+                Constants.EnemySpawn.MinZpos, Constants.EnemySpawn.MaxZpos);
             _agent.SetDestination(newDestination);
         }
 

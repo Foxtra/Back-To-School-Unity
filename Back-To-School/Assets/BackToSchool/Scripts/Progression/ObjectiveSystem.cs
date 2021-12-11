@@ -17,7 +17,7 @@ namespace Assets.BackToSchool.Scripts.Progression
         private ObjectiveParameters _currentObjectives;
 
         private float _timePassed;
-        private int _timerInvokeInterval = Constants.TimerInvokeInterval;
+        private int _timerInvokeInterval = Constants.Time.TimerInvokeInterval;
         private int _warriorEnemiesKilled;
         private int _shamanEnemiesKilled;
         private bool _isObjectivesCompleted;

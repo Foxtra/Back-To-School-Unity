@@ -16,7 +16,7 @@ namespace Assets.BackToSchool.Scripts.Progression
         public event Action<int> MoveSpeedChanged;
 
         private PlayerStats _playerStats;
-        private Dictionary<EPlayerStats, int[]> _playerProgression = Constants.PlayerProgression;
+        private Dictionary<EPlayerStats, int[]> _playerProgression = Constants.PlayerStats.PlayerProgression;
 
         public void Initialize(PlayerStats playerStats, int initialLevel)
         {

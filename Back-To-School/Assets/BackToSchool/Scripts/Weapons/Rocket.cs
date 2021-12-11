@@ -32,7 +32,7 @@ namespace Assets.BackToSchool.Scripts.Weapons
             if (targetHit) return;
 
             // --- moves the game object in the forward direction at the defined speed ---
-            transform.position += transform.forward * (Constants.RocketSpeed * Time.deltaTime);
+            transform.position += transform.forward * (Constants.WeaponStats.RocketSpeed * Time.deltaTime);
         }
 
         /// <summary>

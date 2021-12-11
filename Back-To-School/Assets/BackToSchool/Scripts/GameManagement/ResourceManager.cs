@@ -125,13 +125,13 @@ namespace Assets.BackToSchool.Scripts.GameManagement
                 {
                     case EWeapons.AssaultRifle:
                         result = CreatePrefabInstance<AssaultRifle, EGame>(EGame.AssaultRifle);
-                        stats = new WeaponStats(Constants.RifleInitialFireRate, Constants.RifleInitialMaxAmmo,
-                            Constants.RifleInitialReloadSpeed);
+                        stats = new WeaponStats(Constants.WeaponStats.RifleInitialFireRate, Constants.WeaponStats.RifleInitialMaxAmmo,
+                            Constants.WeaponStats.RifleInitialReloadSpeed);
                         break;
                     case EWeapons.RocketLauncher:
                         result = CreatePrefabInstance<RocketLauncher, EGame>(EGame.RocketLauncher);
-                        stats = new WeaponStats(Constants.InitialFireRate, Constants.InitialMaxAmmo,
-                            Constants.InitialReloadSpeed);
+                        stats = new WeaponStats(Constants.WeaponStats.InitialFireRate, Constants.WeaponStats.InitialMaxAmmo,
+                            Constants.WeaponStats.InitialReloadSpeed);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(weapon), weapon, null);

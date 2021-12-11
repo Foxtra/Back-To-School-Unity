@@ -166,7 +166,7 @@ namespace Assets.BackToSchool.Scripts.Models
         private async void OnPlayerDeath()
         {
             _enemySpawner.SetTarget(null);
-            await UniTask.Delay(Constants.GameOverDelay);
+            await UniTask.Delay(Constants.Time.GameOverDelay);
             EndGame();
         }
 

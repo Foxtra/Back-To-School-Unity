@@ -56,12 +56,12 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
         private void Awake()
         {
-            _maxRangeToPlayer   = Constants.MaxRangeToPlayer;
-            _spawnInterval      = Constants.SpawnInterval;
-            _maxWarriorEnemies  = Constants.MaxWarriorEnemies;
-            _maxShamanEnemies   = Constants.MaxShamanEnemies;
-            _enemyMoveSpeed     = Constants.EnemyMoveSpeed;
-            _experienceForEnemy = Constants.ExperienceForEnemy;
+            _maxRangeToPlayer   = Constants.EnemyStats.MaxRangeToPlayer;
+            _spawnInterval      = Constants.EnemyStats.SpawnInterval;
+            _maxWarriorEnemies  = Constants.EnemyStats.MaxWarriorEnemies;
+            _maxShamanEnemies   = Constants.EnemyStats.MaxShamanEnemies;
+            _enemyMoveSpeed     = Constants.EnemyStats.EnemyMoveSpeed;
+            _experienceForEnemy = Constants.EnemyStats.ExperienceForEnemy;
         }
 
         private void Update()
@@ -116,8 +116,8 @@ namespace Assets.BackToSchool.Scripts.Enemies
         {
             do
             {
-                _enemyPos = SpaceOperations.GeneratePositionOnField(Constants.MinXpos, Constants.MaxXpos, Constants.MinZpos,
-                    Constants.MaxZpos);
+                _enemyPos = SpaceOperations.GeneratePositionOnField(Constants.EnemySpawn.MinXpos, Constants.EnemySpawn.MaxXpos,
+                    Constants.EnemySpawn.MinZpos, Constants.EnemySpawn.MaxZpos);
             }
             while (SpaceOperations.CheckIfTwoObjectsClose(_enemyPos, _target.transform.position, _maxRangeToPlayer));
 
@@ -128,11 +128,15 @@ namespace Assets.BackToSchool.Scripts.Enemies
             switch (enemyType)
             {
                 case EEnemyTypes.EnemyWarrior:
-                    enemy.Initialize(new CharacterStats(Constants.EnemyWarriorDamage, Constants.EnemyWarriorMaxHealth, _enemyMoveSpeed),
+                    enemy.Initialize(
+                        new CharacterStats(Constants.EnemyStats.EnemyWarriorDamage, Constants.EnemyStats.EnemyWarriorMaxHealth,
+                            _enemyMoveSpeed),
                         _resourceManager);
                     break;
                 case EEnemyTypes.EnemyShaman:
-                    enemy.Initialize(new CharacterStats(Constants.EnemyShamanDamage, Constants.EnemyShamanMaxHealth, _enemyMoveSpeed),
+                    enemy.Initialize(
+                        new CharacterStats(Constants.EnemyStats.EnemyShamanDamage, Constants.EnemyStats.EnemyShamanMaxHealth,
+                            _enemyMoveSpeed),
                         _resourceManager);
                     break;
             }

@@ -14,8 +14,8 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
         private IBullet _fireBall;
         private float _timer;
-        private float _attackInterval = Constants.ShamanAttackInterval;
-        private float _bulletForce = Constants.EnemyFireBallForce;
+        private float _attackInterval = Constants.EnemyStats.ShamanAttackInterval;
+        private float _bulletForce = Constants.EnemyStats.EnemyFireBallForce;
 
         public void Fire()
         {
@@ -39,7 +39,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
                 var animTime = Array.Find(_animator.runtimeAnimatorController.animationClips,
                     clip => clip.name == targetClipName).length;
-                WaitWhileBusy(Mathf.RoundToInt(animTime * Constants.MillisecondsMultiplier));
+                WaitWhileBusy(Mathf.RoundToInt(animTime * Constants.Time.MillisecondsMultiplier));
 
                 _agent.isStopped = true;
             }
@@ -53,7 +53,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
                 var targetClipName = EEnemyAnimNames.Spell.ToStringCached();
                 var animTime = Array.Find(_animator.runtimeAnimatorController.animationClips,
                     clip => clip.name == targetClipName).length;
-                WaitWhileBusy(Mathf.RoundToInt(animTime * Constants.MillisecondsMultiplier));
+                WaitWhileBusy(Mathf.RoundToInt(animTime * Constants.Time.MillisecondsMultiplier));
                 Fire();
                 _timer = 0f;
             }

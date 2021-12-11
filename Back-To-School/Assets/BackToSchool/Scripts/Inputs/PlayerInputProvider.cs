@@ -23,7 +23,7 @@ namespace Assets.BackToSchool.Scripts.Inputs
         private Ray _ray;
         private LayerMask _layerMask = LayerMask.GetMask(ELayers.Ground.ToStringCached());
 
-        private float _rayCastLength = Constants.RayCastLength;
+        private float _rayCastLength = Constants.Camera.RayCastLength;
 
         public PlayerInputProvider(Camera mainCamera) => _mainCamera = mainCamera;
 

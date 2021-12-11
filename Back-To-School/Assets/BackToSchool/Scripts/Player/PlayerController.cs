@@ -103,7 +103,7 @@ namespace Assets.BackToSchool.Scripts.Player
             _animator.SetTrigger(EAnimTriggers.Reload.ToStringCached());
             var animTime = Array.Find(_animator.runtimeAnimatorController.animationClips,
                 clip => clip.name == EPlayerAnimNames.Reload.ToStringCached()).length;
-            _weaponController.FinishReloading(Mathf.RoundToInt(animTime * Constants.MillisecondsMultiplier));
+            _weaponController.FinishReloading(Mathf.RoundToInt(animTime * Constants.Time.MillisecondsMultiplier));
         }
 
         public void Fire()
@@ -152,7 +152,7 @@ namespace Assets.BackToSchool.Scripts.Player
         private async void ShowDamageEffect()
         {
             ChangeColor(Color.red);
-            await UniTask.Delay(Constants.PlayerDamageTime);
+            await UniTask.Delay(Constants.PlayerStats.PlayerDamageTime);
             ChangeColor(Color.white);
         }
 

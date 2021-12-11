@@ -25,7 +25,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
 
                 var animTime = Array.Find(_animator.runtimeAnimatorController.animationClips,
                     clip => clip.name == targetClipName).length;
-                WaitWhileBusy(Mathf.RoundToInt(animTime * Constants.MillisecondsMultiplier));
+                WaitWhileBusy(Mathf.RoundToInt(animTime * Constants.Time.MillisecondsMultiplier));
 
                 _agent.isStopped = true;
             }
@@ -43,7 +43,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
             var targetClipName = EEnemyAnimNames.Attack01.ToStringCached();
             var animTime = Array.Find(_animator.runtimeAnimatorController.animationClips,
                 clip => clip.name == targetClipName).length;
-            WaitWhileBusy(Mathf.RoundToInt(animTime * Constants.MillisecondsMultiplier));
+            WaitWhileBusy(Mathf.RoundToInt(animTime * Constants.Time.MillisecondsMultiplier));
         }
 
         private void OnDestroy() => _enemyMeleeWeapon.PlayerDamaged -= DoDamage;

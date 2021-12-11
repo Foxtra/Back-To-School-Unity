@@ -15,7 +15,7 @@ namespace Assets.BackToSchool.Scripts.Weapons
 
         public virtual void Launch(float force)
         {
-            Destroy(gameObject, Constants.BulletLifeTime);
+            Destroy(gameObject, Constants.WeaponStats.BulletLifeTime);
             _rigidbody = GetComponentInChildren<Rigidbody>();
 
             var impulse = transform.up * _rigidbody.mass * force;

@@ -61,12 +61,6 @@ namespace Assets.BackToSchool.Scripts.Player
             _weaponController.Initialize(_weaponList, resourceManager, playerData.PlayerAmmo, playerData.PlayerWeapon);
         }
 
-        public void UpdateHUD()
-        {
-            HealthChanged?.Invoke(_currentHealth);
-            _weaponController.UpdateHUD();
-        }
-
         private void Awake()
         {
             _rigidBody        = GetComponent<Rigidbody>();
@@ -74,6 +68,14 @@ namespace Assets.BackToSchool.Scripts.Player
             _renderers        = GetComponentsInChildren<SkinnedMeshRenderer>();
             _weaponController = GetComponent<WeaponController>();
             _weaponList        = GetComponent<WeaponList>();
+        }
+
+        private void Start()
+        {
+            HealthChanged?.Invoke(_currentHealth);
+            AmmoChanged?.Invoke(_weaponController.GetAmmoValue());
+            WeaponChanged?.Invoke(_weaponController.GetWeaponIndex());
+            MaxAmmoChanged?.Invoke(_weaponController.GetMaxAmmoValue());
         }
 
         private void OnDestroy()

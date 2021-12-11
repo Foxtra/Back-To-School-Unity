@@ -41,6 +41,6 @@ namespace Assets.BackToSchool.Scripts.Weapons
             _bullet.Launch(_bulletForce);
         }
 
-        public void ReloadFinished() { }
+        public void FinishReload() { }
     }
 }

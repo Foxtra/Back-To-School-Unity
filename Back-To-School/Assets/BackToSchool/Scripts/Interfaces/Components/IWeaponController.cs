@@ -14,6 +14,7 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Components
 
         public void Initialize(WeaponList weaponList, IResourceManager resourceManager, int ammo, int weaponIndex);
         public int  GetAmmoValue();
+        public int  GetMaxAmmoValue();
         public int  GetWeaponIndex();
         public void SetAmmoValue(int ammo);
         public void SetWeapon(int weaponNumber);
@@ -21,6 +22,5 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Components
         public void Shoot(float playerDamage);
         public void Reload();
         public void ReloadComplete();
-        public void UpdateHUD();
     }
 }

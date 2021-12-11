@@ -56,7 +56,7 @@ namespace Assets.BackToSchool.Scripts.Weapons
             // --- Insert custom code here to shoot projectile or hitscan from weapon ---
         }
 
-        public void ReloadFinished()
+        public void FinishReload()
         {
             HideOnFire.SetActive(true);
             _reloadSource.Play();

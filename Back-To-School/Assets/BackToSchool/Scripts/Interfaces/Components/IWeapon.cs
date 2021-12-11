@@ -11,7 +11,7 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Components
         public int CurrentAmmo { get; }
         public void SetAmmo(int ammo);
         public void Attack(float damage);
-        public void ReloadFinished();
+        public void FinishReload();
 
         public void Show();
         public void Hide();

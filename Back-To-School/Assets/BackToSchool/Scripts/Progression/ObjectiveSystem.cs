@@ -51,7 +51,7 @@ namespace Assets.BackToSchool.Scripts.Progression
             CheckKilledEnemies();
         }
 
-        public async void CountTimePassed()
+        private async void CountTimePassed()
         {
             if (_currentObjectives.GameMode != EGameModes.SurviveTime)
                 return;

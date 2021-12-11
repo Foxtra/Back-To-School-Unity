@@ -27,6 +27,7 @@ namespace Assets.BackToSchool.Scripts.Models
         private IGameManager _gameManager;
         private ISaveSystem _saveSystem;
         private IInputManager _inputManager;
+        private PauseInputProvider _pauseInput;
         private IResourceManager _resourceManager;
 
         private IStatsManager _statsManager;
@@ -83,11 +84,9 @@ namespace Assets.BackToSchool.Scripts.Models
             _mainCamera.GetComponent<CameraFollow>().SetTarget(_player.Transform);
             _enemySpawner.Initialize(_player.Transform, resourceManager);
 
-            var pauseInput = new PauseInputProvider();
-            _inputManager.Subscribe(pauseInput);
-            pauseInput.Cancelled += OnGamePaused;
-
-            _player.UpdateHUD();
+            _pauseInput = new PauseInputProvider();
+            _inputManager.Subscribe(_pauseInput);
+            _pauseInput.Cancelled += OnGamePaused;
         }
 
         private void SubscribeEvents()
@@ -158,6 +157,9 @@ namespace Assets.BackToSchool.Scripts.Models
             _statsManager.DamageChanged    -= _hudPresenter.OnDamageChanged;
             _statsManager.MaxHealthChanged -= _hudPresenter.OnMaxHealthChanged;
             _statsManager.MoveSpeedChanged -= _hudPresenter.OnMoveSpeedChanged;
+
+            _inputManager.Unsubscribe(_playerInput);
+            _inputManager.Unsubscribe(_pauseInput);
         }
 
         #region GameHandlers

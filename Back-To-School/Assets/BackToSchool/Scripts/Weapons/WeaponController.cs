@@ -37,15 +37,9 @@ namespace Assets.BackToSchool.Scripts.Weapons
             WeaponChanged?.Invoke(weaponIndex);
         }
 
-        public void UpdateHUD()
-        {
-            AmmoChanged?.Invoke(_activeWeapon.CurrentAmmo);
-            MaxAmmoChanged?.Invoke(_activeWeapon.WeaponStats.MaxAmmo.GetValue());
-            WeaponChanged?.Invoke(_weaponList.GetCurrentWeaponNumber());
-        }
-
-        public int GetAmmoValue()   => _activeWeapon.CurrentAmmo;
-        public int GetWeaponIndex() => _weaponList.GetCurrentWeaponNumber();
+        public int GetAmmoValue()    => _activeWeapon.CurrentAmmo;
+        public int GetMaxAmmoValue() => _activeWeapon.WeaponStats.MaxAmmo.GetValue();
+        public int GetWeaponIndex()  => _weaponList.GetCurrentWeaponNumber();
 
         public void SetAmmoValue(int ammo)
         {
@@ -106,7 +100,7 @@ namespace Assets.BackToSchool.Scripts.Weapons
         public void ReloadComplete()
         {
             _isReloading = false;
-            _activeWeapon.ReloadFinished();
+            _activeWeapon.FinishReload();
             AmmoChanged?.Invoke(_activeWeapon.CurrentAmmo);
         }
     }

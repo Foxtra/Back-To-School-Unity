@@ -74,13 +74,13 @@ namespace Assets.BackToSchool.Scripts.GameManagement
 
         public IBullet CreateFireBall()
         {
-            var result = CreatePrefabInstance<BaseBullet, EGame>(EGame.FireBall);
+            var result = CreatePrefabInstance<Bullet, EGame>(EGame.FireBall);
             return result;
         }
 
         public IBullet CreateBullet(Transform shootingTransform)
         {
-            var result = CreatePrefabInstance<BaseBullet, EGame>(EGame.Bullet);
+            var result = CreatePrefabInstance<Bullet, EGame>(EGame.Bullet);
             result.gameObject.transform.position = shootingTransform.position;
             result.gameObject.transform.rotation = shootingTransform.rotation;
             result.gameObject.transform.parent   = null;

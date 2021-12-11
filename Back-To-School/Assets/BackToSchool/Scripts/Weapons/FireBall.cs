@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Assets.BackToSchool.Scripts.Weapons
 {
-    public class FireBall : BaseBullet
+    public class FireBall : Bullet
     {
         public override void Launch(float force)
         {

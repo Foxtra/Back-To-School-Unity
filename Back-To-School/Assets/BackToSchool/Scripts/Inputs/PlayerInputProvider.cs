@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Assets.BackToSchool.Scripts.Inputs
 {
-    public class PlayerInputProvider : BaseInput, IPlayerInput
+    public class PlayerInputProvider : Input, IPlayerInput
     {
         public event Action<Vector3> Moved;
         public event Action<Vector3> Rotated;

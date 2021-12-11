@@ -17,7 +17,7 @@ using UnityEngine.SceneManagement;
 
 namespace Assets.BackToSchool.Scripts.Models
 {
-    public class GameModel : BaseModel
+    public class GameModel : Model
     {
         private IHUDPresenter _hudPresenter;
         private IGameOverPresenter _gameOverPresenter;
@@ -204,13 +204,13 @@ namespace Assets.BackToSchool.Scripts.Models
             _isGamePaused  = false;
         }
 
-        private void EndGame() => _gameOverPresenter.ShowView();
+        private void EndGame() => _gameOverPresenter.Enable();
 
         private void CompleteLevel()
         {
             StopTime();
             _playerInput.TogglePause(true);
-            _completeLevelPresenter.ShowView();
+            _completeLevelPresenter.Enable();
         }
 
         private void ReturnToMenu()

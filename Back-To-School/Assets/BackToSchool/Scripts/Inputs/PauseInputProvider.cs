@@ -4,7 +4,7 @@ using Assets.BackToSchool.Scripts.Interfaces.Input;
 
 namespace Assets.BackToSchool.Scripts.Inputs
 {
-    internal class PauseInputProvider : BaseInput, IPauseInput
+    internal class PauseInputProvider : Input, IPauseInput
     {
         public event Action Cancelled;
 

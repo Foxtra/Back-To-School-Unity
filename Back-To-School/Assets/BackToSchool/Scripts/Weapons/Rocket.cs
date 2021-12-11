@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Assets.BackToSchool.Scripts.Weapons
 {
-    public class Rocket : BaseBullet
+    public class Rocket : Bullet
     {
        // --- Projectile Mesh ---
         public MeshRenderer projectileMesh;

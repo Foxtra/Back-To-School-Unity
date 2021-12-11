@@ -3,7 +3,7 @@
 
 namespace Assets.BackToSchool.Scripts.Models
 {
-    public abstract class BaseModel : IModel
+    public abstract class Model : IModel
     {
         public virtual void Dispose() { }
     }

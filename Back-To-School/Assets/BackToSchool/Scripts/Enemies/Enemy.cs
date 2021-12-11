@@ -33,7 +33,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
         protected bool _isBusy;
         protected bool _isDead;
 
-        public void Initialize(CharacterStats enemyStats, IResourceManager resourceManager)
+        public void Initialize(CharacterStats enemyStats, IResourceManager resourceManager, IAudioManager audioManager)
         {
             _isDead          = false;
             _isBusy          = false;
@@ -43,6 +43,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
             _agent.speed     = enemyStats.MoveSpeed.GetValue();
             _state           = EEnemyStates.Patrolling;
             _resourceManager = resourceManager;
+            _audioManager    = audioManager;
 
             _startChasingDistance = Constants.EnemyStats.EnemyStartChasingDistance;
             HealthChanged?.Invoke(_currentHealth, _maxHealth);

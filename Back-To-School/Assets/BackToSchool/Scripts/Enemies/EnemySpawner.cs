@@ -47,16 +47,15 @@ namespace Assets.BackToSchool.Scripts.Enemies
                 enemy.SetTarget(_target);
         }
 
-        public void Initialize(Transform target, IResourceManager resourceManager)
+        public void Initialize(Transform target, IResourceManager resourceManager, IAudioManager audioManager)
         {
             SetTarget(target);
             _resourceManager = resourceManager;
+            _audioManager    = audioManager;
 
             _enemyPools[EEnemyTypes.EnemyWarrior] = FillEnemyList(EEnemyTypes.EnemyWarrior, _maxWarriorEnemies);
             _enemyPools[EEnemyTypes.EnemyShaman]  = FillEnemyList(EEnemyTypes.EnemyShaman, _maxShamanEnemies);
         }
-
-        public void SetAudioManager(IAudioManager audioManager) => _audioManager = audioManager;
 
         private void Awake()
         {
@@ -129,20 +128,17 @@ namespace Assets.BackToSchool.Scripts.Enemies
             enemy.gameObject.SetActive(true);
             enemy.gameObject.transform.position = _enemyPos;
             enemy.SetTarget(_target);
-            enemy.SetAudioManager(_audioManager);
             switch (enemyType)
             {
                 case EEnemyTypes.EnemyWarrior:
                     enemy.Initialize(
                         new CharacterStats(Constants.EnemyStats.EnemyWarriorDamage, Constants.EnemyStats.EnemyWarriorMaxHealth,
-                            _enemyMoveSpeed),
-                        _resourceManager);
+                            _enemyMoveSpeed), _resourceManager, _audioManager);
                     break;
                 case EEnemyTypes.EnemyShaman:
                     enemy.Initialize(
                         new CharacterStats(Constants.EnemyStats.EnemyShamanDamage, Constants.EnemyStats.EnemyShamanMaxHealth,
-                            _enemyMoveSpeed),
-                        _resourceManager);
+                            _enemyMoveSpeed), _resourceManager, _audioManager);
                     break;
             }
         }

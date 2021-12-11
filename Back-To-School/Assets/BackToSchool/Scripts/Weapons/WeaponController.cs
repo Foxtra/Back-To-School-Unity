@@ -25,11 +25,12 @@ namespace Assets.BackToSchool.Scripts.Weapons
 
         private bool _isReloading;
 
-        public void Initialize(WeaponList weaponList, IResourceManager resourceManager, IAudioManager audioManager, int ammo, int weaponIndex)
+        public void Initialize(WeaponList weaponList, IResourceManager resourceManager, IAudioManager audioManager, int ammo,
+            int weaponIndex)
         {
             _weaponList      = weaponList;
             _resourceManager = resourceManager;
-            _audioManager = audioManager;
+            _audioManager    = audioManager;
 
             var allWeapons = _weaponList.GetAllWeaponTypes();
             _weaponList.SetWeapons(_resourceManager.CreateAllWeapons(allWeapons, _weaponPosition, gameObject.transform));

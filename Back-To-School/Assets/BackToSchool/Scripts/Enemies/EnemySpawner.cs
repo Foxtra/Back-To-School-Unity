@@ -14,10 +14,10 @@ namespace Assets.BackToSchool.Scripts.Enemies
 {
     public class EnemySpawner : MonoBehaviour, IEnemySpawner
     {
-        public event Action<BaseEnemy> EnemyDied;
+        public event Action<Enemy> EnemyDied;
         public event Action<int> ExperienceForEnemyGot;
 
-        private Dictionary<EEnemyTypes, List<IBaseEnemy>> _enemyPools = new Dictionary<EEnemyTypes, List<IBaseEnemy>>();
+        private Dictionary<EEnemyTypes, List<IEnemy>> _enemyPools = new Dictionary<EEnemyTypes, List<IEnemy>>();
         private Transform _target;
         private Vector3 _enemyPos = Vector3.zero;
         private IResourceManager _resourceManager;
@@ -76,9 +76,9 @@ namespace Assets.BackToSchool.Scripts.Enemies
             _timer = 0f;
         }
 
-        private List<IBaseEnemy> FillEnemyList(EEnemyTypes enemyType, int size)
+        private List<IEnemy> FillEnemyList(EEnemyTypes enemyType, int size)
         {
-            var objectPool = new List<IBaseEnemy>();
+            var objectPool = new List<IEnemy>();
 
             for (var i = 0; i < size; i++)
             {
@@ -91,7 +91,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
             return objectPool;
         }
 
-        private IBaseEnemy GetAvailableEnemyFromPool(EEnemyTypes type)
+        private IEnemy GetAvailableEnemyFromPool(EEnemyTypes type)
         {
             var enemy = _enemyPools[type].Find(enemy => !enemy.gameObject.activeSelf);
             return enemy;
@@ -128,15 +128,17 @@ namespace Assets.BackToSchool.Scripts.Enemies
             switch (enemyType)
             {
                 case EEnemyTypes.EnemyWarrior:
-                    enemy.Initialize(new CharacterStats(Constants.EnemyWarriorDamage, Constants.EnemyWarriorMaxHealth, _enemyMoveSpeed));
+                    enemy.Initialize(new CharacterStats(Constants.EnemyWarriorDamage, Constants.EnemyWarriorMaxHealth, _enemyMoveSpeed),
+                        _resourceManager);
                     break;
                 case EEnemyTypes.EnemyShaman:
-                    enemy.Initialize(new CharacterStats(Constants.EnemyShamanDamage, Constants.EnemyShamanMaxHealth, _enemyMoveSpeed));
+                    enemy.Initialize(new CharacterStats(Constants.EnemyShamanDamage, Constants.EnemyShamanMaxHealth, _enemyMoveSpeed),
+                        _resourceManager);
                     break;
             }
         }
 
-        private void ReduceEnemyCount(BaseEnemy sender)
+        private void ReduceEnemyCount(Enemy sender)
         {
             var type = EEnemyTypes.EnemyWarrior;
 
@@ -149,7 +151,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
                 type = EEnemyTypes.EnemyShaman;
             }
 
-            var enemyObj = _enemyPools[type].Find(enemy => enemy.gameObject.GetComponent<BaseEnemy>().Equals(sender));
+            var enemyObj = _enemyPools[type].Find(enemy => enemy.gameObject.GetComponent<Enemy>().Equals(sender));
             enemyObj.gameObject.SetActive(false);
             ExperienceForEnemyGot?.Invoke(_experienceForEnemy);
             EnemyDied?.Invoke(sender);

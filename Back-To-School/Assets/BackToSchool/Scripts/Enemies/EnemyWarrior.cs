@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Assets.BackToSchool.Scripts.Enemies
 {
-    public class EnemyWarrior : BaseEnemy, IMeleeAttackable
+    public class EnemyWarrior : Enemy, IMeleeAttackable
     {
         [SerializeField] private EnemyMelee _enemyMeleeWeapon;
 

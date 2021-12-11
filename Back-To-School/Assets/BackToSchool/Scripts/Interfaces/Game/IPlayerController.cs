@@ -13,10 +13,9 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Game
         public event Action<int> WeaponChanged;
         public event Action<int> MaxAmmoChanged;
 
-        public GameObject gameObject { get; }
+        public Transform Transform { get; }
 
         public void  Reload();
-        public void  ReloadFinished();
         public void  NextWeapon(bool isNext);
         public float GetHealthValue();
         public int   GetAmmoValue();

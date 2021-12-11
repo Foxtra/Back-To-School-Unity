@@ -2,13 +2,18 @@
 {
     public enum EGame
     {
+        AssaultRifle,
+        Bullet,
         EnemyShaman,
         EnemySpawner,
         EnemyWarrior,
+        FireBall,
         GameManager,
         InputManager,
         MenuCamera,
         PlayerCamera,
-        Player
+        Player,
+        Rocket,
+        RocketLauncher
     }
 }

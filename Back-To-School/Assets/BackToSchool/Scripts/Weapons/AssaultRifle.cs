@@ -1,5 +1,5 @@
 ﻿using Assets.BackToSchool.Scripts.Interfaces.Components;
-using Assets.BackToSchool.Scripts.Parameters;
+using Assets.BackToSchool.Scripts.Interfaces.Core;
 using Assets.BackToSchool.Scripts.Stats;
 using UnityEngine;
 
@@ -9,23 +9,34 @@ namespace Assets.BackToSchool.Scripts.Weapons
     public class AssaultRifle : MonoBehaviour, IWeapon
     {
         [SerializeField] private Transform _shootingPosition;
-        [SerializeField] private Bullet _bulletPrefab;
         [SerializeField] private float _bulletForce;
 
-        private Bullet _bullet;
+        private IBullet _bullet;
+        private IResourceManager _resourceManager;
 
-        public AssaultRifle() => WeaponStats = new WeaponStats(Constants.RifleInitialFireRate, Constants.RifleInitialMaxAmmo,
-            Constants.RifleInitialReloadSpeed);
+        public void Hide() => gameObject.SetActive(false);
+        public void Show() => gameObject.SetActive(true);
 
-        public WeaponStats WeaponStats { get; set; }
-        public int CurrentAmmo { get; set; }
+        public void Initialize(WeaponStats weaponStats, IResourceManager resourceManager, Transform weaponTransform,
+            Transform parenTransform)
+        {
+            WeaponStats        = weaponStats;
+            _resourceManager   = resourceManager;
+            transform.position = weaponTransform.position;
+            transform.rotation = weaponTransform.rotation;
+            transform.parent   = parenTransform;
+            SetAmmo(weaponStats.MaxAmmo.GetValue());
+            Hide();
+        }
+
+        public WeaponStats WeaponStats { get; private set; }
+        public int CurrentAmmo { get; private set; }
+
+        public void SetAmmo(int ammo) => CurrentAmmo = ammo;
 
         public void Attack(float damage)
         {
-            _bullet                    = Instantiate(_bulletPrefab);
-            _bullet.transform.position = _shootingPosition.position;
-            _bullet.transform.rotation = _shootingPosition.rotation;
-            _bullet.transform.parent   = null;
+            _bullet = _resourceManager.CreateBullet(_shootingPosition);
             _bullet.SetDamage(damage);
             _bullet.Launch(_bulletForce);
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using Assets.BackToSchool.Scripts.Interfaces.Components;
+using Assets.BackToSchool.Scripts.Interfaces.Core;
 using Assets.BackToSchool.Scripts.Items;
 using UnityEngine;
 
@@ -16,51 +17,76 @@ namespace Assets.BackToSchool.Scripts.Weapons
         [SerializeField] private Transform _weaponPosition;
 
         private IWeapon _activeWeapon;
-        private GameObject _activeWeaponObj;
-        private GameObject _weaponToCreate;
-        private Inventory _inventory;
+        private IResourceManager _resourceManager;
+        private WeaponList _weaponList;
 
         private bool _isReloading;
 
-        public void SetInventory(Inventory inventory) => _inventory = inventory;
+        public void Initialize(WeaponList weaponList, IResourceManager resourceManager, int ammo, int weaponIndex)
+        {
+            _weaponList      = weaponList;
+            _resourceManager = resourceManager;
+
+            var allWeapons = _weaponList.GetAllWeaponTypes();
+            _weaponList.SetWeapons(_resourceManager.CreateAllWeapons(allWeapons, _weaponPosition, gameObject.transform));
+
+            _activeWeapon = _weaponList.Weapons[weaponIndex];
+            _activeWeapon.Show();
+
+            _activeWeapon.SetAmmo(ammo == 0 ? _activeWeapon.WeaponStats.MaxAmmo.GetValue() : ammo);
+            WeaponChanged?.Invoke(weaponIndex);
+        }
 
         public void UpdateHUD()
         {
             AmmoChanged?.Invoke(_activeWeapon.CurrentAmmo);
             MaxAmmoChanged?.Invoke(_activeWeapon.WeaponStats.MaxAmmo.GetValue());
-            WeaponChanged?.Invoke(_inventory.GetCurrentWeaponNumber());
+            WeaponChanged?.Invoke(_weaponList.GetCurrentWeaponNumber());
         }
 
         public int GetAmmoValue()   => _activeWeapon.CurrentAmmo;
-        public int GetWeaponIndex() => _inventory.GetCurrentWeaponNumber();
+        public int GetWeaponIndex() => _weaponList.GetCurrentWeaponNumber();
 
         public void SetAmmoValue(int ammo)
         {
-            _activeWeapon.CurrentAmmo = ammo;
+            _activeWeapon.SetAmmo(ammo);
             AmmoChanged?.Invoke(_activeWeapon.CurrentAmmo);
             MaxAmmoChanged?.Invoke(_activeWeapon.WeaponStats.MaxAmmo.GetValue());
         }
 
         public void SetWeapon(int weaponNumber)
         {
-            if (_activeWeapon != null) HideWeapon();
-            _weaponToCreate = _inventory.GetWeapon(weaponNumber);
-            _activeWeapon   = ShowWeapon();
+            if (_activeWeapon != null)
+            {
+                _activeWeapon.Hide();
+                _activeWeapon = null;
+            }
+
+            _activeWeapon = _weaponList.GetWeapon(weaponNumber);
+            _activeWeapon.Show();
         }
 
         public void NextWeapon(bool isNext)
         {
-            if (_activeWeapon != null) HideWeapon();
-            _weaponToCreate = isNext ? _inventory.GetNextWeapon() : _inventory.GetPreviousWeapon();
-            _activeWeapon   = ShowWeapon();
-            InitializeAmmo(0);
+            if (_activeWeapon != null)
+            {
+                _activeWeapon.Hide();
+                _activeWeapon = null;
+            }
+
+            _activeWeapon = isNext ? _weaponList.GetNextWeapon() : _weaponList.GetPreviousWeapon();
+            _activeWeapon.Show();
+
+            WeaponChanged?.Invoke(_weaponList.GetCurrentWeaponNumber());
+            AmmoChanged?.Invoke(_activeWeapon.CurrentAmmo);
+            MaxAmmoChanged?.Invoke(_activeWeapon.WeaponStats.MaxAmmo.GetValue());
         }
 
         public void Shoot(float playerDamage)
         {
             if (!_isReloading && _activeWeapon.CurrentAmmo != 0)
             {
-                _activeWeapon.CurrentAmmo--;
+                _activeWeapon.SetAmmo(_activeWeapon.CurrentAmmo - 1);
                 AmmoChanged?.Invoke(_activeWeapon.CurrentAmmo);
                 _activeWeapon.Attack(playerDamage);
             }
@@ -72,8 +98,8 @@ namespace Assets.BackToSchool.Scripts.Weapons
             if (_isReloading)
                 return;
 
-            _isReloading              = true;
-            _activeWeapon.CurrentAmmo = _activeWeapon.WeaponStats.MaxAmmo.GetValue();
+            _isReloading = true;
+            _activeWeapon.SetAmmo(_activeWeapon.WeaponStats.MaxAmmo.GetValue());
             WeaponReloaded?.Invoke();
         }
 
@@ -82,34 +108,6 @@ namespace Assets.BackToSchool.Scripts.Weapons
             _isReloading = false;
             _activeWeapon.ReloadFinished();
             AmmoChanged?.Invoke(_activeWeapon.CurrentAmmo);
-        }
-
-        public void InitializeAmmo(int ammo)
-        {
-            _activeWeapon.CurrentAmmo = ammo == 0 ? _activeWeapon.WeaponStats.MaxAmmo.GetValue() : ammo;
-
-            AmmoChanged?.Invoke(_activeWeapon.CurrentAmmo);
-            MaxAmmoChanged?.Invoke(_activeWeapon.WeaponStats.MaxAmmo.GetValue());
-        }
-
-        public void InitializeWeapon(int weaponIndex)
-        {
-            _weaponToCreate = weaponIndex == 0 ? _inventory.GetInitialWeapon() : _inventory.GetWeapon(weaponIndex);
-            _activeWeapon   = ShowWeapon();
-        }
-
-        private IWeapon ShowWeapon()
-        {
-            _activeWeaponObj                  = Instantiate(_weaponToCreate, _weaponPosition.position, _weaponPosition.rotation);
-            _activeWeaponObj.transform.parent = gameObject.transform;
-            WeaponChanged?.Invoke(_inventory.GetCurrentWeaponNumber());
-            return _activeWeaponObj.GetComponent<IWeapon>();
-        }
-
-        private void HideWeapon()
-        {
-            Destroy(_activeWeaponObj);
-            _activeWeapon = null;
         }
     }
 }

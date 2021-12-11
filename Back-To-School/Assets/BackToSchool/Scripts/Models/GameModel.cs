@@ -67,7 +67,7 @@ namespace Assets.BackToSchool.Scripts.Models
             _playerInput = new PlayerInputProvider(_mainCamera);
             _inputManager.Subscribe(_playerInput);
 
-            _player = _resourceManager.CreatePlayer(_playerInput, _playerStats, _playerData);
+            _player = _resourceManager.CreatePlayer(_playerInput, _resourceManager, _playerStats, _playerData);
 
             _objectiveSystem = new ObjectiveSystem();
             var objectives = parameters.IsNewGame
@@ -80,8 +80,8 @@ namespace Assets.BackToSchool.Scripts.Models
             _objectiveSystem.Initialize(objectives);
             _hudPresenter.InitializeObjectives(objectives);
 
-            _mainCamera.GetComponent<CameraFollow>().SetTarget(_player.gameObject.transform);
-            _enemySpawner.Initialize(_player.gameObject.transform, resourceManager);
+            _mainCamera.GetComponent<CameraFollow>().SetTarget(_player.Transform);
+            _enemySpawner.Initialize(_player.Transform, resourceManager);
 
             var pauseInput = new PauseInputProvider();
             _inputManager.Subscribe(pauseInput);

@@ -1,6 +1,7 @@
 ﻿using System;
 using Assets.BackToSchool.Scripts.Enums;
 using Assets.BackToSchool.Scripts.Extensions;
+using Assets.BackToSchool.Scripts.Interfaces.Core;
 using Assets.BackToSchool.Scripts.Interfaces.Game;
 using Assets.BackToSchool.Scripts.Parameters;
 using Assets.BackToSchool.Scripts.Stats;
@@ -12,10 +13,10 @@ using UnityEngine.AI;
 
 namespace Assets.BackToSchool.Scripts.Enemies
 {
-    public abstract class BaseEnemy : MonoBehaviour, IBaseEnemy
+    public abstract class Enemy : MonoBehaviour, IEnemy
     {
         public event Action<float, int> HealthChanged;
-        public event Action<BaseEnemy> Died;
+        public event Action<Enemy> Died;
 
         protected float _startChasingDistance;
         protected int _maxHealth;
@@ -25,20 +26,22 @@ namespace Assets.BackToSchool.Scripts.Enemies
         protected Animator _animator;
         protected NavMeshAgent _agent;
         protected EEnemyStates _state;
+        protected IResourceManager _resourceManager;
 
         protected float _currentHealth;
         protected bool _isBusy;
         protected bool _isDead;
 
-        public void Initialize(CharacterStats enemyStats)
+        public void Initialize(CharacterStats enemyStats, IResourceManager resourceManager)
         {
-            _isDead        = false;
-            _isBusy        = false;
-            _currentHealth = enemyStats.MaxHealth.GetValue();
-            _maxHealth     = enemyStats.MaxHealth.GetValue();
-            _enemyDamage   = enemyStats.Damage.GetValue();
-            _agent.speed   = enemyStats.MoveSpeed.GetValue();
-            _state         = EEnemyStates.Patrolling;
+            _isDead          = false;
+            _isBusy          = false;
+            _currentHealth   = enemyStats.MaxHealth.GetValue();
+            _maxHealth       = enemyStats.MaxHealth.GetValue();
+            _enemyDamage     = enemyStats.Damage.GetValue();
+            _agent.speed     = enemyStats.MoveSpeed.GetValue();
+            _state           = EEnemyStates.Patrolling;
+            _resourceManager = resourceManager;
 
             _startChasingDistance = Constants.EnemyStartChasingDistance;
             HealthChanged?.Invoke(_currentHealth, _maxHealth);

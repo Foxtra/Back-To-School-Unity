@@ -36,7 +36,7 @@ namespace Assets.BackToSchool.Scripts.Progression
             return _currentObjectives;
         }
 
-        public void CountEnemyDeath(BaseEnemy sender)
+        public void CountEnemyDeath(Enemy sender)
         {
             if (_currentObjectives.GameMode != EGameModes.KillEnemies)
                 return;

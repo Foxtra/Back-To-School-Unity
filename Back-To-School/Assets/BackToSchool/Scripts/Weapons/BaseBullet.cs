@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Assets.BackToSchool.Scripts.Weapons
 {
-    public abstract class BaseBullet : MonoBehaviour
+    public abstract class BaseBullet : MonoBehaviour, IBullet
     {
         protected Rigidbody _rigidbody;
 

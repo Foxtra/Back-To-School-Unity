@@ -44,7 +44,6 @@ namespace Assets.BackToSchool.Scripts.Models
         private Camera _mainCamera;
 
         private bool _isGamePaused;
-        private bool _isPlayerDead;
 
         public GameModel(ISaveSystem saveSystem, IGameManager gameManager, IResourceManager resourceManager,
             IInputManager inputManager, IViewFactory viewFactory, Camera playerCamera, StartParameters parameters)
@@ -166,7 +165,6 @@ namespace Assets.BackToSchool.Scripts.Models
 
         private async void OnPlayerDeath()
         {
-            _isPlayerDead = true;
             _enemySpawner.SetTarget(null);
             await UniTask.Delay(Constants.GameOverDelay);
             EndGame();

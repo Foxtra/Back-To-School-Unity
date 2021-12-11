@@ -41,7 +41,7 @@ namespace Assets.BackToSchool.Scripts.Player
             _playerStats = playerStats;
             _playerInput = playerInput;
 
-            _playerInput.Reloaded            += _weaponController.Reload;
+            _playerInput.Reloaded            += _weaponController.StartReloading;
             _weaponController.WeaponReloaded += Reload;
             _playerInput.Fired               += Fire;
             _playerInput.Stopped             += Stop;
@@ -67,7 +67,7 @@ namespace Assets.BackToSchool.Scripts.Player
             _animator         = GetComponent<Animator>();
             _renderers        = GetComponentsInChildren<SkinnedMeshRenderer>();
             _weaponController = GetComponent<WeaponController>();
-            _weaponList        = GetComponent<WeaponList>();
+            _weaponList       = GetComponent<WeaponList>();
         }
 
         private void Start()
@@ -80,7 +80,7 @@ namespace Assets.BackToSchool.Scripts.Player
 
         private void OnDestroy()
         {
-            _playerInput.Reloaded            -= _weaponController.Reload;
+            _playerInput.Reloaded            -= _weaponController.StartReloading;
             _weaponController.WeaponReloaded -= Reload;
             _playerInput.Fired               -= Fire;
             _playerInput.Stopped             -= Stop;
@@ -103,7 +103,7 @@ namespace Assets.BackToSchool.Scripts.Player
             _animator.SetTrigger(EAnimTriggers.Reload.ToStringCached());
             var animTime = Array.Find(_animator.runtimeAnimatorController.animationClips,
                 clip => clip.name == EPlayerAnimNames.Reload.ToStringCached()).length;
-            WaitWhileReloading(Mathf.RoundToInt(animTime * 1000f));
+            _weaponController.FinishReloading(Mathf.RoundToInt(animTime * Constants.MillisecondsMultiplier));
         }
 
         public void Fire()
@@ -154,12 +154,6 @@ namespace Assets.BackToSchool.Scripts.Player
             ChangeColor(Color.red);
             await UniTask.Delay(Constants.PlayerDamageTime);
             ChangeColor(Color.white);
-        }
-
-        private async void WaitWhileReloading(int milSec)
-        {
-            await UniTask.Delay(milSec);
-            _weaponController.ReloadComplete();
         }
 
         private void ChangeColor(Color color)

@@ -2,6 +2,7 @@
 using Assets.BackToSchool.Scripts.Interfaces.Components;
 using Assets.BackToSchool.Scripts.Interfaces.Core;
 using Assets.BackToSchool.Scripts.Items;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 
@@ -84,10 +85,10 @@ namespace Assets.BackToSchool.Scripts.Weapons
                 AmmoChanged?.Invoke(_activeWeapon.CurrentAmmo);
                 _activeWeapon.Attack(playerDamage);
             }
-            else Reload();
+            else StartReloading();
         }
 
-        public void Reload()
+        public void StartReloading()
         {
             if (_isReloading)
                 return;
@@ -97,8 +98,10 @@ namespace Assets.BackToSchool.Scripts.Weapons
             WeaponReloaded?.Invoke();
         }
 
-        public void ReloadComplete()
+        public async void FinishReloading(int reloadingTime)
         {
+            await UniTask.Delay(reloadingTime);
+
             _isReloading = false;
             _activeWeapon.FinishReload();
             AmmoChanged?.Invoke(_activeWeapon.CurrentAmmo);

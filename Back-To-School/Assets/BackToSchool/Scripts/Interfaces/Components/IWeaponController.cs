@@ -20,7 +20,7 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Components
         public void SetWeapon(int weaponNumber);
         public void NextWeapon(bool isNext);
         public void Shoot(float playerDamage);
-        public void Reload();
-        public void ReloadComplete();
+        public void StartReloading();
+        public void FinishReloading(int reloadingTime);
     }
 }

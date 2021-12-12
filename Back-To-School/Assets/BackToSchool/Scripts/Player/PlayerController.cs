@@ -5,7 +5,6 @@ using Assets.BackToSchool.Scripts.Interfaces.Components;
 using Assets.BackToSchool.Scripts.Interfaces.Core;
 using Assets.BackToSchool.Scripts.Interfaces.Game;
 using Assets.BackToSchool.Scripts.Interfaces.Input;
-using Assets.BackToSchool.Scripts.Items;
 using Assets.BackToSchool.Scripts.Parameters;
 using Assets.BackToSchool.Scripts.Stats;
 using Assets.BackToSchool.Scripts.Weapons;
@@ -37,7 +36,8 @@ namespace Assets.BackToSchool.Scripts.Player
         private float _currentHealth;
         private bool _isDead;
 
-        public void Initialize(IPlayerInput playerInput, IResourceManager resourceManager, IAudioManager audioManager, PlayerStats playerStats, PlayerData playerData)
+        public void Initialize(IPlayerInput playerInput, IResourceManager resourceManager, IAudioManager audioManager,
+            PlayerStats playerStats, PlayerData playerData)
         {
             _playerStats  = playerStats;
             _playerInput  = playerInput;

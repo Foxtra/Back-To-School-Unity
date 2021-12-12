@@ -50,7 +50,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
             if (_timer > _attackInterval)
             {
                 base.Attack();
-                _audioManager.Play(SoundNames.ShamanAttack);
+                _audioManager.PlayEffect(ESounds.ShamanAttack);
                 var targetClipName = EEnemyAnimNames.Spell.ToStringCached();
                 var animTime = Array.Find(_animator.runtimeAnimatorController.animationClips,
                     clip => clip.name == targetClipName).length;

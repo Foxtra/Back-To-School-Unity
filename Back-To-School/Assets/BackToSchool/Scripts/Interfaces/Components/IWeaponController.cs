@@ -1,6 +1,6 @@
 ﻿using System;
 using Assets.BackToSchool.Scripts.Interfaces.Core;
-using Assets.BackToSchool.Scripts.Items;
+using Assets.BackToSchool.Scripts.Weapons;
 
 
 namespace Assets.BackToSchool.Scripts.Interfaces.Components

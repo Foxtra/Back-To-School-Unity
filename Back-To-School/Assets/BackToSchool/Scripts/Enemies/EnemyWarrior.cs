@@ -33,13 +33,13 @@ namespace Assets.BackToSchool.Scripts.Enemies
         protected override void Awake()
         {
             base.Awake();
-            _audioManager.Play(SoundNames.WarriorAttack);
             _enemyMeleeWeapon.PlayerDamaged += DoDamage;
         }
 
         protected override void Attack()
         {
             base.Attack();
+            _audioManager.PlayEffect(ESounds.WarriorAttack);
             var targetClipName = EEnemyAnimNames.Attack01.ToStringCached();
             var animTime = Array.Find(_animator.runtimeAnimatorController.animationClips,
                 clip => clip.name == targetClipName).length;

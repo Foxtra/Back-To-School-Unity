@@ -64,6 +64,7 @@ namespace Assets.BackToSchool.Scripts.Models
             _levelSystem     = new LevelSystem();
             _enemySpawner    = _resourceManager.CreateEnemySpawner();
             _playerData      = parameters.IsNewGame ? new PlayerData() : _saveSystem.LoadPlayerProgress();
+            audioManager.PlayMusic(ESounds.BackGround1);
 
             _playerInput = new PlayerInputProvider(_mainCamera);
             _inputManager.Subscribe(_playerInput);

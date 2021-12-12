@@ -20,7 +20,7 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Core
         public IUIRoot CreateUIRoot(Camera worldSpaceCamera);
 
         public IPlayerController CreatePlayer(IPlayerInput playerInput, IResourceManager resourceManager, IAudioManager audioManager,
-        PlayerStats playerStats, PlayerData playerData);
+            PlayerStats playerStats, PlayerData playerData);
 
         public IEnemySpawner CreateEnemySpawner();
 
@@ -36,6 +36,7 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Core
 
         public GameObject CreateExplosion(Transform explosionTransform);
 
-        public List<IWeapon> CreateAllWeapons(List<EWeapons> weaponsToCreate, Transform weaponTransform, Transform parenTransform);
+        public List<IWeapon> CreateAllWeapons(List<EWeapons> weaponsToCreate, IAudioManager audioManager, Transform weaponTransform,
+            Transform parenTransform);
     }
 }

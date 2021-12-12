@@ -1,48 +1,70 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using Assets.BackToSchool.Scripts.Enums;
 using Assets.BackToSchool.Scripts.Interfaces.Core;
-using Assets.BackToSchool.Scripts.Sounds;
+using Assets.BackToSchool.Scripts.Parameters;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 
 namespace Assets.BackToSchool.Scripts.GameManagement
 {
-    public class AudioManager : MonoBehaviour, IAudioManager
+    public class AudioManager : IAudioManager
     {
-        public Sound[] Sounds;
-        public static AudioManager Instance { get; private set; }
+        private Dictionary<ESounds, AudioSource> _effectDictionary = new Dictionary<ESounds, AudioSource>();
+        private Dictionary<ESounds, AudioSource> _musicDictionary = new Dictionary<ESounds, AudioSource>();
+        private ISystemResourceManager _resourceManager;
 
-        private void Awake()
+        public AudioManager(ISystemResourceManager resourceManager) => _resourceManager = resourceManager;
+
+        public void PlayEffect(ESounds sound)
         {
-            if (Instance != null && Instance != this)
+            AudioSource effect;
+            if (_effectDictionary.ContainsKey(sound))
+                effect = _effectDictionary[sound];
+            else
             {
-                Destroy(gameObject);
+                effect = _resourceManager.CreatePrefabInstance<AudioSource, ESounds>(sound);
+                _effectDictionary.Add(sound, effect);
+            }
+
+            effect.Play();
+        }
+
+        public void PlayMusic(ESounds sound, bool isLoop = true)
+        {
+            var alreadyPlaying = _musicDictionary.ContainsKey(sound);
+
+            if (alreadyPlaying)
+            {
+                _musicDictionary[sound].time = 0f;
                 return;
             }
 
-            Instance = this;
-
-            DontDestroyOnLoad(gameObject);
+            var music = _resourceManager.CreatePrefabInstance<AudioSource, ESounds>(sound);
+            music.loop = isLoop;
+            music.Play();
+            _musicDictionary.Add(sound, music);
         }
 
-        private void Start() => Play(SoundNames.BackGround1);
-
-        public void Play(SoundNames soundName)
+        public void StopMusic(ESounds sound)
         {
-            if (!Sounds[0].IsSourceExists())
-            {
-                foreach (var s in Sounds)
-                    s.Initialize();
-            }
-
-            var sound = Array.Find(Sounds, s => s.Name == soundName);
-            sound.PlaySource();
+            var music = _musicDictionary[sound];
+            music.Stop();
+            _musicDictionary.Remove(sound);
         }
 
-        public void Stop(SoundNames soundName)
+        private async void PlayAndDestroy(AudioSource source)
         {
-            var sound = Array.Find(Sounds, s => s.Name == soundName);
-            sound.StopPlayingSource();
+            var length = source.clip.length;
+            source.Play();
+            await UniTask.Delay(Mathf.RoundToInt(length * Constants.Time.MillisecondsMultiplier));
+            Object.Destroy(source);
+        }
+
+        public void Dispose()
+        {
+            _musicDictionary.Clear();
+            _effectDictionary.Clear();
         }
     }
 }

@@ -1,8 +1,6 @@
 ﻿using System;
-using Assets.BackToSchool.Scripts.Enums;
 using Assets.BackToSchool.Scripts.Interfaces.Components;
 using Assets.BackToSchool.Scripts.Interfaces.Core;
-using Assets.BackToSchool.Scripts.Items;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -33,7 +31,7 @@ namespace Assets.BackToSchool.Scripts.Weapons
             _audioManager    = audioManager;
 
             var allWeapons = _weaponList.GetAllWeaponTypes();
-            _weaponList.SetWeapons(_resourceManager.CreateAllWeapons(allWeapons, _weaponPosition, gameObject.transform));
+            _weaponList.SetWeapons(_resourceManager.CreateAllWeapons(allWeapons, audioManager, _weaponPosition, gameObject.transform));
 
             _activeWeapon = _weaponList.Weapons[weaponIndex];
             _activeWeapon.Show();
@@ -88,7 +86,6 @@ namespace Assets.BackToSchool.Scripts.Weapons
                 _activeWeapon.SetAmmo(_activeWeapon.CurrentAmmo - 1);
                 AmmoChanged?.Invoke(_activeWeapon.CurrentAmmo);
                 _activeWeapon.Attack(playerDamage);
-                _audioManager.Play(SoundNames.AssaultRifleShot);
             }
             else StartReloading();
         }

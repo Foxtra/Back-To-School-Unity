@@ -16,6 +16,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
 {
     public class GameManager : MonoBehaviour, IGameManager
     {
+        private IAudioManager _audioManager;
         private IInputManager _inputManager;
         private IResourceManager _resourceManager;
         private ISystemResourceManager _systemResourceManager;
@@ -40,6 +41,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         public async UniTask LoadMenu()
         {
             _currentModel?.Dispose();
+            _audioManager?.Dispose();
             await SceneManager.LoadSceneAsync(EScenes.MainMenu.ToStringCached());
             InitializeScene(EGame.MenuCamera);
             _currentModel = new MainMenuModel(this, _viewFactory);
@@ -48,13 +50,16 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         public async UniTask LoadGame(StartParameters parameters)
         {
             _currentModel?.Dispose();
+            _audioManager?.Dispose();
             _startParameters = parameters;
             await SceneManager.LoadSceneAsync(parameters.NextScene);
             InitializeScene(EGame.PlayerCamera);
 
             if (_startParameters == null)
                 _startParameters = new StartParameters(true);
-            _currentModel = new GameModel(_saveSystem, this, _resourceManager, _inputManager, _viewFactory, _mainCamera, AudioManager.Instance, _startParameters);
+
+            _currentModel = new GameModel(_saveSystem, this, _resourceManager, _inputManager, _viewFactory, _mainCamera, _audioManager,
+                _startParameters);
         }
 
         private void Initialize()
@@ -62,6 +67,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             _saveSystem            = new SaveSystem();
             _resourceManager       = new ResourceManager();
             _systemResourceManager = new ResourceManager();
+            _audioManager          = new AudioManager(_systemResourceManager);
         }
 
         private void InitializeScene(EGame cameraType)

@@ -43,7 +43,7 @@ namespace Assets.BackToSchool.Scripts.GameManagement
         }
 
         public IPlayerController CreatePlayer(IPlayerInput playerInput, IResourceManager resourceManager, IAudioManager audioManager,
-        PlayerStats playerStats, PlayerData playerData)
+            PlayerStats playerStats, PlayerData playerData)
         {
             var result = CreatePrefabInstance<PlayerController, EGame>(EGame.Player);
             result.Initialize(playerInput, resourceManager, audioManager, playerStats, playerData);
@@ -113,7 +113,8 @@ namespace Assets.BackToSchool.Scripts.GameManagement
             return result;
         }
 
-        public List<IWeapon> CreateAllWeapons(List<EWeapons> weaponsToCreate, Transform weaponTransform, Transform parenTransform)
+        public List<IWeapon> CreateAllWeapons(List<EWeapons> weaponsToCreate, IAudioManager audioManager, Transform weaponTransform,
+            Transform parenTransform)
         {
             Weapons = new List<IWeapon>();
             IWeapon result;
@@ -137,14 +138,14 @@ namespace Assets.BackToSchool.Scripts.GameManagement
                         throw new ArgumentOutOfRangeException(nameof(weapon), weapon, null);
                 }
 
-                result.Initialize(stats, this, weaponTransform, parenTransform);
+                result.Initialize(stats, this, audioManager, weaponTransform, parenTransform);
                 Weapons.Add(result);
             }
 
             return Weapons;
         }
 
-        public T GetPrefab<T, E>(E item)
+        public T GetAsset<T, E>(E item)
             where T : Object
             where E : Enum
         {

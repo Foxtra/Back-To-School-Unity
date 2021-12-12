@@ -8,7 +8,7 @@ namespace Assets.BackToSchool.Scripts.Weapons
 {
     public class Rocket : Bullet
     {
-       // --- Projectile Mesh ---
+        // --- Projectile Mesh ---
         public MeshRenderer projectileMesh;
 
         // --- Script Variables ---
@@ -26,13 +26,13 @@ namespace Assets.BackToSchool.Scripts.Weapons
 
         public void Initialize(IResourceManager resourceManager) => _resourceManager = resourceManager;
 
-        private void Update()
+        public override void Launch(float force)
         {
-            // --- Check to see if the target has been hit. We don't want to update the position if the target was hit ---
-            if (targetHit) return;
+            Destroy(gameObject, Constants.WeaponStats.BulletLifeTime);
+            _rigidbody = GetComponentInChildren<Rigidbody>();
 
-            // --- moves the game object in the forward direction at the defined speed ---
-            transform.position += transform.forward * (Constants.WeaponStats.RocketSpeed * Time.deltaTime);
+            var impulse = transform.forward * _rigidbody.mass * force;
+            _rigidbody.AddForce(impulse, ForceMode.Impulse);
         }
 
         /// <summary>

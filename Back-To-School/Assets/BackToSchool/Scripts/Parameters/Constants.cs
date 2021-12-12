@@ -57,7 +57,8 @@ namespace Assets.BackToSchool.Scripts.Parameters
             public static int RifleInitialReloadSpeed = 1;
 
             public static float BulletLifeTime = 4f;
-            public static float RocketSpeed = 100f;
+            public static float BulletForce = 20f;
+            public static float RocketForce = 25f;
         }
 
         public class PlayerStats

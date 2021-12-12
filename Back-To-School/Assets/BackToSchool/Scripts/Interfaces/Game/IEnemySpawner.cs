@@ -13,6 +13,6 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Game
         public event Action<int> ExperienceForEnemyGot;
         public void SetMaxWarriorEnemies(int maxEnemiesNumber);
         public void SetMaxShamanEnemies(int maxEnemiesNumber);
-        public void Initialize(Transform target, IResourceManager resourceManager);
+        public void Initialize(Transform target, IResourceManager resourceManager, IAudioManager audioManager);
     }
 }

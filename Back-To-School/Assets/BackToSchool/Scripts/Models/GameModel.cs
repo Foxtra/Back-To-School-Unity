@@ -46,7 +46,8 @@ namespace Assets.BackToSchool.Scripts.Models
         private bool _isGamePaused;
 
         public GameModel(ISaveSystem saveSystem, IGameManager gameManager, IResourceManager resourceManager,
-            IInputManager inputManager, IViewFactory viewFactory, Camera playerCamera, StartParameters parameters)
+            IInputManager inputManager, IViewFactory viewFactory, Camera playerCamera, IAudioManager audioManager,
+            StartParameters parameters)
         {
             _hudPresenter           = viewFactory.CreateView<IHUDPresenter, EViews>(EViews.HUD);
             _gameOverPresenter      = viewFactory.CreateView<IGameOverPresenter, EViews>(EViews.GameOver);
@@ -63,11 +64,12 @@ namespace Assets.BackToSchool.Scripts.Models
             _levelSystem     = new LevelSystem();
             _enemySpawner    = _resourceManager.CreateEnemySpawner();
             _playerData      = parameters.IsNewGame ? new PlayerData() : _saveSystem.LoadPlayerProgress();
+            audioManager.PlayMusic(ESounds.BackGround1);
 
             _playerInput = new PlayerInputProvider(_mainCamera);
             _inputManager.Subscribe(_playerInput);
 
-            _player = _resourceManager.CreatePlayer(_playerInput, _resourceManager, _playerStats, _playerData);
+            _player = _resourceManager.CreatePlayer(_playerInput, _resourceManager, audioManager, _playerStats, _playerData);
 
             _objectiveSystem = new ObjectiveSystem();
             var objectives = parameters.IsNewGame
@@ -80,8 +82,10 @@ namespace Assets.BackToSchool.Scripts.Models
             _objectiveSystem.Initialize(objectives);
             _hudPresenter.InitializeObjectives(objectives);
 
+            _playerInput = new PlayerInputProvider(_mainCamera);
+            _inputManager.Subscribe(_playerInput);
+            _enemySpawner.Initialize(_player.Transform, resourceManager, audioManager);
             _mainCamera.GetComponent<CameraFollow>().SetTarget(_player.Transform);
-            _enemySpawner.Initialize(_player.Transform, resourceManager);
 
             _pauseInput = new PauseInputProvider();
             _inputManager.Subscribe(_pauseInput);

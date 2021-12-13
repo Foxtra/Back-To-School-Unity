@@ -1,5 +1,4 @@
-﻿using Assets.BackToSchool.Scripts.Enums;
-using Assets.BackToSchool.Scripts.Parameters;
+﻿using Assets.BackToSchool.Scripts.Parameters;
 using Cysharp.Threading.Tasks;
 
 
@@ -13,12 +12,16 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Core
 
         public UniTask StartGame(StartParameters parameters);
 
+        public UniTask ContinueGame();
+
         public UniTask ReturnToMenu();
 
-        public UniTask RestartLevel(string sceneName, EGameModes gameMode);
+        public UniTask RestartLevel(LevelParameters parameters);
+
+        public bool IsLastLevel(LevelParameters parameters);
 
         public UniTask LoadMenu();
 
-        public UniTask LoadGame(StartParameters parameters);
+        public UniTask LoadScene(StartParameters parameters);
     }
 }

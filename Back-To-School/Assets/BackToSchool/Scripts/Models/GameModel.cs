@@ -12,7 +12,6 @@ using Assets.BackToSchool.Scripts.Progression;
 using Assets.BackToSchool.Scripts.Stats;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 
 namespace Assets.BackToSchool.Scripts.Models
@@ -40,6 +39,7 @@ namespace Assets.BackToSchool.Scripts.Models
         private IPlayerInput _playerInput;
         private PlayerStats _playerStats;
         private PlayerData _playerData;
+        private StartParameters _startParameters;
 
         private Camera _mainCamera;
 
@@ -64,6 +64,7 @@ namespace Assets.BackToSchool.Scripts.Models
             _levelSystem     = new LevelSystem();
             _enemySpawner    = _resourceManager.CreateEnemySpawner();
             _playerData      = parameters.IsNewGame ? new PlayerData() : _saveSystem.LoadPlayerProgress();
+            _startParameters = parameters;
             audioManager.PlayMusic(ESounds.BackGround1);
 
             _playerInput = new PlayerInputProvider(_mainCamera);
@@ -72,7 +73,7 @@ namespace Assets.BackToSchool.Scripts.Models
             _player = _resourceManager.CreatePlayer(_playerInput, _resourceManager, audioManager, _playerStats, _playerData);
 
             _objectiveSystem = new ObjectiveSystem();
-            var objectives = parameters.IsNewGame
+            var objectives = parameters.IsNewGame || !parameters.IsLevelLoadedFromSave
                 ? new ObjectiveParameters(parameters.GameMode)
                 : _saveSystem.LoadObjectiveProgress();
 
@@ -90,6 +91,9 @@ namespace Assets.BackToSchool.Scripts.Models
             _pauseInput = new PauseInputProvider();
             _inputManager.Subscribe(_pauseInput);
             _pauseInput.Cancelled += OnGamePaused;
+
+            _saveSystem.SaveLevelParameters(new LevelParameters(_startParameters.Scene, _startParameters.GameMode,
+                _startParameters.LevelNumber));
         }
 
         private void SubscribeEvents()
@@ -212,6 +216,12 @@ namespace Assets.BackToSchool.Scripts.Models
 
         private void CompleteLevel()
         {
+            if (!_gameManager.IsLastLevel(_saveSystem.LoadLevelParameters()))
+            {
+                SaveGame();
+                return;
+            }
+
             StopTime();
             _playerInput.TogglePause(true);
             _completeLevelPresenter.Enable();
@@ -219,16 +229,20 @@ namespace Assets.BackToSchool.Scripts.Models
 
         private void ReturnToMenu()
         {
-            if (_isGamePaused) ContinueGame();
+            if (_isGamePaused)
+                ContinueGame();
+
             SaveGame();
             _gameManager.ReturnToMenu();
         }
 
         private void RestartGame()
         {
-            if (_isGamePaused) ContinueGame();
-            _saveSystem.ResetPlayerProgress();
-            _gameManager.RestartLevel(SceneManager.GetActiveScene().name, _objectiveSystem.GetObjectivesProgress().GameMode);
+            if (_isGamePaused)
+                ContinueGame();
+
+            _gameManager.RestartLevel(new LevelParameters(_startParameters.Scene, _startParameters.GameMode,
+                _startParameters.LevelNumber));
         }
 
         #endregion

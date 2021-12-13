@@ -25,8 +25,15 @@ namespace Assets.BackToSchool.Scripts.Progression
         {
             var json = JsonConvert.SerializeObject(objectives);
 
-            PlayerPrefs.SetString(ESaveParams.ObjectivesData.ToString(), json);
-            PlayerPrefs.SetInt(ESaveParams.IsSaveDataExists.ToString(), 1);
+            PlayerPrefs.SetString(ESaveParams.ObjectivesData.ToStringCached(), json);
+            PlayerPrefs.SetInt(ESaveParams.IsSaveDataExists.ToStringCached(), 1);
+        }
+
+        public void SaveLevelParameters(LevelParameters levelParameters)
+        {
+            var json = JsonConvert.SerializeObject(levelParameters);
+
+            PlayerPrefs.SetString(ESaveParams.LevelParameters.ToStringCached(), json);
         }
 
         public PlayerData LoadPlayerProgress()
@@ -37,10 +44,16 @@ namespace Assets.BackToSchool.Scripts.Progression
 
         public ObjectiveParameters LoadObjectiveProgress()
         {
-            var json = PlayerPrefs.GetString(ESaveParams.ObjectivesData.ToString());
+            var json = PlayerPrefs.GetString(ESaveParams.ObjectivesData.ToStringCached());
             return JsonConvert.DeserializeObject<ObjectiveParameters>(json);
         }
 
-        public void ResetPlayerProgress() => PlayerPrefs.DeleteAll();
+        public LevelParameters LoadLevelParameters()
+        {
+            var json = PlayerPrefs.GetString(ESaveParams.LevelParameters.ToStringCached());
+            return JsonConvert.DeserializeObject<LevelParameters>(json);
+        }
+
+        public void ResetAllSaveData() => PlayerPrefs.DeleteAll();
     }
 }

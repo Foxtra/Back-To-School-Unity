@@ -4,6 +4,7 @@
     {
         Starter,
         MainMenu,
-        MainScene
+        FirstLevel,
+        SecondLevel
     }
 }

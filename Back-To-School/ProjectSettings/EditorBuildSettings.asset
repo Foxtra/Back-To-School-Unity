@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/BackToSchool/Scenes/MainMenu.unity
     guid: bdb8aad9a8f34fd4ca8b71a65dabb387
   - enabled: 1
-    path: Assets/BackToSchool/Scenes/MainScene.unity
+    path: Assets/BackToSchool/Scenes/FirstLevel.unity
     guid: 395a60a8e01439d429ad96be194dcd99
+  - enabled: 1
+    path: Assets/BackToSchool/Scenes/SecondLevel.unity
+    guid: 945ab73e113b9ad469c6eb4321edb13a
   m_configObjects: {}

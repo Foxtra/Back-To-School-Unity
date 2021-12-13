@@ -87,5 +87,12 @@ namespace Assets.BackToSchool.Scripts.Parameters
             public static int WarriorEnemiesToKill = 2;
             public static int ShamanEnemiesToKill = 2;
         }
+
+        public class Level
+        {
+            public static int InitialLevel = 0;
+            public static int MaxLevel = 1;
+            public static EScenes[] SceneLevels = { EScenes.FirstLevel, EScenes.SecondLevel };
+        }
     }
 }

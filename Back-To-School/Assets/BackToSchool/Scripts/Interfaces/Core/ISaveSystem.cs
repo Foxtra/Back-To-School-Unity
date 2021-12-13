@@ -12,10 +12,14 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Core
 
         public void SaveObjectiveProgress(ObjectiveParameters objectives);
 
+        public void SaveLevelParameters(LevelParameters levelParameters);
+
         public PlayerData LoadPlayerProgress();
 
         public ObjectiveParameters LoadObjectiveProgress();
 
-        public void ResetPlayerProgress();
+        public LevelParameters LoadLevelParameters();
+
+        public void ResetAllSaveData();
     }
 }

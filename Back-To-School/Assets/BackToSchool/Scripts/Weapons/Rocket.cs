@@ -11,9 +11,6 @@ namespace Assets.BackToSchool.Scripts.Weapons
         // --- Projectile Mesh ---
         public MeshRenderer projectileMesh;
 
-        // --- Script Variables ---
-        private bool targetHit;
-
         // --- Audio ---
         public AudioSource inFlightAudioSource;
 
@@ -47,7 +44,6 @@ namespace Assets.BackToSchool.Scripts.Weapons
             // --- Explode when hitting an object and disable the projectile mesh ---
             Explode();
             projectileMesh.enabled = false;
-            targetHit              = true;
             inFlightAudioSource.Stop();
             foreach (var col in GetComponents<Collider>())
                 col.enabled = false;

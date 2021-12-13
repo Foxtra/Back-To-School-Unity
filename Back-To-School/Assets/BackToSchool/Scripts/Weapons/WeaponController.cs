@@ -1,7 +1,6 @@
 ﻿using System;
 using Assets.BackToSchool.Scripts.Interfaces.Components;
 using Assets.BackToSchool.Scripts.Interfaces.Core;
-using Assets.BackToSchool.Scripts.Items;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -17,19 +16,22 @@ namespace Assets.BackToSchool.Scripts.Weapons
 
         [SerializeField] private Transform _weaponPosition;
 
+        private IAudioManager _audioManager;
         private IWeapon _activeWeapon;
         private IResourceManager _resourceManager;
         private WeaponList _weaponList;
 
         private bool _isReloading;
 
-        public void Initialize(WeaponList weaponList, IResourceManager resourceManager, int ammo, int weaponIndex)
+        public void Initialize(WeaponList weaponList, IResourceManager resourceManager, IAudioManager audioManager, int ammo,
+            int weaponIndex)
         {
             _weaponList      = weaponList;
             _resourceManager = resourceManager;
+            _audioManager    = audioManager;
 
             var allWeapons = _weaponList.GetAllWeaponTypes();
-            _weaponList.SetWeapons(_resourceManager.CreateAllWeapons(allWeapons, _weaponPosition, gameObject.transform));
+            _weaponList.SetWeapons(_resourceManager.CreateAllWeapons(allWeapons, audioManager, _weaponPosition, gameObject.transform));
 
             _activeWeapon = _weaponList.Weapons[weaponIndex];
             _activeWeapon.Show();

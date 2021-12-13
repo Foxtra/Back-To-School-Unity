@@ -16,7 +16,7 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Components
         public void Show();
         public void Hide();
 
-        public void Initialize(WeaponStats weaponStats, IResourceManager resourceManager, Transform weaponTransform,
-            Transform parenTransform);
+        public void Initialize(WeaponStats weaponStats, IResourceManager resourceManager, IAudioManager audioManager,
+            Transform weaponTransform, Transform parenTransform);
     }
 }

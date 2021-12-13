@@ -5,7 +5,6 @@ using Assets.BackToSchool.Scripts.Interfaces.Components;
 using Assets.BackToSchool.Scripts.Interfaces.Core;
 using Assets.BackToSchool.Scripts.Interfaces.Game;
 using Assets.BackToSchool.Scripts.Interfaces.Input;
-using Assets.BackToSchool.Scripts.Items;
 using Assets.BackToSchool.Scripts.Parameters;
 using Assets.BackToSchool.Scripts.Stats;
 using Assets.BackToSchool.Scripts.Weapons;
@@ -27,6 +26,7 @@ namespace Assets.BackToSchool.Scripts.Player
 
         private Animator _animator;
         private IPlayerInput _playerInput;
+        private IAudioManager _audioManager;
         private WeaponList _weaponList;
         private PlayerStats _playerStats;
         private Rigidbody _rigidBody;
@@ -36,10 +36,12 @@ namespace Assets.BackToSchool.Scripts.Player
         private float _currentHealth;
         private bool _isDead;
 
-        public void Initialize(IPlayerInput playerInput, IResourceManager resourceManager, PlayerStats playerStats, PlayerData playerData)
+        public void Initialize(IPlayerInput playerInput, IResourceManager resourceManager, IAudioManager audioManager,
+            PlayerStats playerStats, PlayerData playerData)
         {
-            _playerStats = playerStats;
-            _playerInput = playerInput;
+            _playerStats  = playerStats;
+            _playerInput  = playerInput;
+            _audioManager = audioManager;
 
             _playerInput.Reloaded            += _weaponController.StartReloading;
             _weaponController.WeaponReloaded += Reload;
@@ -58,7 +60,7 @@ namespace Assets.BackToSchool.Scripts.Player
             else
                 _currentHealth = _playerStats.MaxHealth.GetValue();
 
-            _weaponController.Initialize(_weaponList, resourceManager, playerData.PlayerAmmo, playerData.PlayerWeapon);
+            _weaponController.Initialize(_weaponList, resourceManager, _audioManager, playerData.PlayerAmmo, playerData.PlayerWeapon);
         }
 
         private void Awake()
@@ -108,8 +110,10 @@ namespace Assets.BackToSchool.Scripts.Player
 
         public void Fire()
         {
-            if (!_isDead)
-                _weaponController.Shoot(_playerStats.Damage.GetValue());
+            if (_isDead)
+                return;
+
+            _weaponController.Shoot(_playerStats.Damage.GetValue());
         }
 
         public void NextWeapon(bool isNext)

@@ -4,6 +4,7 @@
     {
         PlayerData,
         ObjectivesData,
-        IsSaveDataExists
+        IsSaveDataExists,
+        LevelParameters
     }
 }

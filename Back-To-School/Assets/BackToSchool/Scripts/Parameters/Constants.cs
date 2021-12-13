@@ -57,7 +57,8 @@ namespace Assets.BackToSchool.Scripts.Parameters
             public static int RifleInitialReloadSpeed = 1;
 
             public static float BulletLifeTime = 4f;
-            public static float RocketSpeed = 100f;
+            public static float BulletForce = 20f;
+            public static float RocketForce = 25f;
         }
 
         public class PlayerStats
@@ -85,6 +86,13 @@ namespace Assets.BackToSchool.Scripts.Parameters
             public static float TimeToSurvive = 120f;
             public static int WarriorEnemiesToKill = 2;
             public static int ShamanEnemiesToKill = 2;
+        }
+
+        public class Level
+        {
+            public static int InitialLevel = 0;
+            public static int MaxLevel = 1;
+            public static EScenes[] SceneLevels = { EScenes.FirstLevel, EScenes.SecondLevel };
         }
     }
 }

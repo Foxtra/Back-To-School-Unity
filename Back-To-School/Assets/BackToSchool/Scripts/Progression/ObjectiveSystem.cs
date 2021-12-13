@@ -24,7 +24,10 @@ namespace Assets.BackToSchool.Scripts.Progression
 
         public void Initialize(ObjectiveParameters parameters)
         {
-            _currentObjectives = parameters;
+            _currentObjectives    = parameters;
+            _warriorEnemiesKilled = parameters.WarriorEnemiesKilled;
+            _shamanEnemiesKilled  = parameters.ShamanEnemiesKilled;
+            _timePassed           = parameters.SurvivedTime;
             CountTimePassed();
         }
 

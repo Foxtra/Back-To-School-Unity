@@ -13,16 +13,16 @@ namespace Assets.BackToSchool.Scripts.Models
 
         public MainMenuModel(IGameManager gameManager, IViewFactory viewFactory)
         {
-            _gameManager                         =  gameManager;
-            _mainMenuPresenter                   =  viewFactory.CreateView<IMainMenuPresenter, EViews>(EViews.MainMenu);
-            _mainMenuPresenter.ExitTriggered     += ExitGame;
+            _gameManager                                =  gameManager;
+            _mainMenuPresenter                          =  viewFactory.CreateView<IMainMenuPresenter, EViews>(EViews.MainMenu);
+            _mainMenuPresenter.ExitTriggered            += ExitGame;
             _mainMenuPresenter.KillEnemiesModeTriggered += StartGame;
             _mainMenuPresenter.SurviveModeTriggered     += StartGame;
-            _mainMenuPresenter.ContinueTriggered += ContinueGame;
+            _mainMenuPresenter.ContinueTriggered        += ContinueGame;
             _mainMenuPresenter.ShowContinueButton(_gameManager.IsSaveDataExists());
         }
 
-        private void ContinueGame() => _gameManager.StartGame(new StartParameters(false));
+        private void ContinueGame() => _gameManager.ContinueGame();
 
         private void ExitGame() => _gameManager.ExitGame();
 

@@ -25,6 +25,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
         protected Transform _target;
         protected Animator _animator;
         protected NavMeshAgent _agent;
+        protected IAudioManager _audioManager;
         protected EEnemyStates _state;
         protected IResourceManager _resourceManager;
 
@@ -32,7 +33,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
         protected bool _isBusy;
         protected bool _isDead;
 
-        public void Initialize(CharacterStats enemyStats, IResourceManager resourceManager)
+        public void Initialize(CharacterStats enemyStats, IResourceManager resourceManager, IAudioManager audioManager)
         {
             _isDead          = false;
             _isBusy          = false;
@@ -42,6 +43,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
             _agent.speed     = enemyStats.MoveSpeed.GetValue();
             _state           = EEnemyStates.Patrolling;
             _resourceManager = resourceManager;
+            _audioManager    = audioManager;
 
             _startChasingDistance = Constants.EnemyStats.EnemyStartChasingDistance;
             HealthChanged?.Invoke(_currentHealth, _maxHealth);
@@ -66,7 +68,8 @@ namespace Assets.BackToSchool.Scripts.Enemies
             }
         }
 
-        public void SetTarget(Transform target) => _target = target;
+        public void SetAudioManager(IAudioManager audioManager) => _audioManager = audioManager;
+        public void SetTarget(Transform target)                 => _target = target;
 
         protected void EnableEnemy()
         {

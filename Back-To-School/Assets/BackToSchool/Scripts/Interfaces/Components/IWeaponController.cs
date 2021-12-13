@@ -1,6 +1,6 @@
 ﻿using System;
 using Assets.BackToSchool.Scripts.Interfaces.Core;
-using Assets.BackToSchool.Scripts.Items;
+using Assets.BackToSchool.Scripts.Weapons;
 
 
 namespace Assets.BackToSchool.Scripts.Interfaces.Components
@@ -12,7 +12,9 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Components
         public event Action<int> WeaponChanged;
         public event Action WeaponReloaded;
 
-        public void Initialize(WeaponList weaponList, IResourceManager resourceManager, int ammo, int weaponIndex);
+        public void Initialize(WeaponList weaponList, IResourceManager resourceManager, IAudioManager audioManager, int ammo,
+            int weaponIndex);
+
         public int  GetAmmoValue();
         public int  GetMaxAmmoValue();
         public int  GetWeaponIndex();

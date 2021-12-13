@@ -13,6 +13,6 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Game
         public event Action<float, int> HealthChanged;
         public event Action<Enemy> Died;
         public GameObject gameObject { get; }
-        public void Initialize(CharacterStats enemyStats, IResourceManager resourceManager);
+        public void Initialize(CharacterStats enemyStats, IResourceManager resourceManager, IAudioManager audioManager);
     }
 }

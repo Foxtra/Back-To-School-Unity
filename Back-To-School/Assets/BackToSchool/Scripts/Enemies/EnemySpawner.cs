@@ -17,7 +17,9 @@ namespace Assets.BackToSchool.Scripts.Enemies
         public event Action<Enemy> EnemyDied;
         public event Action<int> ExperienceForEnemyGot;
 
+        private IAudioManager _audioManager;
         private Dictionary<EEnemyTypes, List<IEnemy>> _enemyPools = new Dictionary<EEnemyTypes, List<IEnemy>>();
+
         private Transform _target;
         private Vector3 _enemyPos = Vector3.zero;
         private IResourceManager _resourceManager;
@@ -45,10 +47,11 @@ namespace Assets.BackToSchool.Scripts.Enemies
                 enemy.SetTarget(_target);
         }
 
-        public void Initialize(Transform target, IResourceManager resourceManager)
+        public void Initialize(Transform target, IResourceManager resourceManager, IAudioManager audioManager)
         {
             SetTarget(target);
             _resourceManager = resourceManager;
+            _audioManager    = audioManager;
 
             _enemyPools[EEnemyTypes.EnemyWarrior] = FillEnemyList(EEnemyTypes.EnemyWarrior, _maxWarriorEnemies);
             _enemyPools[EEnemyTypes.EnemyShaman]  = FillEnemyList(EEnemyTypes.EnemyShaman, _maxShamanEnemies);
@@ -130,14 +133,12 @@ namespace Assets.BackToSchool.Scripts.Enemies
                 case EEnemyTypes.EnemyWarrior:
                     enemy.Initialize(
                         new CharacterStats(Constants.EnemyStats.EnemyWarriorDamage, Constants.EnemyStats.EnemyWarriorMaxHealth,
-                            _enemyMoveSpeed),
-                        _resourceManager);
+                            _enemyMoveSpeed), _resourceManager, _audioManager);
                     break;
                 case EEnemyTypes.EnemyShaman:
                     enemy.Initialize(
                         new CharacterStats(Constants.EnemyStats.EnemyShamanDamage, Constants.EnemyStats.EnemyShamanMaxHealth,
-                            _enemyMoveSpeed),
-                        _resourceManager);
+                            _enemyMoveSpeed), _resourceManager, _audioManager);
                     break;
             }
         }

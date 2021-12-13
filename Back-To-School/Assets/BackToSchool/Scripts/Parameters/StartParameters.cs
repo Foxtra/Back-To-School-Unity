@@ -1,33 +1,32 @@
 ﻿using Assets.BackToSchool.Scripts.Enums;
-using Assets.BackToSchool.Scripts.Extensions;
 
 
 namespace Assets.BackToSchool.Scripts.Parameters
 {
     public class StartParameters
     {
-        public StartParameters(bool isNew) : this(isNew, EScenes.MainScene.ToStringCached()) { }
-        public StartParameters(bool isNew, EGameModes mode) : this(isNew, EScenes.MainScene.ToStringCached(), mode) { }
+        public StartParameters(bool isNew, EGameModes mode) : this(isNew, EScenes.FirstLevel, mode,
+            Constants.Level.InitialLevel) { }
 
-        public StartParameters(bool isNew, string scene)
+        public StartParameters(bool isNew, EScenes scene, EGameModes mode, int levelNumber, bool isLoaded = true)
         {
-            IsNewGame = isNew;
-            NextScene = scene;
+            IsNewGame   = isNew;
+            Scene       = scene;
+            GameMode    = mode;
+            LevelNumber = levelNumber;
+
+            IsLevelLoadedFromSave = isLoaded;
         }
 
-        public StartParameters(bool isNew, string scene, EGameModes mode)
-        {
-            IsNewGame = isNew;
-            NextScene = scene;
-            GameMode  = mode;
-        }
-
-        public string NextScene { get; private set; }
         public bool IsNewGame { get; private set; }
+        public bool IsLevelLoadedFromSave { get; }
+        public int LevelNumber { get; private set; }
+        public EScenes Scene { get; private set; }
         public EGameModes GameMode { get; private set; }
 
-        public void SetNextScene(EScenes scene)  => NextScene = scene.ToStringCached();
+        public void SetNextScene(EScenes scene)  => Scene = scene;
         public void SetIsNewGame(bool isNew)     => IsNewGame = isNew;
         public void SetGameMode(EGameModes mode) => GameMode = mode;
+        public void SetLevelNumber(int number)   => LevelNumber = number;
     }
 }

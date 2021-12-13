@@ -7,7 +7,7 @@ namespace Assets.BackToSchool.Scripts.Interfaces.Core
 {
     public interface ISystemResourceManager
     {
-        public T GetPrefab<T, E>(E item)
+        public T GetAsset<T, E>(E item)
             where T : Object
             where E : Enum;
 

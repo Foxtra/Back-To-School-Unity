@@ -11,7 +11,6 @@ namespace Assets.BackToSchool.Scripts.Enemies
     public class EnemyWarrior : Enemy, IMeleeAttackable
     {
         [SerializeField] private EnemyMelee _enemyMeleeWeapon;
-
         public void DoDamage() => _target.GetComponent<IDamageable>().TakeDamage(_enemyDamage);
 
         public override void TakeDamage(float damage)
@@ -40,6 +39,7 @@ namespace Assets.BackToSchool.Scripts.Enemies
         protected override void Attack()
         {
             base.Attack();
+            _audioManager.PlayEffect(ESounds.WarriorAttack);
             var targetClipName = EEnemyAnimNames.Attack01.ToStringCached();
             var animTime = Array.Find(_animator.runtimeAnimatorController.animationClips,
                 clip => clip.name == targetClipName).length;
